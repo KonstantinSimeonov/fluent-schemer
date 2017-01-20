@@ -1,0 +1,14 @@
+{
+  "name": "schema-validator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "test.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "mocha -R spec tests/tests"
+  },
+  "author": "",
+  "license": "ISC"
+}
