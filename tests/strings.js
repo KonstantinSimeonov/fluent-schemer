@@ -1,8 +1,8 @@
 'use strict';
 
 const { expect } = require('chai'),
-    BaseSchema = require('../../fluent-validator/schemas/base-schema'),
-    StringSchema = require('../../fluent-validator/schemas/string-schema')(BaseSchema);
+    BaseSchema = require('../fluent-validator/schemas/base-schema'),
+    StringSchema = require('../fluent-validator/schemas/string-schema')(BaseSchema);
 
 function string(...args) {
     return new StringSchema(...args);
@@ -96,8 +96,8 @@ describe('StringSchema individual methods', () => {
         const schema = string().maxlength(8),
             tooLongStrings = [
                 'iskam si shala, inache shte te obesya',
-                '6al 6al 6al 6al 4ao 4ao 4ao 4ao',
-                's tvoya 6al 6al 6al 6al 6al',
+                '6al 6al 6al 6al',
+                '4ao 4ao 4ao 4ao s tvoya 6al 6al 6al 6al 6al',
                 'here iz a test',
                 'gosho tosho pesho shosho rosho'
             ];

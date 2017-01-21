@@ -16,7 +16,7 @@ module.exports = class BaseSchema {
 
     predicate(predicateFn) {
         this.pushValidationFn((value, path) => {
-            if(!predicateFn(value)) {
+            if (!predicateFn(value)) {
                 return { type: 'predicate', msg: 'Value failed predicate', path };
             }
         });
@@ -24,18 +24,29 @@ module.exports = class BaseSchema {
         return this;
     }
 
-    validate(value, path) {
+    validate(value, path, errors) {
 
-        if(!this.validateType(value)) {
-            return (this._required ? [{ type: 'type', msg: `Expected type ${this.type} but got ${typeof value}`, path }] : []);
+        errors = errors || [];
+
+        if (!this.validateType(value)) {
+            if (this._required) {
+                errors.push({ type: 'type', msg: `Expected type ${this.type} but got ${typeof value}`, path });
+            }
+
+        } else {
+            this.validateValueWithCorrectType(value, path, errors);
         }
 
-        return this.validateValueWithCorrectType(value, path);
+        return errors;
     }
 
-    validateValueWithCorrectType(value, path) {
-        return this.validationFunctions
-                                .map(fn => fn(value, path))
-                                .filter(error => error);
+    validateValueWithCorrectType(value, path, errors) {
+        for (let i = 0, len = this.validationFunctions.length; i < len; i += 1) {
+            const err = this.validationFunctions[i](value, path);
+
+            if (err) {
+                errors.push(err);
+            }
+        }
     }
 }

@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "mocha -R spec tests/tests"
+    "test": "mocha -R spec tests"
   },
   "author": "",
   "license": "ISC"

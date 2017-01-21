@@ -8,7 +8,7 @@ module.exports = BaseSchema => class UnionSchema extends BaseSchema {
     }
 
     get type() {
-        return this.subschemas.map(schema => schema.type).join('|');
+        return this._typestring || (this._typestring = this.subschemas.map(schema => schema.type).join('|'));
     }
 
     validateType(value) {

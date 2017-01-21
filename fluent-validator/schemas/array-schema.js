@@ -25,13 +25,10 @@ module.exports = BaseSchema => class ArraySchema extends BaseSchema {
         return this;
     }
 
-    validateValueWithCorrectType(value, path) {
-        const errors = [];
-        value
-            .map((element, index) => this.subschema.validate(element, path + `[${index}]`))
-            .forEach(errorArray => errors.push(...errorArray));
-
-        return errors;
+    validateValueWithCorrectType(value, path, errors) {
+        for(let i = 0, len = value.length; i < len; i += 1) {
+            this.subschema.validate(value[i], path + `[${i}]`, errors)
+        }
     }
 
 }

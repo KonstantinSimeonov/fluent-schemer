@@ -13,8 +13,8 @@ module.exports = BaseSchema => class ObjectSchema extends BaseSchema {
 
     validateType(value) {
         return (typeof value === 'object')
-            && !(this._allowArrays ^ Array.isArray(value))
-            && !(this._allowFunctions ^ (value instanceof Function));
+            && (this._allowArrays !== Array.isArray(value))
+            && (this._allowFunctions !== (value instanceof Function));
     }
 
     allowArrays() {
@@ -27,14 +27,9 @@ module.exports = BaseSchema => class ObjectSchema extends BaseSchema {
         return this;
     }
 
-    validateValueWithCorrectType(value, path) {
-        const errors = [];
-
-        Object
-            .keys(this.subschema)
-            .map(key => this.subschema[key].validate(value[key], path + '.' + key))
-            .forEach(errs => errors.push(...errs));
-
-        return errors;
+    validateValueWithCorrectType(value, path, errors) {
+        for(const key in this.subschema) {
+            this.subschema[key].validate(value[key], path + '.' + key, errors);
+        }
     }
 }
