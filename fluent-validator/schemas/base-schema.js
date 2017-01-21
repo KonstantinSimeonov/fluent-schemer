@@ -41,6 +41,8 @@ module.exports = class BaseSchema {
     }
 
     validateValueWithCorrectType(value, path, errors) {
+        errors = errors || [];
+
         for (let i = 0, len = this.validationFunctions.length; i < len; i += 1) {
             const err = this.validationFunctions[i](value, path);
 
@@ -48,5 +50,22 @@ module.exports = class BaseSchema {
                 errors.push(err);
             }
         }
+
+        return errors;
+    }
+
+    validateAsync(value, path) {
+        if (!this.validateType(value)) {
+            if (this._required) {
+                return Promise.resolve([{ type: 'type', msg: `Expected type ${this.type} but got ${typeof value}`, path }]);
+            }
+
+        } else {
+            return this._validateAsync(value, path);
+        }
+    }
+
+    _validateAsync(value, path) {
+        return Promise.all(this.validateValueWithCorrectType(value, path));
     }
 }

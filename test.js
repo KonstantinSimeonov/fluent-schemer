@@ -29,6 +29,8 @@ const value = {
     }
 };
 
-const err = schema.validate(value, 'value');
+const err = schema.validateAsync(value, 'value');
 
-console.log(err);
+err.then(x => console.log(x));
+
+console.log(schema.validate(value, 'value'));
