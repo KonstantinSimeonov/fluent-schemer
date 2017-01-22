@@ -1,6 +1,7 @@
 'use strict';
 
-const { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
+const { expect } = require('chai'),
+    { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
     BaseSchema = require('../fluent-validator/schemas/base-schema'),
     NumberSchema = require('../fluent-validator/schemas/number-schema')(BaseSchema);
 
@@ -18,16 +19,54 @@ const ERROR_TYPES = {
 };
 
 describe('NumberSchema individual methods', () => {
+    it('NumberSchema.type: should return "number"', () => {
+        expect(number().type).to.equal('number');
+    });
+
+    it('NumberSchema.validateType(): should return false for all NaN values, Infinity and values that are not of type "number"', () => {
+        const nans = [NaN, '1', '', {}, [], Infinity, null, undefined],
+            schema = number();
+
+        const allAreFalse = nans.every(nan => !schema.validateType(nan));
+
+        expect(allAreFalse).to.equal(true);
+    });
+
+    it('NumbersSchema.validateType(): should return true for NaN when .allowNaN() is called', () => {
+        expect(number().allowNaN().validateType(NaN)).to.equal(true);
+    });
+
+    it('NumberSchema.validateType(): should return true for Infinity when .allowInfinity() is called', () => {
+        expect(number().allowInfinity().validateType(Infinity)).to.equal(true);
+    });
+
+    it('NumberSchema.validateType(): should return false for values of other type even when .allowNaN() has been called', () => {
+        const notNumbers = ['1', {}, Function, [], true, null, undefined],
+            schema = number().allowNaN();
+
+        const allAreNotNumbers = notNumbers.every(nan => !schema.validateType(nan));
+
+        expect(allAreNotNumbers).to.equal(true);
+    });
+
+    it('NumberSchema.validateType(): should return true for primitive numbers and Number objects', () => {
+        const primitiveNumbers = [0, 1, -5, Number.MAX_SAFE_INTEGER, Number.MAX_VALUE, 0x12A, 0b110, 0o127],
+            numberObjects = primitiveNumbers.map(n => new Number(n)),
+            schema = number();
+
+        const allAreNumbers = primitiveNumbers.concat(numberObjects).every(n => schema.validateType(n));
+    });
+
     it('NumberSchema.required(): .validate() should return errors with invalid types when .required() has been called', () => {
         const schema = number().required(),
-            NaNValues = [true, NaN, {}, [], 'kalata', null, undefined];
+            NaNValues = [true, NaN, {}, [], 'kalata', null, undefined, Infinity];
 
         shouldReturnErrors(schema, NaNValues, { type: ERROR_TYPES.TYPE });
     });
 
     it('NumberSchema.required(): .validate() should not return errors when .required() has not been called', () => {
         const schema = number(),
-            NaNValues = [true, NaN, {}, [], 'kalata', null, undefined];
+            NaNValues = [true, NaN, {}, [], 'kalata', null, undefined, Infinity];
 
         shouldNotReturnErrors(schema, NaNValues);
     });

@@ -9,7 +9,7 @@ module.exports = BaseSchema => class NumberSchema extends BaseSchema {
     validateType(value) {
         return ((typeof value === 'number') || (value instanceof Number))
             && (this._nanAllowed || !isNaN(value))
-            && (this._infinityAllowed || isFinite(value));
+            && (this._infinityAllowed || isFinite(value) || isNaN(value));
     }
 
     allowNaN() {
@@ -23,7 +23,7 @@ module.exports = BaseSchema => class NumberSchema extends BaseSchema {
     }
 
     safeInteger() {
-        this.max(Number.MIN_SAFE_INTEGER).min(-Number.MIN_SAFE_INTEGER);
+        return this.max(Number.MIN_SAFE_INTEGER).min(-Number.MIN_SAFE_INTEGER);
     }
 
     min(minvalue) {
