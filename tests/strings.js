@@ -1,6 +1,7 @@
 'use strict';
 
 const { expect } = require('chai'),
+    { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
     BaseSchema = require('../fluent-validator/schemas/base-schema'),
     StringSchema = require('../fluent-validator/schemas/string-schema')(BaseSchema);
 
@@ -18,78 +19,54 @@ const ERROR_TYPES = {
 };
 
 describe('StringSchema individual methods', () => {
+    it('StringSchema.type should return string', () => {
+        expect(string().type).to.equal('string');
+    });
+
+    it('StringSchema.validateType(): should return true for primitive strings and string objects', () => {
+        const primitives = ['1', '', 'sdfsdf', '324jn'],
+            stringObjects = primitives.map(str => new String(str)),
+            schema = string();
+
+        const allAreStrings = primitives.concat(stringObjects).every(str => schema.validateType(str));
+
+        expect(allAreStrings).to.equal(true);
+    });
+
     it('StringSchema.required(): should return errors with invalid types when required has been called', () => {
 
         const schema = string().required(),
             values = [true, {}, 10, [], null, undefined];
 
-        const validationErrors = values
-            .map(v => schema.validate(v, ROOT))
-            .map(errors => {
-                expect(errors.length).to.equal(1);
-                const [err] = errors;
-
-                expect(err.path).to.equal(ROOT);
-                expect(err.type).to.equal('type');
-
-                return errors.pop();
-            })
-            .filter(err => err);
-
-        expect(validationErrors.length).to.equal(values.length);
+        shouldReturnErrors(schema, values, { type: ERROR_TYPES.TYPE });
     });
 
     it('StringSchema.required(): should not return errors with invalid types when no required has been called', () => {
         const schema = string(),
             invalidTypeValues = [true, {}, 10, null, [], undefined];
 
-        const validationErrors = invalidTypeValues
-            .map(v => schema.validate(ROOT))
-            .filter(errorArray => errorArray.length !== 0);
-
-        expect(validationErrors.length).to.equal(0);
+        shouldNotReturnErrors(schema, invalidTypeValues);
     });
 
     it('StringSchema.required(): should not return errors with valid strings when required has been called', () => {
         const schema = string(),
             stringValues = ['', 'gosho', new String('10'), new String(10)];
 
-        const validationErrors = stringValues
-            .map(v => schema.validate(ROOT))
-            .filter(errorArray => errorArray.length !== 0);
-
-        expect(validationErrors.length).to.equal(0);
+        shouldNotReturnErrors(schema, stringValues);
     });
 
     it('StringSchema.minlength(): should return range error for too short string', () => {
         const schema = string().minlength(5),
             tooShortStrings = ['a', '', 'b', 'ivan', 'pe'];
 
-        const validationErrors = tooShortStrings
-            .map(v => schema.validate(v, ROOT))
-            .map(errorArray => {
-                expect(errorArray.length).to.equal(1);
-
-                const [err] = errorArray;
-
-                expect(err.path).to.equal(ROOT);
-                expect(err.type).to.equal(ERROR_TYPES.RANGE);
-
-                return err;
-            });
-
-        expect(validationErrors.length).to.equal(tooShortStrings.length);
+        shouldReturnErrors(schema, tooShortStrings, { type: ERROR_TYPES.RANGE });
     });
 
     it('StringSchema.minlength(): should not return errors for strings with at least minlength length', () => {
         const schema = string().minlength(10),
             validStrings = ['kalata shte hodi na fitnes', 'petya e iskreno i nepodkupno parche', 'tedi lyje, mami i obicha da tancuva'];
 
-        const validationErrors = validStrings
-            .map(v => schema.validate(v, ROOT))
-            .filter(errorsArray => errorsArray.length !== 0);
-
-        expect(validationErrors.length).to.equal(0);
+        shouldNotReturnErrors(schema, validStrings);
     });
 
     it('StringSchema.maxlength(): should return errors for strings with more than allowed length', () => {
@@ -102,62 +79,28 @@ describe('StringSchema individual methods', () => {
                 'gosho tosho pesho shosho rosho'
             ];
 
-        const validationErrors = tooLongStrings
-            .map(v => schema.validate(v, ROOT))
-            .map(errorsArray => {
-                expect(errorsArray.length).to.equal(1);
-
-                const [err] = errorsArray;
-
-                expect(err.path).to.equal(ROOT);
-                expect(err.type).to.equal(ERROR_TYPES.RANGE);
-
-                return err;
-            });
-
-        expect(validationErrors.length).to.equal(validationErrors.length);
+        shouldReturnErrors(schema, tooLongStrings, { type: ERROR_TYPES.RANGE });
     });
 
     it('StringSchema.maxlength(): should not return errors for strings with less than or equal to allowed length', () => {
         const schema = string().maxlength(5),
             validStrings = ['', '1', 'gg', 'ooo', 'four', 'gosho'];
 
-        const validationErrors = validStrings
-            .map(v => schema.validate(v, ROOT))
-            .filter(errorsArray => errorsArray.length !== 0);
-
-        expect(validationErrors.length).to.equal(0);
+        shouldNotReturnErrors(schema, validStrings);
     });
 
     it('StringSchema.pattern(): should return errors for strings that do not match the provided regexp', () => {
         const schema = string().pattern(/^[a-z]{5,10}$/i),
             invalidStrings = ['abc', 'gg', 'kot', 'tedi pish-e i krad-e i lyj-e i mam-i i zaplashv-a i gled-a lo6o', 'testtesttest'];
 
-        const validationErrors = invalidStrings
-            .map(v => schema.validate(v, ROOT))
-            .map(errorsArray => {
-                expect(errorsArray.length).to.equal(1);
-
-                const [err] = errorsArray;
-
-                expect(err.type).to.equal(ERROR_TYPES.ARGUMENT);
-                expect(err.path).to.equal(ROOT);
-
-                return err;
-            });
-
-        expect(validationErrors.length).to.equal(invalidStrings.length);
+        shouldReturnErrors(schema, invalidStrings, { type: ERROR_TYPES.ARGUMENT });
     });
 
     it('StringSchema.pattern(): should not return errors for strings that match the provided regexp', () => {
         const schema = string().pattern(/^[a-z]{5,10}$/i),
             validStrings = ['Goshko', 'TEODORA', 'petya', 'chieftain', 'viktor', 'cykuchev'];
 
-        const validationErrors = validStrings
-            .map(v => schema.validate(v, ROOT))
-            .filter(errorsArray => errorsArray.length !== 0);
-
-        expect(validationErrors.length).to.equal(0);
+        shouldNotReturnErrors(schema, validStrings);
     });
 });
 
@@ -171,6 +114,7 @@ describe('StringSchema method combinations', () => {
             .predicate(x => x !== 'test');
 
         expect(schema instanceof StringSchema).to.equal(true);
+        expect(schema.validate).to.be.a('function');
     });
 
     it('StringSchema .minlength(), .maxlength(), .required() should return errors together with invalid strings', () => {
@@ -183,12 +127,10 @@ describe('StringSchema method combinations', () => {
         const invalidValues = ['tedi', 'gosho', new String('spica'), 'konsko pecheno sys shal', new String('konsko pecheno bez shal'), 'horsehorsehorsehorse'];
 
         const validationErrors = invalidValues
-            .map(v => schema.validate(v, ROOT))
-            .map(errorsArray => {
+            .forEach(val => {
+                const errorsArray = schema.validate(val, ROOT);
                 expect(errorsArray.filter(err => (err.type === ERROR_TYPES.RANGE) && (err.path === ROOT)).length).to.equal(1);
                 expect(errorsArray.filter(err => (err.type === ERROR_TYPES.PREDICATE) && (err.path === ROOT)).length).to.equal(1);
-
-                return errorsArray;
             });
 
     });
@@ -227,11 +169,7 @@ describe('StringSchema method combinations', () => {
 
         const notStrings = [null, undefined, false, {}, [], String];
 
-        const validationErrors = notStrings
-                                    .map(v => schema.validate(v, ROOT))
-                                    .filter(errorsArray => errorsArray.length !== 0);
-
-        expect(validationErrors.length).to.equal(0);
+        shouldNotReturnErrors(schema, notStrings);
     });
 
     it('StringSchema methods should not return errors for valid strings', () => {
@@ -244,10 +182,6 @@ describe('StringSchema method combinations', () => {
 
         const validValues = ['012', '00', '001122', new String('01283')];
 
-        const validationErrors = validValues
-                                        .map(v => schema.validate(v, ROOT))
-                                        .filter(errorsArray => errorsArray.length !== 0);
-
-        expect(validationErrors.length).to.equal(0);
+        shouldNotReturnErrors(schema, validValues);
     });
 });
