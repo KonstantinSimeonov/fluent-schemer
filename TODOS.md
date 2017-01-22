@@ -9,6 +9,6 @@
     - bool schema
     - enum schema
     - make array validations more configurable
-    - implement allowNaN(), allowInfinity(), safeInteger() for numbers
+    - ~~implement allowNaN(), allowInfinity(), safeInteger() for numbers~~
     - extract error types from the schemas
     - extract the error message creation
