@@ -1,5 +1,6 @@
 # TODO list
 - Unit test every schema
+    - There is a lot of repeating steps in the tests, abstract them
 - Unit test sync and async api
 - Test public api
 - Analyze performance

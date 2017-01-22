@@ -1,14 +1,18 @@
 {
-  "name": "schema-validator",
+  "name": "fluent-validator",
   "version": "1.0.0",
   "description": "",
-  "main": "test.js",
+  "main": "./fluent-validator/index.js",
   "directories": {
     "test": "tests"
   },
   "scripts": {
     "test": "mocha -R spec tests"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "Konstantin Simeonov<kon.simeonov@protonmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0"
+  }
 }
