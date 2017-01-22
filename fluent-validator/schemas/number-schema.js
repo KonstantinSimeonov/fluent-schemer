@@ -37,7 +37,7 @@ module.exports = BaseSchema => class NumberSchema extends BaseSchema {
     integer() {
 
         this.pushValidationFn((value, path) => {
-            if ((value | 0) !== value) {
+            if (!Number.isInteger(value + 0)) {
                 return { type: 'argument', msg: `Expected integer number but got ${value}`, path };
             }
         });

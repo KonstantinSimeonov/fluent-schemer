@@ -54,14 +54,14 @@ describe('NumberSchema individual methods', () => {
 
     it('NumberSchema.min(): .validate() should return errors for values below the passed minimal value', () => {
         const schema = number().min(10),
-            smallNumbers = [1,2, -5, 0, new Number(9), new Number(-3), 9];
+            smallNumbers = [1, 2, -5, 0, new Number(9), new Number(-3), 9];
 
         smallNumbers
             .map(v => schema.validate(v, ROOT))
             .forEach(errorsArray => {
                 expect(errorsArray.length).to.equal(1);
 
-                const [ err ] = errorsArray;
+                const [err] = errorsArray;
 
                 expect(err.type).to.equal(ERROR_TYPES.RANGE);
                 expect(err.path).to.equal(ROOT);
@@ -86,7 +86,7 @@ describe('NumberSchema individual methods', () => {
             .forEach(errorsArray => {
                 expect(errorsArray.length).to.equal(1);
 
-                const [ err ] = errorsArray;
+                const [err] = errorsArray;
 
                 expect(err.path).to.equal(ROOT);
                 expect(err.type).to.equal(ERROR_TYPES.RANGE);
@@ -111,7 +111,7 @@ describe('NumberSchema individual methods', () => {
             .forEach(errorsArray => {
                 expect(errorsArray.length).to.equal(1);
 
-                const [ err ] = errorsArray;
+                const [err] = errorsArray;
 
                 expect(err.type).to.equal(ERROR_TYPES.ARGUMENT);
                 expect(err.path).to.equal(ROOT);
@@ -124,9 +124,6 @@ describe('NumberSchema individual methods', () => {
 
         integers
             .map(v => schema.validate(v, ROOT))
-            .forEach(errorsArray => {
-                console.log(errorsArray)
-                expect(errorsArray.length).to.equal(0);
-            });
+            .forEach(errorsArray => expect(errorsArray.length).to.equal(0));
     });
 });
