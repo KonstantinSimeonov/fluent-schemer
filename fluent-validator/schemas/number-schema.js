@@ -7,7 +7,9 @@ module.exports = BaseSchema => class NumberSchema extends BaseSchema {
     }
 
     validateType(value) {
-        return !isNaN(value) && isFinite(value);
+        return (typeof value === 'number' || value instanceof Number) 
+                && !isNaN(value) 
+                && isFinite(value);
     }
 
     min(minvalue) {

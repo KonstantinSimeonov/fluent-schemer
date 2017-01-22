@@ -4,7 +4,7 @@ module.exports = BaseSchema => class ObjectSchema extends BaseSchema {
 
     constructor(subschema) {
         super();
-        this.subschema = subschema;
+        this.subschema = subschema || {};
     }
 
     get type() {
@@ -39,15 +39,21 @@ module.exports = BaseSchema => class ObjectSchema extends BaseSchema {
 
     _validateAsync(value, path) {
         const errorPromises = Object
-                                .keys(this.subschema)
-                                .map(key => this.subschema[key].validateAsync(value[key], path + '.' + key));
+            .keys(this.subschema)
+            .map(key => this.subschema[key].validateAsync(value[key], path + '.' + key));
 
-        return Promise.all(errorPromises).then(arrays => {
-            const flattened = [];
+        return Promise
+            .all(errorPromises)
+            .then(arrays => {
+                const flattened = [];
 
-            arrays.forEach(a => flattened.push(...a));
-            
-            return flattened;
-        })
+                for (let i = 0, len = arrays.length; i < len; i += 1) {
+                    for (let j = 0, innerLen = arrays[i].length; j < innerLen; j += 1) {
+                        flattened.push(arrays[i][j]);
+                    }
+                }
+
+                return flattened;
+            })
     }
 }

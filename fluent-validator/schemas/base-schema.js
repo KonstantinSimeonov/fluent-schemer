@@ -60,6 +60,8 @@ module.exports = class BaseSchema {
                 return Promise.resolve([{ type: 'type', msg: `Expected type ${this.type} but got ${typeof value}`, path }]);
             }
 
+            Promise.resolve([]);
+
         } else {
             return this._validateAsync(value, path);
         }

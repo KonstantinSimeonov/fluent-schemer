@@ -4,6 +4,7 @@ module.exports = BaseSchema => class UnionSchema extends BaseSchema {
 
     constructor(...subschemas) {
         super();
+        
         this.subschemas = subschemas.map(x => x.required());
     }
 

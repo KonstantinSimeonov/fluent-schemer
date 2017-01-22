@@ -1,0 +1,13 @@
+# TODO list
+- Unit test every schema
+- Unit test sync and async api
+- Test public api
+- Analyze performance
+- Write documentation
+- Functionality
+    - bool schema
+    - enum schema
+    - make array validations more configurable
+    - implement allowNaN(), allowInfinity(), safeInteger() for numbers
+    - extract error types from the schemas
+    - extract the error message creation
