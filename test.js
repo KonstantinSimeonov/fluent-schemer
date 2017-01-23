@@ -1,7 +1,7 @@
 'use strict';
 
 const validation = require('./fluent-validator')(),
-    { string, number, object, array, union } = validation.schemas,
+    { string, number, object, array, union, enumeration, bool } = validation.schemas,
     { validate } = validation;
 
 const schema = object({
@@ -15,7 +15,9 @@ const schema = object({
                 .required(),
     weapons: array(string()).required(),
     friends: union(array(string()), string()).required(),
-    gosho: number().required().not(1, 2, 3)
+    gosho: number().required().not(1, 2, 3),
+    education: enumeration('none', 'some', 'many'),
+    isStudent: bool().required()
 });
 
 const value = {
@@ -28,7 +30,9 @@ const value = {
         title: 'stealing scarfs',
         level: 5
     },
-    gosho: 1
+    gosho: 1,
+    education: 'kaun',
+    isStudent: 'notabool'
 };
 
 // const err = schema.validateAsync(value, 'value');
