@@ -24,6 +24,22 @@ module.exports = class BaseSchema {
         return this;
     }
 
+    not(...values) {
+        this.pushValidationFn((value, path) => {
+            const index = values.findIndex(element => this.areEqual(value, element));
+            
+            if (index !== -1) {
+                return { type: 'argument', msg: `Expected value to not equal ${values[index]} but it did`, path };
+            }
+        });
+
+        return this;
+    }
+
+    areEqual(firstValue, secondValue) {
+        return firstValue === secondValue;
+    }
+
     validate(value, path, errors) {
 
         errors = errors || [];

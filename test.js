@@ -14,23 +14,25 @@ const schema = object({
                 })
                 .required(),
     weapons: array(string()).required(),
-    friends: union(array(string()), string()).required()
+    friends: union(array(string()), string()).required(),
+    gosho: number().required().not(1, 2, 3)
 });
 
 const value = {
     name: 'toshkata',
-    age: 1.5,
-    money: 2000,
-    weapons: [1, 2, 'strimg'],
-    friends: [333],
+    age: 1,
+    money: 100,
+    weapons: ['strimg'],
+    friends: 'dsf',
     skill: {
         title: 'stealing scarfs',
-        level: 9999
-    }
+        level: 5
+    },
+    gosho: 1
 };
 
-const err = schema.validateAsync(value, 'value');
+// const err = schema.validateAsync(value, 'value');
 
-err.then(x => console.log(x));
+// err.then(x => console.log(x));
 
 console.log(schema.validate(value, 'value'));

@@ -16,6 +16,7 @@ module.exports = BaseSchema => class UnionSchema extends BaseSchema {
         return this.subschemas.findIndex(schema => schema.validateType(value)) !== -1;
     }
 
+    // TODO: async api doesnt work
     validateValueWithCorrectType(value, path) {
         const errors = [];
 

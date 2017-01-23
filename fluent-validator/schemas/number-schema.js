@@ -2,6 +2,11 @@
 
 module.exports = BaseSchema => class NumberSchema extends BaseSchema {
 
+    constructor() {
+        super();
+        this._precision = 0;
+    }
+
     get type() {
         return 'number';
     }
@@ -10,6 +15,10 @@ module.exports = BaseSchema => class NumberSchema extends BaseSchema {
         return ((typeof value === 'number') || (value instanceof Number))
             && (this._nanAllowed || !isNaN(value))
             && (this._infinityAllowed || isFinite(value) || isNaN(value));
+    }
+
+    precision(diff) {
+        this._precision = diff;
     }
 
     allowNaN() {
@@ -57,5 +66,10 @@ module.exports = BaseSchema => class NumberSchema extends BaseSchema {
         });
 
         return this;
+    }
+
+    areEqual(firstValue, secondValue) {
+        const diff = Math.abs(firstValue - secondValue);
+        return diff <= this._precision;
     }
 };

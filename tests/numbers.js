@@ -78,6 +78,13 @@ describe('NumberSchema individual methods', () => {
         shouldNotReturnErrors(schema, validNumbers);
     });
 
+    it('NumberSchema.not(): should return errors regardless of wether a value is primitive or wrapped in object', () => {
+        const schema = number().not(1, 5, -10),
+            invalidValues = [1, 5, -10].map(n => new Number(n));
+
+        shouldReturnErrors(schema, invalidValues, { type: ERROR_TYPES.ARGUMENT });
+    });
+
     it('NumberSchema.min(): .validate() should return errors for values below the passed minimal value', () => {
         const schema = number().min(10),
             smallNumbers = [1, 2, -5, 0, new Number(9), new Number(-3), 9];
@@ -118,5 +125,86 @@ describe('NumberSchema individual methods', () => {
             integers = [-10, 10, Number.MAX_SAFE_INTEGER, new Number(5), new Number(1.0), new Number(-2.0)];
 
         shouldNotReturnErrors(schema, integers);
+    });
+});
+
+describe('NumberSchema method combinations', () => {
+    it('All methods should enable chaining', () => {
+        const schema = number()
+            .required()
+            .min(5)
+            .max(10)
+            .allowNaN()
+            .allowInfinity()
+            .not(5.2);
+
+        expect(schema instanceof NumberSchema).to.equal(true);
+        expect(schema.validate).to.be.a('function');
+    });
+
+    it('NumberSchema.min(): should not return errors for NaN when .allowNaN() has been called', () => {
+        const schema = number().allowNaN().min(5);
+
+        const validationErrors = schema.validate(NaN, 'tears');
+
+        expect(validationErrors.length).to.equal(0);
+    });
+
+    it('NumberSchema.max(): should not return errors for NaN when .allowNaN() has been called', () => {
+        const schema = number().allowNaN().max(5);
+
+        const validationErrors = schema.validate(NaN, 'tears');
+
+        expect(validationErrors.length).to.equal(0);
+    });
+
+    it('NumberSchema .min() .max() .required() .integer() should return errors for invalid numbers', () => {
+        const schema = number()
+            .required()
+            .min(-5)
+            .max(5)
+            .integer();
+
+        // test with value greater than max
+        const errorsWithGreaterThanMax = schema.validate(10.5, 'value');
+
+        const rangeErrorGreater = errorsWithGreaterThanMax.find(err => err.type === ERROR_TYPES.RANGE),
+            argumentErrorsGreater = errorsWithGreaterThanMax.find(err => err.type === ERROR_TYPES.ARGUMENT);
+
+        expect(rangeErrorGreater.path).to.equal('value');
+        expect(argumentErrorsGreater.path).to.equal('value');
+
+        // test with value lesser than min
+        const errorsWithLessThanMin = schema.validate(-5.2, 'value');
+
+        const rangeErrorLesser = errorsWithLessThanMin.find(err => err.type === ERROR_TYPES.RANGE),
+            argumentErrorsLesser = errorsWithLessThanMin.find(err => err.type === ERROR_TYPES.ARGUMENT);
+
+        expect(rangeErrorLesser.path).to.equal('value');
+        expect(argumentErrorsLesser.path).to.equal('value');
+    });
+
+    it('NumberSchema .min() .max() .required() .not() should return errors for invalid values', () => {
+        const schema = number()
+            .required()
+            .min(-10)
+            .max(0)
+            .not(-5, -3, -1);
+
+        shouldReturnErrors(schema, [-15, -16, 1], { type: ERROR_TYPES.RANGE });
+        shouldReturnErrors(schema, [-5, -3, -1], { type: ERROR_TYPES.ARGUMENT });
+        shouldReturnErrors(schema, [null, {}, '', NaN], { type: ERROR_TYPES.TYPE });
+    });
+
+    it('NumberSchema .min() .max() .required() .integer() should not return errors for valid values', () => {
+        const schema = number()
+            .required()
+            .min(-30)
+            .max(30)
+            .integer(),
+        validPrimitiveNumbers = [-30, 15, 0, 1, 5, 30],
+        validNumberObjects = validPrimitiveNumbers.map(n => new Number(n));
+
+        shouldNotReturnErrors(schema, validPrimitiveNumbers.concat(validNumberObjects));
     });
 });
