@@ -6,7 +6,8 @@
 - Analyze performance
 - Write documentation
 - Functionality
-    - bool schema
+    - date schema
+    - ~~bool schema~~
     - enum schema
     - make array validations more configurable
     - ~~implement allowNaN(), allowInfinity(), safeInteger() for numbers~~

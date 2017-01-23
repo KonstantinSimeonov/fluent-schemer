@@ -184,6 +184,28 @@ describe('NumberSchema method combinations', () => {
         expect(argumentErrorsLesser.path).to.equal('value');
     });
 
+    it('NumberSchema.not() should return errors when diff is less than specified precision via .precision()', () => {
+        const schema = number()
+            .not(1.0001, 2.5111, 3.0002)
+            .precision(0.0001);
+
+        const numbers = [1.00005, 2.51108, 3.00021],
+            numberObjects = numbers.map(n => new Number(n));
+
+        shouldReturnErrors(schema, numbers.concat(numberObjects), { type: ERROR_TYPES.ARGUMENT });
+    });
+
+    it('NumberSchema.not() should not return errors when diff is more than specified precision via .precision()', () => {
+        const schema = number()
+            .not(1.0001, 2.5111, 3.0002)
+            .precision(0.000001);
+
+        const numbers = [1.00005, 2.51108, 3.00021],
+            numberObjects = numbers.map(n => new Number(n));
+
+        shouldNotReturnErrors(schema, numbers.concat(numberObjects));
+    });
+
     it('NumberSchema .min() .max() .required() .not() should return errors for invalid values', () => {
         const schema = number()
             .required()
@@ -202,8 +224,8 @@ describe('NumberSchema method combinations', () => {
             .min(-30)
             .max(30)
             .integer(),
-        validPrimitiveNumbers = [-30, 15, 0, 1, 5, 30],
-        validNumberObjects = validPrimitiveNumbers.map(n => new Number(n));
+            validPrimitiveNumbers = [-30, 15, 0, 1, 5, 30],
+            validNumberObjects = validPrimitiveNumbers.map(n => new Number(n));
 
         shouldNotReturnErrors(schema, validPrimitiveNumbers.concat(validNumberObjects));
     });

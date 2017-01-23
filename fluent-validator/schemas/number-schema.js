@@ -17,8 +17,9 @@ module.exports = BaseSchema => class NumberSchema extends BaseSchema {
             && (this._infinityAllowed || isFinite(value) || isNaN(value));
     }
 
-    precision(diff) {
-        this._precision = diff;
+    precision(allowedDiff) {
+        this._precision = allowedDiff;
+        return this;
     }
 
     allowNaN() {
