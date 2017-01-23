@@ -7,6 +7,6 @@ module.exports = BaseSchema => class BoolSchema extends BaseSchema {
     }
 
     validateType(value) {
-        return (typeof value === 'bool') || (value instanceof Boolean);
+        return (typeof value === 'boolean') || (value instanceof Boolean);
     }
 }
