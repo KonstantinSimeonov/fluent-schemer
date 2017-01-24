@@ -7,12 +7,15 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "mocha -R spec tests"
+    "test": "nyc --reporter=html --reporter=text mocha",
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "author": "Konstantin Simeonov<kon.simeonov@protonmail.com>",
   "license": "ISC",
   "devDependencies": {
     "chai": "^3.5.0",
-    "mocha": "^3.2.0"
+    "coveralls": "^2.11.15",
+    "mocha": "^3.2.0",
+    "nyc": "^10.1.2"
   }
 }
