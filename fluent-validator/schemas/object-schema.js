@@ -13,8 +13,8 @@ module.exports = BaseSchema => class ObjectSchema extends BaseSchema {
 
     validateType(value) {
         return (typeof value === 'object')
-            && (this._allowArrays !== Array.isArray(value))
-            && (this._allowFunctions !== (value instanceof Function));
+            && (this._allowArrays === Array.isArray(value))
+            && (this._allowFunctions === (value instanceof Function));
     }
 
     allowArrays() {
