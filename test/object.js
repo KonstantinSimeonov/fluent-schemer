@@ -12,6 +12,10 @@ const ERROR_TYPES = {
 };
 
 describe('ObjectSchema keys', () => {
+    it('ObjectSchema.type should return "object"', () => {
+        expect(object().type).to.equal('object');
+    });
+
     it('ObjectSchema.validateType(): should return true for objects that are not arrays and functions', () => {
         expect(object().validateType({})).to.equal(true);
         expect(object().validateType(Object.create(null))).to.equal(true);
@@ -42,7 +46,7 @@ describe('ObjectSchema keys', () => {
             };
 
         const errors = personSchema.validate(invalidPerson, 'person');
-        
+
         const nameError = errors.find(e => e.path === 'person.name'),
             ageError = errors.find(e => e.path === 'person.age'),
             isStudentError = errors.find(e => e.path === 'person.isStudent');
@@ -80,6 +84,35 @@ describe('ObjectSchema keys', () => {
         expect(sizeError.path).to.equal('proj.size');
     });
 
+    it('Should return errors for keys with invalid values but of correct type when .required() has not been called', () => {
+        const postSchema = object({
+            id: string().pattern(/^[0-9]{10}$/i),
+            likesCount: number().integer(),
+            content: string().minlength(5)
+        });
+
+        const invalidPost = {
+            id: 'aaaaaaaaa',
+            likesCount: -1.5,
+            content: 'aa'
+        };
+
+        const [
+            contentError,
+            idError,
+            likesCountError
+        ] = postSchema.validate(invalidPost, 'post').sort((err1, err2) => err1.path.localeCompare(err2.path));
+
+        expect(contentError.path).to.equal('post.content');
+        expect(contentError.type).to.equal(ERROR_TYPES.RANGE);
+
+        expect(idError.path).to.equal('post.id');
+        expect(idError.type).to.equal(ERROR_TYPES.ARGUMENT);
+
+        expect(likesCountError.path).to.equal('post.likesCount');
+        expect(likesCountError.type).to.equal(ERROR_TYPES.ARGUMENT);
+    });
+
     it('Should not return errors for valid keys', () => {
         const personSchema = object({
             name: string().minlength(3).maxlength(10),
@@ -105,5 +138,69 @@ describe('ObjectSchema keys', () => {
         const blankObj = {};
 
         expect(animalSchema.validate(blankObj, '') + '').to.equal([] + '');
+    });
+});
+
+describe('ObjectSchema nesting', () => {
+    it('Nested object schemas should also return errors for invalid values', () => {
+        const compilerSchema = object({
+            lang: object({
+                name: string().minlength(1).required(),
+                crossPlatform: bool().required(),
+                version: number().min(0).required()
+            }),
+            name: string().minlength(1)
+        });
+
+        const invalidCompiler = {
+            name: 'Pesho',
+            lang: {
+                name: '',
+                crossPlatform: 10,
+                version: '39393'
+            }
+        };
+
+        const [
+            crossPlatformError,
+            nameError,
+            versionError
+        ] = compilerSchema.validate(invalidCompiler, 'compiler').sort((err1, err2) => err1.path.localeCompare(err2.path));
+
+        expect(crossPlatformError.path).to.equal('compiler.lang.crossPlatform');
+        expect(crossPlatformError.type).to.equal(ERROR_TYPES.TYPE);
+
+        expect(nameError.path).to.equal('compiler.lang.name');
+        expect(nameError.type).to.equal(ERROR_TYPES.RANGE);
+
+        expect(versionError.path).to.equal('compiler.lang.version');
+        expect(versionError.type).to.equal(ERROR_TYPES.TYPE);
+    });
+
+    it('Nesting should return error and not crash when the nested object is not present on the actual value', () => {
+        const schema = object({
+            options: object({ opt: bool() }).required()
+        });
+
+        const invalidObj = {};
+
+        const errors = schema.validate(invalidObj, 'obj');
+
+        expect(errors.length).to.equal(1);
+
+        const [ error ] = errors;
+
+        expect(error.type).to.equal(ERROR_TYPES.TYPE);
+        expect(error.path).to.equal('obj.options');
+    });
+
+    it('Nesting should not return errors when the nested schema is not required', () => {
+        const schema = object({
+            options: object({ opts: string() })
+        });
+
+        const invalidObj = {};
+
+        expect(schema.validate(invalidObj, '') + '').to.equal([] + '');
     });
 });
