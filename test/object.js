@@ -24,6 +24,9 @@ describe('ObjectSchema keys', () => {
 
     it('ObjectSchema.validateType(): should return true for arrays when .allowArrays() has been called', () => {
         expect(object().allowArrays().validateType([])).to.equal(true);
+    });
+
+    it('ObjectSchema.validate(): should return true for functions when .allowFunctions() has been called', () => {
         expect(object().allowFunctions().validateType(function () { })).to.equal(true);
     });
 

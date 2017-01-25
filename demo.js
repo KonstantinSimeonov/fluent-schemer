@@ -9,10 +9,10 @@ const schema = object({
     age: number().min(1).integer(),
     money: number().max(100),
     skill: object({
-                    title: string(),
-                    level: number().min(1).max(10).integer()
-                })
-                .required(),
+        title: string(),
+        level: number().min(1).max(10).integer()
+    })
+        .required(),
     weapons: array(string()).required(),
     friends: union(array(string()), string()).required(),
     gosho: number().required().not(1, 2, 3),
@@ -35,8 +35,8 @@ const value = {
     isStudent: 'notabool'
 };
 
-// const err = schema.validateAsync(value, 'value');
+const err = schema.validateAsync(value, 'value');
 
-// err.then(x => console.log(x));
+err.then(x => console.log(x));
 
 console.log(schema.validate(value, 'value'));

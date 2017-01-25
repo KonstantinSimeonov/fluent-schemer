@@ -1,10 +1,16 @@
 'use strict';
 
+function isFunction(value) {
+    return (typeof value === 'function') || (value instanceof Function);
+}
+
 module.exports = BaseSchema => class ObjectSchema extends BaseSchema {
 
     constructor(subschema) {
         super();
         this.subschema = subschema || {};
+        this._allowFunctions = false;
+        this._allowArrays = false;
     }
 
     get type() {
@@ -12,9 +18,13 @@ module.exports = BaseSchema => class ObjectSchema extends BaseSchema {
     }
 
     validateType(value) {
-        return (typeof value === 'object')
-            && (this._allowArrays === Array.isArray(value))
-            && (this._allowFunctions === (value instanceof Function));
+        const valueType = typeof value,
+            valueIsArray = Array.isArray(value),
+            valueIsFunction = isFunction(value);
+
+        return (valueType === 'object' || valueType === 'function')
+                && (this._allowArrays && valueIsArray || !valueIsArray)
+                && (this._allowFunctions && valueIsFunction || !valueIsFunction);
     }
 
     allowArrays() {
