@@ -27,7 +27,19 @@ module.exports = BaseSchema => class CustomSchema extends BaseSchema {
 
 Every schema supports `.not()`, `.required()`, `.predicate()` and `.validate()`.
 
+| method                     | explanation                                                                             |
+|:-------------------------- |:--------------------------------------------------------------------------------------- |
+| not(v1, v2, v3, ...)       | values must not be equal to v1, v2, v3, ...                                             |
+| required()                 | values must be of the type of the schema - *Schema.validateType(value) must return true |
+| predicate((value) => bool) | values must return true for the specified predicate function                            |
+
 ## StringSchema
+
+| method            | explanation                                  |
+|:----------------- |:-------------------------------------------- |
+| minlength(number) | sets a minimum length to the schema          |
+| maxlength(number) | sets a maximum length to the schema          |
+| pattern(Regexp)   | sets a regexp to test values against         |
 
 ```js
 const { string } = require('./fluent-validator').schemas;
@@ -55,6 +67,14 @@ if(validationErrors.length) {
 
 ## NumbersSchema
 
+| method                                    | explanation                                                                    |
+|:----------------------------------------- |:------------------------------------------------------------------------------ |
+| min(number)                               | set a minimal possible value for the schema                                    |
+| max(number)                               | set a maximal possible value for the schema                                    |
+| integer()                                 | value should be an integer                                                     |
+| precision(number)                         | set a maximal difference value which is used to compare floating point numbers |
+| safeInteger()[`not working properly`]     | value must be a between -(2<sup>53</sup> - 1) inclusive to 2<sup>53</sup> - 1  |
+
 ```js
 const { number } = require('./fluent-validator').schemas,
 
@@ -73,6 +93,10 @@ for(let a of ages) {
 
 ## BoolSchema
 
+| methods | explanation |
+|:-------:|:-----------:|
+| -       | -           |
+
 ```js
 const { bool } = require('./fluent-validator').schemas;
 
@@ -87,6 +111,11 @@ for(let v of values) {
 
 ## ArraySchema
 
+| methods                 | explanation                                   |
+|:----------------------- |:--------------------------------------------- |
+| minlength(number)       | set a minimum array length of the schema      |
+| maxlength(number)       | set a maximum array length of the schema      |
+
 ```js
 const { string, array } = require('./fluent-validator').schemas;
 
@@ -99,6 +128,10 @@ console.log(nameArraySchema.validate(names, 'names'));
 ```
 
 ## ObjectSchema
+
+| methods | explanation |
+|:-------:|:-----------:|
+| -       | -           |
 
 ```js
 const { string, number, bool, object } = require('./fluent-validator').schemas;
