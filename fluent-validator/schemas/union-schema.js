@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = BaseSchema => class UnionSchema extends BaseSchema {
+module.exports = (BaseSchema, { createError, ERROR_TYPES }) => class UnionSchema extends BaseSchema {
 
     constructor(...subschemas) {
         super();

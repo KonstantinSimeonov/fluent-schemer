@@ -2,12 +2,7 @@
 
 const { expect } = require('chai'),
     { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
-    BaseSchema = require('../fluent-validator/schemas/base-schema'),
-    NumberSchema = require('../fluent-validator/schemas/number-schema')(BaseSchema);
-
-function number(...args) {
-    return new NumberSchema(...args);
-}
+    { number } = require('../fluent-validator')().schemas;
 
 const ROOT = 'testtest';
 
@@ -138,7 +133,6 @@ describe('NumberSchema method combinations', () => {
             .allowInfinity()
             .not(5.2);
 
-        expect(schema instanceof NumberSchema).to.equal(true);
         expect(schema.validate).to.be.a('function');
     });
 

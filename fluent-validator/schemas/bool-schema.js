@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = BaseSchema => class BoolSchema extends BaseSchema {
+module.exports = (BaseSchema, _) => class BoolSchema extends BaseSchema {
 
     get type() {
         return 'bool';

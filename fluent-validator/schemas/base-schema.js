@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = class BaseSchema {
+module.exports = ({ createError, ERROR_TYPES }) => class BaseSchema {
     constructor() {
         this.validationFunctions = [];
     }
@@ -17,7 +17,8 @@ module.exports = class BaseSchema {
     predicate(predicateFn) {
         this.pushValidationFn((value, path) => {
             if (!predicateFn(value)) {
-                return { type: 'predicate', msg: 'Value failed predicate', path };
+                return createError(ERROR_TYPES.PREDICATE, 'Value failed predicate', path);
+                // return { type: 'predicate', msg: 'Value failed predicate', path };
             }
         });
 
@@ -29,7 +30,8 @@ module.exports = class BaseSchema {
             const index = values.findIndex(element => this.areEqual(value, element));
             
             if (index !== -1) {
-                return { type: 'argument', msg: `Expected value to not equal ${values[index]} but it did`, path };
+                return createError(ERROR_TYPES.ARGUMENT, `Expected value to not equal ${values[index]} but it did`, path);
+                // return { type: 'argument', msg: `Expected value to not equal ${values[index]} but it did`, path };
             }
         });
 
@@ -46,7 +48,9 @@ module.exports = class BaseSchema {
 
         if (!this.validateType(value)) {
             if (this._required) {
-                errors.push({ type: 'type', msg: `Expected type ${this.type} but got ${typeof value}`, path });
+                const typeError = createError(ERROR_TYPES.TYPE, `Expected type ${this.type} but got ${typeof value}`, path);
+                errors.push(typeError);
+                // errors.push({ type: 'type', msg: `Expected type ${this.type} but got ${typeof value}`, path });
             }
 
         } else {
@@ -73,7 +77,8 @@ module.exports = class BaseSchema {
     validateAsync(value, path) {
         if (!this.validateType(value)) {
             if (this._required) {
-                return Promise.resolve([{ type: 'type', msg: `Expected type ${this.type} but got ${typeof value}`, path }]);
+                const typeError = createError(ERROR_TYPES.TYPE, `Expected type ${this.type} but got ${typeof value}`, path);
+                return Promise.resolve([ typeError ]);
             }
 
             Promise.resolve([]);

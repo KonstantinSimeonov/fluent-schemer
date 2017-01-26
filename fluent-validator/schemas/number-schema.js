@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = BaseSchema => class NumberSchema extends BaseSchema {
+module.exports = (BaseSchema, { createError, ERROR_TYPES }) => class NumberSchema extends BaseSchema {
 
     constructor() {
         super();
@@ -40,7 +40,7 @@ module.exports = BaseSchema => class NumberSchema extends BaseSchema {
 
         this.pushValidationFn((value, path) => {
             if (value < minvalue) {
-                return { type: 'range', msg: `Expected value greater than or equal to ${minvalue} but got ${value}`, path };
+                return createError(ERROR_TYPES.RANGE, `Expected value greater than or equal to ${minvalue} but got ${value}`, path);
             }
         })
 
@@ -51,7 +51,7 @@ module.exports = BaseSchema => class NumberSchema extends BaseSchema {
 
         this.pushValidationFn((value, path) => {
             if (value > maxvalue) {
-                return { type: 'range', msg: `Expected value less than or equal to ${maxvalue} but got ${value}`, path };
+                return createError(ERROR_TYPES.RANGE, `Expected value less than or equal to ${maxvalue} but got ${value}`,path);
             }
         })
 
@@ -62,7 +62,7 @@ module.exports = BaseSchema => class NumberSchema extends BaseSchema {
 
         this.pushValidationFn((value, path) => {
             if (!Number.isInteger(value + 0)) {
-                return { type: 'argument', msg: `Expected integer number but got ${value}`, path };
+                return createError(ERROR_TYPES.ARGUMENT, `Expected integer number but got ${value}`, path);
             }
         });
 

@@ -1,7 +1,8 @@
 'use strict';
 
-const defaultBaseSchema = require('./schemas/base-schema'),
-    defaultTypesFactory = require('./schemas');
+const defaultTypesFactory = require('./schemas'),
+    defaultErrorsFactory = require('./errors'),
+    defaultBaseSchema = require('./schemas/base-schema')(defaultErrorsFactory);
 
 module.exports = options => {
     options = options || {};
@@ -9,10 +10,11 @@ module.exports = options => {
     const BaseSchema = options.BaseSchema || defaultBaseSchema,
         include = options.include || /.*/,
         types = defaultTypesFactory(BaseSchema).filter(type => include.test(type.name)),
+        errorFactory = options.errorFactory || defaultErrorsFactory,
         schemas = {};
 
     function _extendWith(name, schemaFactory) {
-        const Schema = schemaFactory(BaseSchema);
+        const Schema = schemaFactory(BaseSchema, errorFactory);
 
         schemas[name] = function (...args) {
             return new Schema(...args);

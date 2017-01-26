@@ -2,21 +2,10 @@
 
 const { expect } = require('chai'),
     { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
-    BaseSchema = require('../fluent-validator/schemas/base-schema'),
-    BoolSchema = require('../fluent-validator/schemas/bool-schema')(BaseSchema);
+    { bool } = require('../fluent-validator')().schemas,
+    ERROR_TYPES = require('../fluent-validator/errors').ERROR_TYPES;
 
 const ROOT = 'boolvalue';
-
-function bool(...args) {
-    return new BoolSchema(...args);
-}
-
-const ERROR_TYPES = {
-    RANGE: 'range',
-    ARGUMENT: 'argument',
-    TYPE: 'type',
-    PREDICATE: 'predicate'
-};
 
 describe('Boolschema individual methods', () => {
     it('BoolSchema.validateType(): should return true for true and false', () => {
@@ -79,7 +68,6 @@ describe('BoolSchema method combinations', () => {
     it('All methods should enable chaining', () => {
         const schema = bool().required().not(false).predicate(x => x);
 
-        expect(schema instanceof BoolSchema).to.equal(true);
         expect(schema.validate).to.be.a('function');
     });
 

@@ -2,12 +2,7 @@
 
 const { expect } = require('chai'),
     { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
-    BaseSchema = require('../fluent-validator/schemas/base-schema'),
-    StringSchema = require('../fluent-validator/schemas/string-schema')(BaseSchema);
-
-function string(...args) {
-    return new StringSchema(...args);
-}
+    { string } = require('../fluent-validator')().schemas;
 
 const ROOT = 'root';
 
@@ -113,7 +108,6 @@ describe('StringSchema method combinations', () => {
             .pattern(/^[a-z]{5}$/i)
             .predicate(x => x !== 'test');
 
-        expect(schema instanceof StringSchema).to.equal(true);
         expect(schema.validate).to.be.a('function');
     });
 

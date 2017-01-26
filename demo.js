@@ -35,8 +35,8 @@ const value = {
     isStudent: 'notabool'
 };
 
-const err = schema.validateAsync(value, 'value');
+// const err = schema.validateAsync(value, 'value');
 
-err.then(x => console.log(x));
+// err.then(x => console.log(x));
 
 console.log(schema.validate(value, 'value'));

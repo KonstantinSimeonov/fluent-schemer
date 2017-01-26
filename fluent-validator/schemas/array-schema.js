@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = BaseSchema => class ArraySchema extends BaseSchema {
+module.exports = (BaseSchema, { createError, ERROR_TYPES }) => class ArraySchema extends BaseSchema {
 
     constructor(subschema) {
         super();
@@ -38,12 +38,14 @@ module.exports = BaseSchema => class ArraySchema extends BaseSchema {
     validateValueWithCorrectType(value, path, errors) {
 
         if (this._hasMinLength && value.length < this._minlength) {
-            errors.push({ msg: `Expected an ${this.type} with length at least ${this._minlength} but got length ${value.length}`, path });
+            const minLengthError = createError(ERROR_TYPES.RANGE, `Expected an ${this.type} with length at least ${this._minlength} but got length ${value.length}`, path);
+            errors.push(minLengthError);
             return;
         }
 
         if (this._hasMinLength && value.length > this._maxlength) {
-            errors.push({ msg: `Expected an ${this.type} with length at most ${this._maxlength} but got length ${value.length}` });
+            const maxLengthError = createError(ERROR_TYPES.RANGE, `Expected an ${this.type} with length at most ${this._maxlength} but got length ${value.length}`, path);
+            errors.push(maxLengthError);
             return;
         }
 
