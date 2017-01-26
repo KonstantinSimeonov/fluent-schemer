@@ -18,7 +18,6 @@ module.exports = ({ createError, ERROR_TYPES }) => class BaseSchema {
         this.pushValidationFn((value, path) => {
             if (!predicateFn(value)) {
                 return createError(ERROR_TYPES.PREDICATE, 'Value failed predicate', path);
-                // return { type: 'predicate', msg: 'Value failed predicate', path };
             }
         });
 
