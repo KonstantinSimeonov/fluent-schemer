@@ -17,7 +17,7 @@ const schema = object({
     friends: union(array(string()), string()).required(),
     gosho: number().required().not(1, 2, 3),
     education: enumeration('none', 'some', 'many'),
-    isStudent: bool().required()
+    isStudent: bool().required(),
 });
 
 const value = {
