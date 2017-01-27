@@ -4,20 +4,27 @@ module.exports = (BaseSchema, { createError, ERROR_TYPES }) => class ArraySchema
 
     constructor(subschema) {
         super();
-        this.subschema = subschema.required();
+        if (subschema instanceof BaseSchema) {
+            this.subschema = subschema.required();
+        }
     }
 
     get type() {
-        return this._typestring || (this._typestring = `array<${this.subschema.type}>`);
+
+        if (!this._typestring) {
+            this._typestring = this.subschema ? `array<${this.subschema.type}>` : `array<any>`;
+        }
+
+        return this._typestring;
     }
 
     validateType(value) {
-        return Array.isArray(value) && value.every(x => this.subschema.validateType(x));
+        return Array.isArray(value) && (!this.subschema || value.every(x => this.subschema.validateType(x)));
     }
 
     minlength(length) {
-        
-        if(this._isValidArrayLength(length)) {
+
+        if (this._isValidArrayLength(length)) {
             this._minlength = length;
             this._hasMinLength = true;
         }
@@ -26,8 +33,8 @@ module.exports = (BaseSchema, { createError, ERROR_TYPES }) => class ArraySchema
     }
 
     maxlength(length) {
-        
-        if(this._isValidArrayLength(length)) {
+
+        if (this._isValidArrayLength(length)) {
             this._maxlength = length;
             this._hasMaxLength = true;
         }
@@ -37,15 +44,19 @@ module.exports = (BaseSchema, { createError, ERROR_TYPES }) => class ArraySchema
 
     validateValueWithCorrectType(value, path, errors) {
 
-        if (this._hasMinLength && value.length < this._minlength) {
+        if (this._hasMinLength && (value.length < this._minlength)) {
             const minLengthError = createError(ERROR_TYPES.RANGE, `Expected an ${this.type} with length at least ${this._minlength} but got length ${value.length}`, path);
             errors.push(minLengthError);
             return;
         }
 
-        if (this._hasMinLength && value.length > this._maxlength) {
+        if (this._hasMaxLength && (value.length > this._maxlength)) {
             const maxLengthError = createError(ERROR_TYPES.RANGE, `Expected an ${this.type} with length at most ${this._maxlength} but got length ${value.length}`, path);
             errors.push(maxLengthError);
+            return;
+        }
+
+        if (!this.subschema) {
             return;
         }
 
