@@ -1,15 +1,18 @@
 # TODO list
 - Unit test every schema
-    - There is a lot of repeating steps in the tests, abstract them
+    - ~~There is a lot of repeating steps in the tests, abstract them~~
 - Unit test sync and async api
 - Test public api
 - Analyze performance
 - Write documentation
+- Try out typescript type definitions
+- Define browser build
 - Functionality
+    - implement recursive types
     - date schema
     - ~~bool schema~~
-    - enum schema
-    - make array validations more configurable
+    - ~~enum schema~~
+    - ~~make array validations more configurable~~
     - ~~implement allowNaN(), allowInfinity(), safeInteger() for numbers~~
-    - extract error types from the schemas
-    - extract the error message creation
+    - ~~extract error types from the schemas~~
+    - ~~extract the error message creation~~

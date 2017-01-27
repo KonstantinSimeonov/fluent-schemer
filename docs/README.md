@@ -22,7 +22,7 @@ validation feedback is returned in the form of an array of validation error obje
 
 If the feedback array is empty, that means no errors occured and the passed value is valid.
 
-Schemas are defined as functions that accept dependencies(current a function that creates errors and a map of error types) and return ES6 classes. There is the `BaseSchema` class that packs all the common functionality in it, such as `.required()`, 
+Schemas are defined as functions that accept dependencies(currently a function that creates errors and a map of error types) and return ES6 classes. There is the `BaseSchema` class that packs all the common functionality in it, such as `.required()`, 
 `.not()`, `.validate()`, `.predicate()`. The `BaseSchema` is meant to be inherited in order to create a concrete validation schema - such as the `StringSchema` or the `NumberSchema`.
 Each schema extends the `BaseSchema` with it's own methods - for example `StringSchema.minlength()` allows to set a minimum length for a string value.
 The concrete schemas should also implement the abstract method `.validateType()` - validate whether a passed value is of the desired type and `.type` - returns the type of the schema as a string.
@@ -35,13 +35,20 @@ To use the validator in code, the following snippet is enough:
 const { string, number, object, bool, array, union, enumeration } = require('./fluent-validator')().schemas;
 ```
 
-This will load `./fluent-validator/index.js`. This file exports all the schemas and a function that allows for new schemas to be dynamically added.
+This will load `./fluent-validator/index.js`. This file exports a factory function that accepts an configurations and returns all the schemas and a function that allows for new schemas to be dynamically added.
 The concrete schemas are defined as mixins that accept a base schema, create a class that extends it and returns the class. That way a different base schema can be used, if needed.
 Also, introduction of new schemas is trivial - a new `schemaname-schema.js` needs to be created in the `schema` folder. This file should exports a mixin like that:
 
 ```js
-module.exports = BaseSchema => class CustomSchema extends BaseSchema {
-    // implementation
+module.exports = (BaseSchema, errors) => {
+    const { 
+        createError, // function that accepts a type, a message and a path and returns an error object
+        ERROR_TYPES // supported error types
+     } = errors;
+
+    return class CustomSchema extends BaseSchema {
+        // implementation
+    }
 }
 ```
 
