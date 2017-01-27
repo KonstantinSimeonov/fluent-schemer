@@ -89,4 +89,83 @@ describe('ArraySchema individual methods', () => {
 
         shouldReturnErrors(schema, values, { type: ERROR_TYPES.RANGE });
     });
+
+    it('ArraySchema.validate(): should return error for first invalid value only', () => {
+        const schema = array(number().integer()).required(),
+            values = [1, 2, 0, new Number(5), new Number(1.10), new Number(2.5)];
+
+        const errors = schema.validate(values, 'nums');
+
+        expect(errors.length).to.equal(1);
+
+        const [err] = errors;
+
+        expect(err.path).to.equal('nums[4]');
+        expect(err.type).to.equal(ERROR_TYPES.ARGUMENT);
+    });
+});
+
+describe('ArraySchema method combinations', () => {
+    it('All methods should enable chaining', () => {
+        const schema = array(number()).minlength(5).maxlength(10).required().predicate(x => true);
+
+        expect(schema.validate).to.be.a('function');
+    });
+});
+
+describe('ArraySchema nesting', () => {
+    it('Should return errors when nested schema doesnt match values', () => {
+        const schema = array(array()).required(),
+            values = [[1, 2], ['dfdf'], [{ length: 1 }]];
+
+        shouldReturnErrors(schema, values, { type: ERROR_TYPES.TYPE });
+    });
+
+    it('Should return errors for multiple levels of nesting', () => {
+        const schema = array(array(array(number()))).required(),
+            values = [
+                [[['asadd', 23]]],
+                [[1, 2, 3]],
+                [9, 10, -5]
+            ];
+
+        shouldReturnErrors(schema, values, { type: ERROR_TYPES.TYPE });
+    });
+
+    it('Should return type errors for valid level of nesting but invalid type of values', () => {
+        const schema = array(array(array(bool()))).required(),
+            values = [
+                [[[0, 1]]],
+                [[['true']]],
+                [[[null]]],
+                [[[undefined]]]
+            ];
+
+        shouldReturnErrors(schema, values, { type: ERROR_TYPES.TYPE });
+    });
+
+    it('Should return errors for array of objects', () => {
+        const schema = array(object({ name: string().required() })).required(),
+            values = [
+                null,
+                undefined,
+                {},
+                { name: 1 },
+                { name: null }
+            ];
+
+        shouldReturnErrors(schema, values, { type: ERROR_TYPES.TYPE });
+    });
+
+    it('Should not return errors an array of valid objects', () => {
+        const schema = array(object({ name: string().required() })).required(),
+            values = [
+                [ { name: 'gosho' } ],
+                [ { name: 'tedi' } ],
+                [ { name: 'kyci' } ],
+                [ { name: 'bychveto' } ]
+            ];
+
+        shouldNotReturnErrors(schema, values);
+    });
 });

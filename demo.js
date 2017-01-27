@@ -39,4 +39,10 @@ const value = {
 
 // err.then(x => console.log(x));
 
-console.log(schema.validate(value, 'value'));
+// console.log(schema.validate(value, 'value'));
+
+const nested = array(array()).required();
+
+const val = [1];
+
+console.log(nested.validate(val, 'arr'));
