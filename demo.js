@@ -41,8 +41,24 @@ const value = {
 
 // console.log(schema.validate(value, 'value'));
 
-const nested = array(array()).required();
+// const nested = array(array()).required();
 
-const val = [1];
+// const val = [1];
 
-console.log(nested.validate(val, 'arr'));
+// console.log(nested.validate(val, 'arr'));
+
+const sch = object();
+
+sch.subschema = {
+    v: number().integer().required(),
+    left: sch,
+    right: sch
+};
+
+const root = {
+    v: 3,
+    left: { v: 5 },
+    right: { v: 6, left: { v: 'dsfs' } }
+};
+
+console.log(sch.validate(root, 'root'));

@@ -17,18 +17,27 @@ module.exports = (BaseSchema, { createError, ERROR_TYPES }) => class UnionSchema
     }
 
     // TODO: async api doesnt work
-    validateValueWithCorrectType(value, path) {
-        const errors = [];
+    // TODO: refactor
+    // TODO: improve performance, currently .validateType() is executed twice
+    validateValueWithCorrectType(value, path, errors) {
+        const unionErrors = [];
 
         for(const schema of this.subschemas) {
-            const schemaErrors = schema.validate(value, path);
             
+            if(!schema.validateType(value)) {
+                continue;
+            }
+
+            const schemaErrors = schema.validate(value, path);
+
             if(!schemaErrors.length) {
                 return [];
             }
 
-            errors.push(...schemaErrors);
+            unionErrors.push(...schemaErrors);
         }
+
+        errors.push(...unionErrors);
 
         return errors;
     }

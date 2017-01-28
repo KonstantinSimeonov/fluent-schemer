@@ -1,8 +1,17 @@
 {
   "name": "fluent-validator",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.10.0",
+  "repository": "https://github.com/KonstantinSimeonov/fluent-validator",
+  "description": "Small schema validation library that aims to provide declarative, expressive and elegant approach to validation, while providing an intuitive, easy-to-use api",
   "main": "./fluent-validator/index.js",
+  "keywords": [
+    "validation",
+    "validate",
+    "schema",
+    "fluent",
+    "declarative",
+    "es2015"
+  ],
   "directories": {
     "test": "tests"
   },
@@ -11,7 +20,7 @@
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "author": "Konstantin Simeonov<kon.simeonov@protonmail.com>",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "chai": "^3.5.0",
     "coveralls": "^2.11.15",
