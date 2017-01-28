@@ -46,24 +46,4 @@ module.exports = BaseSchema => class ObjectSchema extends BaseSchema {
 
         return errors;
     }
-
-    _validateAsync(value, path) {
-        const errorPromises = Object
-            .keys(this.subschema)
-            .map(key => this.subschema[key].validateAsync(value[key], path + '.' + key));
-
-        return Promise
-            .all(errorPromises)
-            .then(arrays => {
-                const flattened = [];
-
-                for (let i = 0, len = arrays.length; i < len; i += 1) {
-                    for (let j = 0, innerLen = arrays[i].length; j < innerLen; j += 1) {
-                        flattened.push(arrays[i][j]);
-                    }
-                }
-
-                return flattened;
-            })
-    }
 }

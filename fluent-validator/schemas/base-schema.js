@@ -107,22 +107,4 @@ module.exports = ({ createError, ERROR_TYPES }) => class BaseSchema {
 
         return errors;
     }
-
-    validateAsync(value, path) {
-        if (!this.validateType(value)) {
-            if (this._required) {
-                const typeError = createError(ERROR_TYPES.TYPE, `Expected type ${this.type} but got ${typeof value}`, path);
-                return Promise.resolve([ typeError ]);
-            }
-
-            Promise.resolve([]);
-
-        } else {
-            return this._validateAsync(value, path);
-        }
-    }
-
-    _validateAsync(value, path) {
-        return Promise.all(this.validateValueWithCorrectType(value, path));
-    }
 }
