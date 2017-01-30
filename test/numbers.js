@@ -121,6 +121,23 @@ describe('NumberSchema individual methods', () => {
 
         shouldNotReturnErrors(schema, integers);
     });
+
+    it('NumberScheme.safeInteger(): .validate() should return errors for unsafe integers', () => {
+        console.log('zdr kp');
+        const schema = number().safeInteger(),
+            unsafeInts = [4, 6, 8]
+                            .map(x => x + Number.MAX_SAFE_INTEGER)
+                            .concat([-4, -6, -8].map(x => x - Number.MAX_SAFE_INTEGER));
+                            console.log(unsafeInts);
+        shouldReturnErrors(schema, unsafeInts, { type: ERROR_TYPES.RANGE });
+    });
+
+    it('NumberSchema.safeInteger(): .validate() should keep values from .min() and .max() if they are safe', () => {
+        const schema = number().min(-33).max(33).safeInteger(),
+            values = [-35, 35];
+
+        shouldReturnErrors(schema, values, { type: ERROR_TYPES.RANGE });
+    });
 });
 
 describe('NumberSchema method combinations', () => {

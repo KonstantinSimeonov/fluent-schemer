@@ -13,12 +13,6 @@ class ValidationError {
         this.message = message;
         this.path = path;
     }
-
-    toString() {
-        return `${this.type} error:
-${this.message}
-Occured for property ${this.path}`
-    }
 }
 
 module.exports = {

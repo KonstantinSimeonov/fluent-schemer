@@ -15,7 +15,7 @@ module.exports = ({ createError, ERROR_TYPES }) => class BaseSchema {
 
     /**
      * Values validated with this schema must match the schema type. Other types are not allowed by default.
-     * @returns {BaseSchema}
+     * @returns {BaseSchema} - The current instance of the BaseSchema.
      */
     required() {
         this._required = true;
@@ -25,7 +25,7 @@ module.exports = ({ createError, ERROR_TYPES }) => class BaseSchema {
     /**
      * Specify a predicate that will be used to validate the values.
      * @param {function} predicateFn
-     * @returns {BaseSchema}
+     * @returns {BaseSchema} - The current instance of the BaseSchema.
      */
     predicate(predicateFn) {
         this.pushValidationFn((value, path) => {
@@ -40,7 +40,7 @@ module.exports = ({ createError, ERROR_TYPES }) => class BaseSchema {
     /**
      * Specify a set of values that are not valid.
      * @param {Array.<any>} values
-     * @returns {BaseSchema}
+     * @returns {BaseSchema} - The current instance of the BaseSchema.
      */
     not(...values) {
         this.pushValidationFn((value, path) => {
@@ -55,8 +55,8 @@ module.exports = ({ createError, ERROR_TYPES }) => class BaseSchema {
     }
 
     /**
-     * Virtual method that is used to compare two values for equality in .not(). Can be overriden in child classes.
-     * @returns {Boolean}
+     * Virtual method that is used to compare two values for equality in .not(). Can be overridden in child classes.
+     * @returns {Boolean} - Returns true if the two values are equal, otherwise returns false.
      */
     areEqual(firstValue, secondValue) {
         return firstValue === secondValue;
@@ -76,7 +76,6 @@ module.exports = ({ createError, ERROR_TYPES }) => class BaseSchema {
             if (this._required) {
                 const typeError = createError(ERROR_TYPES.TYPE, `Expected type ${this.type} but got ${typeof value}`, path);
                 errors.push(typeError);
-                // errors.push({ type: 'type', msg: `Expected type ${this.type} but got ${typeof value}`, path });
             }
 
         } else {
@@ -89,7 +88,7 @@ module.exports = ({ createError, ERROR_TYPES }) => class BaseSchema {
     /**
      * Virtual method that synchronously validates whether a value,
      * which is known to be of a type matching the current schema's type,
-     * satisfies the validation rules in the schema. Can be overriden in child classes.
+     * satisfies the validation rules in the schema. Can be overridden in child classes.
      * @param {any} value - The value of matching type to validate.
      * @param {string} path - The key of the value to validate.
      * @param {?[]} errors - Options error array to push possible validation errors to.

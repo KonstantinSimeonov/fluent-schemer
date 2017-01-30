@@ -2,7 +2,7 @@
 
 Every schema allows a validation of a concrete type - current supported types are `number`, `string`, `bool`, `array`, `object`, `enumeration` and `union`.
 Each schema defines validation rules that can be added to the schema by calling a method. For readable and concise syntax, those methods provide chaining.
-Schemas can be used individualy or in conjunction - for an example, one could write `number().min(10)` or `array(number().min(10))`. The former will provide a
+Schemas can be used individually or in conjunction - for an example, one could write `number().min(10)` or `array(number().min(10))`. The former will provide a
 validate whether a number is larger than or equal to 10, while the latter will validate whether an array contains only numbers larger or equal to than 10. The 
 validation feedback is returned in the form of an array of validation error objects, like that:
 
@@ -20,7 +20,7 @@ validation feedback is returned in the form of an array of validation error obje
 ]
 ```
 
-If the feedback array is empty, that means no errors occured and the passed value is valid.
+If the feedback array is empty, that means no errors occurred and the passed value is valid.
 
 Schemas are defined as functions that accept dependencies(currently a function that creates errors and a map of error types) and return ES6 classes. There is the `BaseSchema` class that packs all the common functionality in it, such as `.required()`, 
 `.not()`, `.validate()`, `.predicate()`. The `BaseSchema` is meant to be inherited in order to create a concrete validation schema - such as the `StringSchema` or the `NumberSchema`.
@@ -64,11 +64,12 @@ Every schema that extends `BaseSchema` supports `.not()`, `.required()`, `.predi
 
 ## `StringSchema` **extends** `BaseSchema` 
 
-| schema-specific methods            | explanation                                  |
-|:---------------------------------- |:-------------------------------------------- |
-| minlength(number)                  | sets a minimum length to the schema          |
-| maxlength(number)                  | sets a maximum length to the schema          |
-| pattern(Regexp)                    | sets a regexp to test values against         |
+| schema-specific methods            | explanation                                                  |
+|:---------------------------------- |:------------------------------------------------------------ |
+| validateType(value)                | returns `true` if value is primitive string or object string |
+| minlength(number)                  | sets a minimum length to the schema                          |
+| maxlength(number)                  | sets a maximum length to the schema                          |
+| pattern(Regexp)                    | sets a regexp to test values against                         |
 
 ```js
 const { string } = require('./fluent-validator')().schemas;
@@ -84,7 +85,7 @@ const testSchema = string() // create a blank StringSchema
 const someString = 'testtest42';
 
 // .validate(value, valueName) will return an array of validation errors
-// if the array is empty, no validation errors occured
+// if the array is empty, no validation errors occurred
 const validationErrors = testSchema.validate(someString, 'someString');
 
 if(validationErrors.length) {
@@ -94,15 +95,18 @@ if(validationErrors.length) {
 }
 ```
 
-## `NumbersSchema` **extends** `BaseSchema` 
+## `NumberSchema` **extends** `BaseSchema` 
 
-| schema-specific methods                   | explanation                                                                    |
-|:----------------------------------------- |:------------------------------------------------------------------------------ |
-| min(number)                               | set a minimal possible value for the schema                                    |
-| max(number)                               | set a maximal possible value for the schema                                    |
-| integer()                                 | value should be an integer                                                     |
-| precision(number)                         | set a maximal difference value which is used to compare floating point numbers |
-| safeInteger()[`not working properly`]     | value must be a between -(2<sup>53</sup> - 1) inclusive to 2<sup>53</sup> - 1  |
+| schema-specific methods                   | explanation                                                                                                                                                          |
+|:----------------------------------------- |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| validateType(value)                       | returns `true` is the value is a primitive or object number and is not `NaN` or `Infinity`.<br> This behaviour can be changed using .allowNaN() and .allowInfinity() |
+| min(number)                               | set a minimal possible value for the schema                                                                                                                          |
+| max(number)                               | set a maximal possible value for the schema                                                                                                                          |
+| integer()                                 | value should be an integer                                                                                                                                           |
+| precision(number)                         | set a maximal difference value which is used to compare floating point numbers                                                                                       |
+| safeInteger()                             | value must be a between -(2<sup>53</sup> - 1) inclusive to 2<sup>53</sup> - 1                                                                                        |
+| allowNaN()                                | `NaN` will be considered a valid number in .validateType()                                                                                                           |
+| allowInfinity()                           | `Infinity` will be considered a valid number in .validateType()                                                                                                      |
 
 - Validate a number value that should represent a person's age:
 
@@ -233,4 +237,68 @@ const student = {
 const validationErrors = studentSchema.validate(student, 'student');
 
 console.log(validationErrors);
+```
+
+## `UnionSchema` **extends** `BaseSchema`
+
+Allows creation of union types - for example, a union<string|number> is a value that is either a string or a number value.
+
+| schema-specific methods | explanation |
+|:-----------------------:|:-----------:|
+| -                       | -           |
+
+```js
+const { string, object, union } = require('./fluent-validator')().schemas;
+
+const schema = union(
+                        string().minlength(5),
+                        object({ name: string().minlength(10) })
+                    )
+                    .required();
+
+const values = ['ivancho', { name: 'ivancho' }, 'dsf', null, { name: 'kyci' }];
+
+for(const v of values) {
+    console.log(schema.validate(v, 'value'));
+}
+```
+
+## `EnumerationSchema` **extends** `BaseSchema`
+
+| schema-specific methods | explanation |
+|:-----------------------:|:-----------:|
+| -                       | -           |
+
+- Passing the allowed values as parameters:
+
+```js
+const { enumeration } = require('./fluent-validator')().schemas;
+
+const schema = enumeration(1, 2, 4, 8, 16);
+
+const values = [1, 2, 5, 10, null, undefined, 33];
+
+for(const v of values) {
+    console.log(schema.validate(v, 'value'));
+}
+```
+
+- Passing the allowed values from the keys of an object:
+
+```js
+const { enumeration } = require('./fluent-validator')().schemas;
+
+const someEnum = {
+    FLAG1: 1,
+    FLAG2: 2,
+    FLAG10: 1024
+}
+
+const schema = enumeration(someEnum); // is the same as calling enumeration(1, 2, 1024)
+
+const values = [1, 2, 5, 10, null, undefined, 33, 42];
+
+for(const v of values) {
+    console.log(schema.validate(v, 'value'));
+}
 ```

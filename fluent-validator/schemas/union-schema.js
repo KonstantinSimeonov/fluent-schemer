@@ -16,7 +16,7 @@ module.exports = (BaseSchema, { createError, ERROR_TYPES }) => class UnionSchema
         return this.subschemas.findIndex(schema => schema.validateType(value)) !== -1;
     }
 
-    // TODO: async api doesnt work
+    // TODO: async api doesn't work
     // TODO: refactor
     // TODO: improve performance, currently .validateType() is executed twice
     validateValueWithCorrectType(value, path, errors) {

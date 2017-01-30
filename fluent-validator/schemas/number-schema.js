@@ -33,27 +33,36 @@ module.exports = (BaseSchema, { createError, ERROR_TYPES }) => class NumberSchem
     }
 
     safeInteger() {
-        return this.max(Number.MIN_SAFE_INTEGER).min(-Number.MIN_SAFE_INTEGER);
+        const newMin = Math.max(this._minvalue || -Number.MAX_SAFE_INTEGER, -Number.MAX_SAFE_INTEGER),
+            newMax = Math.min(this._maxvalue || Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER);
+
+        return this.min(newMin).max(newMax);
     }
 
     min(minvalue) {
+        if (this._minvalue === undefined) {
+            this.pushValidationFn((value, path) => {
+                if (value < this._minvalue) {
+                    return createError(ERROR_TYPES.RANGE, `Expected value greater than or equal to ${minvalue} but got ${value}`, path);
+                }
+            });
+        }
 
-        this.pushValidationFn((value, path) => {
-            if (value < minvalue) {
-                return createError(ERROR_TYPES.RANGE, `Expected value greater than or equal to ${minvalue} but got ${value}`, path);
-            }
-        })
+        this._minvalue = minvalue;
 
         return this;
     }
 
     max(maxvalue) {
+        if (this._maxvalue === undefined) {
+            this.pushValidationFn((value, path) => {
+                if (value > maxvalue) {
+                    return createError(ERROR_TYPES.RANGE, `Expected value less than or equal to ${maxvalue} but got ${value}`, path);
+                }
+            });
+        }
 
-        this.pushValidationFn((value, path) => {
-            if (value > maxvalue) {
-                return createError(ERROR_TYPES.RANGE, `Expected value less than or equal to ${maxvalue} but got ${value}`,path);
-            }
-        })
+        this._maxvalue = maxvalue;
 
         return this;
     }

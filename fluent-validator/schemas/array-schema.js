@@ -17,7 +17,7 @@ module.exports = (BaseSchema, { createError, ERROR_TYPES }) => class ArraySchema
 
         return this._typestring;
     }
-
+    
     validateType(value) {
         return Array.isArray(value) && (!this.subschema || value.every(x => this.subschema.validateType(x)));
     }

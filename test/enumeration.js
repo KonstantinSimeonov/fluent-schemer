@@ -38,7 +38,7 @@ describe('EnumerationSchema with primitive values', () => {
         shouldReturnErrors(schema, ['Engine', 'gosho', 1, 2, true, null, {}, [], 'podlqrkova'], { type: ERROR_TYPES.ARGUMENT });
     });
 
-    it('EnumerationSchema delcared with a map should not erturn errors for values included in the enumeration', () => {
+    it('EnumerationSchema declared with a map should not return errors for values included in the enumeration', () => {
         const errorTypes = {
             engine: 'EngineExecutionError',
             application: 'ApplicationError',
