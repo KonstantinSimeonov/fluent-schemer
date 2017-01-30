@@ -2,8 +2,8 @@
 
 const { expect } = require('chai'),
     { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
-    { bool } = require('../fluent-validator')().schemas,
-    ERROR_TYPES = require('../fluent-validator/errors').ERROR_TYPES;
+    { bool } = require('../lib')().schemas,
+    ERROR_TYPES = require('../lib/errors').ERROR_TYPES;
 
 const ROOT = 'boolvalue';
 

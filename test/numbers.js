@@ -2,7 +2,7 @@
 
 const { expect } = require('chai'),
     { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
-    { number } = require('../fluent-validator')().schemas;
+    { number } = require('../lib')().schemas;
 
 const ROOT = 'testtest';
 

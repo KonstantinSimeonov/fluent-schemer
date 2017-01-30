@@ -2,7 +2,7 @@
 
 const { expect } = require('chai'),
     { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
-    { string, number, bool, object } = require('../fluent-validator')().schemas;
+    { string, number, bool, object } = require('../lib')().schemas;
 
 const ERROR_TYPES = {
     RANGE: 'range',

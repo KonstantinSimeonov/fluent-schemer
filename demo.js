@@ -1,6 +1,6 @@
 'use strict';
 
-const validation = require('./fluent-validator')(),
+const validation = require('./lib')(),
     { string, number, object, array, union, enumeration, bool } = validation.schemas,
     { validate } = validation;
 

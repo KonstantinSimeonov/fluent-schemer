@@ -2,8 +2,8 @@
 
 const { expect } = require('chai'),
     { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
-    { union, string, number, bool, object, array } = require('../fluent-validator')().schemas,
-    ERROR_TYPES = require('../fluent-validator/errors').ERROR_TYPES;
+    { union, string, number, bool, object, array } = require('../lib')().schemas,
+    ERROR_TYPES = require('../lib/errors').ERROR_TYPES;
 
 describe('UnionSchema individual methods', () => {
     it('UnionSchema.type: should return concatenation of all possible types', () => {

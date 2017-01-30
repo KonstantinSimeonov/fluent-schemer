@@ -1,7 +1,7 @@
 'use strict';
 
 const { expect } = require('chai'),
-    createValidator = require('../fluent-validator');
+    createValidator = require('../lib');
 
 describe('API tests', () => {
     it('Providing no include or exclude options should return all schemas', () => {

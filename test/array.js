@@ -2,8 +2,8 @@
 
 const { expect } = require('chai'),
     { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
-    { array, string, number, bool, object } = require('../fluent-validator')().schemas,
-    ERROR_TYPES = require('../fluent-validator/errors').ERROR_TYPES;
+    { array, string, number, bool, object } = require('../lib')().schemas,
+    ERROR_TYPES = require('../lib/errors').ERROR_TYPES;
 
 describe('ArraySchema individual methods', () => {
     it('ArraySchema.type: should return correct types for typed arrays', () => {
