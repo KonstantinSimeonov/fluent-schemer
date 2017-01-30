@@ -8,7 +8,7 @@ Aims to provide declarative, expressive and elegant approach to validation, whil
 ## It's cool, because
 - it fully embraces ES2015 features such classes, fat arrow functions, mixins, destructuring statements
 - has a fluent, readable and declarative api
-- no production dependencies - using `fluent-validator` does not tie you to any other packages
+- no production dependencies - using `fluent-schemer` does not tie you to any other packages
 - helps developers get rid of long if-else code blocks
 - helps developers reuse validation logic
 - extending the validator with a new schema either statically or dynamically is trivial
@@ -20,13 +20,16 @@ Aims to provide declarative, expressive and elegant approach to validation, whil
 - documentation with detailed examples for many combinations and use cases incoming!
 - synchronous validation is already provided, async validation with ES2015 promises coming soon
 
-## Planned features
+## Planned features/wishful thinking
 
 | features                           | state              |
 |:----------------------------------:|:------------------:|
 | DateSchema                         | under construction |
 | Async api                          | under construction |
 | Better support for recursive types | not started        |
+| ES5 build                          | not confirmed      |
+| Browser build                      | not confirmed      |
+| Typescript type definition         | not confirmed      |
 
 ### Running the tests
 
