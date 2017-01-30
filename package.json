@@ -1,7 +1,7 @@
 {
-  "name": "schemer",
+  "name": "fluent-schemer",
   "version": "0.10.0",
-  "repository": "https://github.com/KonstantinSimeonov/schemer",
+  "repository": "https://github.com/KonstantinSimeonov/fluent-schemer",
   "description": "Small schema validation library that aims to provide declarative, expressive and elegant approach to validation, while providing an intuitive, easy-to-use api",
   "main": "./lib/index.js",
   "keywords": [
