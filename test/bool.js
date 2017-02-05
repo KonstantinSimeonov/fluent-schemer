@@ -3,7 +3,7 @@
 const { expect } = require('chai'),
     { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
     { bool } = require('../lib')().schemas,
-    ERROR_TYPES = require('../lib/errors').ERROR_TYPES;
+    { ERROR_TYPES } = require('../lib/errors');
 
 const ROOT = 'boolvalue';
 
@@ -39,19 +39,19 @@ describe('BoolSchema individual methods', () => {
     });
 
     it('BoolSchema.validate(): should not return errors for strict bool values, regardless of required or not', () => {
-        const emptyArrayString = [] + '';
+        const schema = bool();
 
-        expect(bool().validate(true, ROOT) + '').to.equal(emptyArrayString);
-        expect(bool().validate(false, ROOT) + '').to.equal(emptyArrayString);
+        shouldNotReturnErrors(schema, [true, false]);
 
-        expect(bool().required().validate(true) + '').to.equal(emptyArrayString);
-        expect(bool().required().validate(false) + '').to.equal(emptyArrayString);
+        schema.required();
+
+        shouldNotReturnErrors(schema, [true, false]);
     });
 
     it('BoolSchema.predicate(): .validate() should return error of type predicate when predicate is not fulfilled', () => {
         const schema = bool().predicate(x => x === false);
 
-        const [ predicateError ] = schema.validate(true, ROOT);
+        const { errors: [predicateError] } = schema.validate(true, ROOT);
 
         expect(predicateError.type).to.equal(ERROR_TYPES.PREDICATE);
         expect(predicateError.path).to.equal(ROOT);
@@ -60,7 +60,7 @@ describe('BoolSchema individual methods', () => {
     it('BoolSchema.predicate(): .validate() should not return error when predicate is fulfilled', () => {
         const schema = bool().predicate(x => x === false);
 
-        expect(schema.validate(false, ROOT) + '').to.equal([] + '');
+        shouldNotReturnErrors(schema, [false]);
     });
 });
 
@@ -74,7 +74,7 @@ describe('BoolSchema method combinations', () => {
     it('NumberSchema .not() and .required() should cause .validate() to return their respective errors when used together', () => {
         const schema = bool().required().not(true);
 
-        const [ notError ] = schema.validate(true, ROOT);
+        const { errors: [notError] } = schema.validate(true, ROOT);
 
         expect(notError.type).to.equal(ERROR_TYPES.ARGUMENT);
         expect(notError.path).to.equal(ROOT);

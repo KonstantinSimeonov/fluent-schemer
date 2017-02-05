@@ -3,7 +3,7 @@
 const { expect } = require('chai'),
     { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
     { array, string, number, bool, object } = require('../lib')().schemas,
-    ERROR_TYPES = require('../lib/errors').ERROR_TYPES;
+    { ERROR_TYPES } = require('../lib/errors');
 
 describe('ArraySchema individual methods', () => {
     it('ArraySchema.type: should return correct types for typed arrays', () => {
@@ -23,9 +23,9 @@ describe('ArraySchema individual methods', () => {
         const schema = array(),
             values = [[1, 2, 3], ['adf', true, {}], [null, undefined, []]];
 
-        for (const untypedArray of values) {
-            shouldNotReturnErrors(schema, values);
-        }
+        const allValid = values.every(untyped => schema.validateType(untyped));
+
+        expect(allValid).to.equal(true);
     });
 
     it('ArraySchema.validateType(): should return true for empty array', () => {
@@ -94,8 +94,7 @@ describe('ArraySchema individual methods', () => {
         const schema = array(number().integer()).required(),
             values = [1, 2, 0, new Number(5), new Number(1.10), new Number(2.5)];
 
-        const errors = schema.validate(values, 'nums');
-
+        const { errors } = schema.validate(values, 'nums');
         expect(errors.length).to.equal(1);
 
         const [err] = errors;

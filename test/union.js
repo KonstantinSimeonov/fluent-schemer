@@ -3,7 +3,7 @@
 const { expect } = require('chai'),
     { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
     { union, string, number, bool, object, array } = require('../lib')().schemas,
-    ERROR_TYPES = require('../lib/errors').ERROR_TYPES;
+    { ERROR_TYPES } = require('../lib/errors');
 
 describe('UnionSchema individual methods', () => {
     it('UnionSchema.type: should return concatenation of all possible types', () => {

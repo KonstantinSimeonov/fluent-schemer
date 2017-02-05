@@ -5,12 +5,13 @@ const validation = require('./lib')(),
     { validate } = validation;
 
 const schema = object({
+    test: array(object({ name: string().required() })),
     name: string().minlength(5).predicate(value => value !== 'ivan'),
     age: number().min(1).integer(),
     money: number().max(100),
     skill: object({
-        title: string(),
-        level: number().min(1).max(10).integer()
+        title: string().required(),
+    level: number().min(1).max(10).integer().required()
     })
         .required(),
     weapons: array(string()).required(),
@@ -21,25 +22,34 @@ const schema = object({
 });
 
 const value = {
-    name: 'toshkata',
+    test: [{ name: 5 }],
+    name: 'gyz',
     age: 1,
     money: 100,
-    weapons: ['strimg'],
+    weapons: [null],
     friends: 'dsf',
     skill: {
-        title: 'stealing scarfs',
-        level: 5
+        title: [],
+        level: {}
     },
     gosho: 1,
-    education: 'kaun',
-    isStudent: 'notabool'
+    education: 'some',
+    isStudent: 'true'
 };
+
+const { errors, errorsCount } = schema.validate(value);
+
+if(errorsCount) {
+    console.log(errors);
+}
 
 // const err = schema.validateAsync(value, 'value');
 
 // err.then(x => console.log(x));
 
-// console.log(schema.validate(value, 'value'));
+// const { errors } = schema.validate(value);
+
+// console.log(errors);
 
 // const nested = array(array()).required();
 
@@ -47,18 +57,18 @@ const value = {
 
 // console.log(nested.validate(val, 'arr'));
 
-const sch = object();
+// const sch = object();
 
-sch.subschema = {
-    v: number().integer().required(),
-    left: sch,
-    right: sch
-};
+// sch.subschema = {
+//     v: number().integer().required(),
+//     left: sch,
+//     right: sch
+// };
 
-const root = {
-    v: 3,
-    left: { v: 5 },
-    right: { v: 6, left: { v: 'dsfs' } }
-};
+// const root = {
+//     v: 3,
+//     left: { v: 5 },
+//     right: { v: 6, left: { v: 'dsfs' } }
+// };
 
-console.log(sch.validate(root, 'root'));
+// console.log(sch.validate(root, 'root'));

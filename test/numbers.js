@@ -2,16 +2,10 @@
 
 const { expect } = require('chai'),
     { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
-    { number } = require('../lib')().schemas;
+    { number } = require('../lib')().schemas,
+    { ERROR_TYPES } = require('../lib/errors');
 
 const ROOT = 'testtest';
-
-const ERROR_TYPES = {
-    RANGE: 'range',
-    ARGUMENT: 'argument',
-    TYPE: 'type',
-    PREDICATE: 'predicate'
-};
 
 describe('NumberSchema individual methods', () => {
     it('NumberSchema.type: should return "number"', () => {
@@ -123,12 +117,11 @@ describe('NumberSchema individual methods', () => {
     });
 
     it('NumberScheme.safeInteger(): .validate() should return errors for unsafe integers', () => {
-        console.log('zdr kp');
         const schema = number().safeInteger(),
             unsafeInts = [4, 6, 8]
                             .map(x => x + Number.MAX_SAFE_INTEGER)
                             .concat([-4, -6, -8].map(x => x - Number.MAX_SAFE_INTEGER));
-                            console.log(unsafeInts);
+
         shouldReturnErrors(schema, unsafeInts, { type: ERROR_TYPES.RANGE });
     });
 
@@ -156,17 +149,17 @@ describe('NumberSchema method combinations', () => {
     it('NumberSchema.min(): should not return errors for NaN when .allowNaN() has been called', () => {
         const schema = number().allowNaN().min(5);
 
-        const validationErrors = schema.validate(NaN, 'tears');
+        const { errorsCount } = schema.validate(NaN, 'tears');
 
-        expect(validationErrors.length).to.equal(0);
+        expect(errorsCount).to.equal(0);
     });
 
     it('NumberSchema.max(): should not return errors for NaN when .allowNaN() has been called', () => {
         const schema = number().allowNaN().max(5);
 
-        const validationErrors = schema.validate(NaN, 'tears');
+        const { errorsCount } = schema.validate(NaN, 'tears');
 
-        expect(validationErrors.length).to.equal(0);
+        expect(errorsCount).to.equal(0);
     });
 
     it('NumberSchema .min() .max() .required() .integer() should return errors for invalid numbers', () => {
@@ -177,7 +170,7 @@ describe('NumberSchema method combinations', () => {
             .integer();
 
         // test with value greater than max
-        const errorsWithGreaterThanMax = schema.validate(10.5, 'value');
+        const { errors: errorsWithGreaterThanMax } = schema.validate(10.5, 'value');
 
         const rangeErrorGreater = errorsWithGreaterThanMax.find(err => err.type === ERROR_TYPES.RANGE),
             argumentErrorsGreater = errorsWithGreaterThanMax.find(err => err.type === ERROR_TYPES.ARGUMENT);
@@ -186,7 +179,7 @@ describe('NumberSchema method combinations', () => {
         expect(argumentErrorsGreater.path).to.equal('value');
 
         // test with value lesser than min
-        const errorsWithLessThanMin = schema.validate(-5.2, 'value');
+        const { errors: errorsWithLessThanMin } = schema.validate(-5.2, 'value');
 
         const rangeErrorLesser = errorsWithLessThanMin.find(err => err.type === ERROR_TYPES.RANGE),
             argumentErrorsLesser = errorsWithLessThanMin.find(err => err.type === ERROR_TYPES.ARGUMENT);

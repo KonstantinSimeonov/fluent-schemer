@@ -1,17 +1,11 @@
 'use strict';
 
 const { expect } = require('chai'),
-    { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
-    { string } = require('../lib')().schemas;
-
+    { shouldReturnErrors, shouldNotReturnErrors, forEachErrors } = require('../helpers/test-templates'),
+    { string } = require('../lib')().schemas,
+    { ERROR_TYPES } = require('../lib/errors');
+    
 const ROOT = 'root';
-
-const ERROR_TYPES = {
-    RANGE: 'range',
-    ARGUMENT: 'argument',
-    TYPE: 'type',
-    PREDICATE: 'predicate'
-};
 
 describe('StringSchema individual methods', () => {
     it('StringSchema.type should return string', () => {
@@ -122,7 +116,7 @@ describe('StringSchema method combinations', () => {
 
         const validationErrors = invalidValues
             .forEach(val => {
-                const errorsArray = schema.validate(val, ROOT);
+                const errorsArray = schema.validate(val, ROOT).errors;
                 expect(errorsArray.filter(err => (err.type === ERROR_TYPES.RANGE) && (err.path === ROOT)).length).to.equal(1);
                 expect(errorsArray.filter(err => (err.type === ERROR_TYPES.PREDICATE) && (err.path === ROOT)).length).to.equal(1);
             });
@@ -141,7 +135,7 @@ describe('StringSchema method combinations', () => {
         const notStrings = [null, undefined, { prop: 'somevalue' }, ['lol'], 10, new Number(3), () => null, /testregexp/g];
 
         notStrings
-            .map(v => schema.validate(v, root))
+            .map(v => schema.validate(v, root).errors)
             .forEach(errorsArray => {
                 expect(errorsArray.length).to.equal(1);
 
