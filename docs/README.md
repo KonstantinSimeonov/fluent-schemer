@@ -4,20 +4,46 @@ Every schema allows a validation of a concrete type - current supported types ar
 Each schema defines validation rules that can be added to the schema by calling a method. For readable and concise syntax, those methods provide chaining.
 Schemas can be used individually or in conjunction - for an example, one could write `number().min(10)` or `array(number().min(10))`. The former will provide a
 validate whether a number is larger than or equal to 10, while the latter will validate whether an array contains only numbers larger or equal to than 10. The 
-validation feedback is returned in the form of an array of validation error objects, like that:
+validation feedback is returned in the form of a plain old javascript object that contains two keys: 
+
+- **errorsCount** - how many errors have occurred during the validation process
+- **errors** - plain javascript object, the keys of which are errors reports
+    - error reports can be arrays of errors, or javascript object for errors from an object schema
 
 ```js
-[
-    ValidationError {
-    type: 'type',
-    message: 'Expected type array<number> but got object',
-    path: 'obj.numbers' },
-
-    ValidationError {
-    type: 'type',
-    message: 'Expected type string but got bool',
-    path: 'obj.someProperty' }
-]
+{ 
+    errorsCount: 2,
+    errors: { 
+        name: [
+                ValidationError {
+                    type: 'type',
+                    message: 'Expected type string but got object',
+                    path: 'name'
+                }
+        ],
+        age: [ 
+                ValidationError {
+                    type: 'argument',
+                    message: 'Expected integer number but got -10.5',
+                    path: 'age' 
+                },
+                ValidationError {
+                    type: 'range',
+                    message: 'Expected value greater than or equal to 0 but got -10.5',
+                    path: 'age' 
+                }
+        ],
+        skill: {
+            title: [
+                ValidationError {
+                    type: 'type',
+                    message: 'Expected type string but got number',
+                    path: 'skill.title'
+                }
+            ]
+        } 
+    }
+}
 ```
 
 If the feedback array is empty, that means no errors occurred and the passed value is valid.
@@ -32,10 +58,10 @@ Also, `BaseSchema.validateWithCorrectType()` validates a value which is known to
 To use the validator in code, the following snippet is enough:
 
 ```js
-const { string, number, object, bool, array, union, enumeration } = require('./fluent-validator')().schemas;
+const { string, number, object, bool, array, union, enumeration } = require('./fluent-schemer')().schemas;
 ```
 
-This will load `./fluent-validator/index.js`. This file exports a factory function that accepts an configurations and returns all the schemas and a function that allows for new schemas to be dynamically added.
+This will load `./fluent-schemer/index.js`. This file exports a factory function that accepts an configurations and returns all the schemas and a function that allows for new schemas to be dynamically added.
 The concrete schemas are defined as mixins that accept a base schema, create a class that extends it and returns the class. That way a different base schema can be used, if needed.
 Also, introduction of new schemas is trivial - a new `schemaname-schema.js` needs to be created in the `schema` folder. This file should exports a mixin like that:
 
@@ -72,7 +98,7 @@ Every schema that extends `BaseSchema` supports `.not()`, `.required()`, `.predi
 | pattern(Regexp)                    | sets a regexp to test values against                         |
 
 ```js
-const { string } = require('./fluent-validator')().schemas;
+const { string } = require('./fluent-schemer')().schemas;
 
 const testSchema = string() // create a blank StringSchema
                 .required() // the value must be a string
@@ -84,15 +110,15 @@ const testSchema = string() // create a blank StringSchema
 
 const someString = 'testtest42';
 
-// .validate(value, valueName) will return an array of validation errors
-// if the array is empty, no validation errors occurred
-const validationErrors = testSchema.validate(someString, 'someString');
+const { errors, errorsCount } = testSchema.validate(someString);
 
-if(validationErrors.length) {
-    console.log(validationErrors);
-} else {
-    console.log('No validation errors!');
-}
+console.log(errorsCount); // 1
+console.log(errors);
+/* [ ValidationError {
+    type: 'argument',
+    message: 'Expected testtest42 to match pattern but it did not',
+    path: '' } ]
+*/
 ```
 
 ## `NumberSchema` **extends** `BaseSchema` 
@@ -111,7 +137,7 @@ if(validationErrors.length) {
 - Validate a number value that should represent a person's age:
 
 ```js
-const { number } = require('./fluent-validator')().schemas,
+const { number } = require('./fluent-schemer')().schemas,
 
 const ageSchema = number() // blank number schema
                     .required() // the input value must be a number, excluding NaN and Infinity
@@ -122,7 +148,8 @@ const ageSchema = number() // blank number schema
 const ages = [1, 20, 200, -5, 3.4, NaN];
 
 for(let a of ages) {
-    console.log(ageSchema.validate(a, 'age'));
+    const { errors } = ageSchema.validate(a);
+    console.log(errors);
 }
 ```
 
@@ -133,7 +160,7 @@ for(let a of ages) {
 | -                       | -           |
 
 ```js
-const { bool } = require('./fluent-validator')().schemas;
+const { bool } = require('./fluent-schemer')().schemas;
 
 // input values should be either true or false
 const boolSchema = bool().required();
@@ -141,7 +168,13 @@ const boolSchema = bool().required();
 const values = [true, false, '', 'true', null];
 
 for(let v of values) {
-    console.log(boolSchema.validate(v, 'value'));
+    const { errors, errorsCount } = boolSchema.validate(v);
+    
+    if(errorsCount) {
+        console.log(`Errors occured for ${v}: ${JSON.stringify(errors, null, 4)}`);
+    } else {
+        console.log(`No errors occured for ${v}`);
+    }
 }
 ```
 
@@ -155,7 +188,7 @@ for(let v of values) {
 - Validate an array of names:
 
 ```js
-const { string, array } = require('./fluent-validator').schemas;
+const { string, array } = require('./fluent-schemer')().schemas;
 
 // input array should contain strictly strings that match the regular expression
 const nameArraySchema = array(string().pattern(/^[a-z]{2,20}$/i))
@@ -163,7 +196,7 @@ const nameArraySchema = array(string().pattern(/^[a-z]{2,20}$/i))
 
 const names = ['george', 'ivan', 'todor', '', 'tom1', null, 10];
 
-console.log(nameArraySchema.validate(names, 'names'));
+console.log(JSON.stringify(nameArraySchema.validate(names), null, 4));
 ```
 
 - Integer matrix validation:
@@ -182,9 +215,9 @@ const matrix = [
         ['not number']
     ];
 
-console.log(matrixSchema.validate(matrix, 'matrix'));
-console.log(matrixSchema.validate(matrix2, 'matrix2'));
-console.log(matrixSchema.validate(matrix3, 'matrix3'));
+console.log(matrixSchema.validate(matrix));
+console.log(matrixSchema.validate(matrix2));
+console.log(matrixSchema.validate(matrix3));
 ```
 
 ## `ObjectSchema` **extends** `BaseSchema` 
@@ -199,7 +232,7 @@ console.log(matrixSchema.validate(matrix3, 'matrix3'));
 - Validate an object that represents a student's info:
 
 ```js
-const { string, number, bool, object } = require('./fluent-validator')().schemas;
+const { string, number, bool, object, array } = require('./fluent-schemer')().schemas;
 
 const studentSchema = object({
     /**
@@ -234,9 +267,24 @@ const student = {
     }
 };
 
-const validationErrors = studentSchema.validate(student, 'student');
+/**
+ * leverage destructuring statements in order
+ * to easily extract errors from the error report
+ */
+const {
+    errorsCount,
+    errors: { 
+        age: ageErrors,
+        skills: skillErrors,
+        cat: {
+            breed: breedErrors
+        }
+     }
+} = studentSchema.validate(student);
 
-console.log(validationErrors);
+console.log(ageErrors);
+console.log(skillErrors)
+console.log(breedErrors);
 ```
 
 ## `UnionSchema` **extends** `BaseSchema`
@@ -248,7 +296,7 @@ Allows creation of union types - for example, a union<string|number> is a value 
 | -                       | -           |
 
 ```js
-const { string, object, union } = require('./fluent-validator')().schemas;
+const { string, object, union } = require('./fluent-schemer')().schemas;
 
 const schema = union(
                         string().minlength(5),
@@ -259,7 +307,7 @@ const schema = union(
 const values = ['ivancho', { name: 'ivancho' }, 'dsf', null, { name: 'kyci' }];
 
 for(const v of values) {
-    console.log(schema.validate(v, 'value'));
+    console.log(schema.validate(v));
 }
 ```
 
@@ -272,21 +320,24 @@ for(const v of values) {
 - Passing the allowed values as parameters:
 
 ```js
-const { enumeration } = require('./fluent-validator')().schemas;
+const { enumeration } = require('./fluent-schemer')().schemas;
 
 const schema = enumeration(1, 2, 4, 8, 16);
 
 const values = [1, 2, 5, 10, null, undefined, 33];
 
 for(const v of values) {
-    console.log(schema.validate(v, 'value'));
+    const { errors } = schema.validate(v);
+    console.log(`Errors for ${v}:`);
+    console.log(JSON.stringify(v, null, 4));
+    console.log('\n\n');
 }
 ```
 
 - Passing the allowed values from the keys of an object:
 
 ```js
-const { enumeration } = require('./fluent-validator')().schemas;
+const { enumeration } = require('./fluent-schemer')().schemas;
 
 const someEnum = {
     FLAG1: 1,
@@ -299,6 +350,9 @@ const schema = enumeration(someEnum); // is the same as calling enumeration(1, 2
 const values = [1, 2, 5, 10, null, undefined, 33, 42];
 
 for(const v of values) {
-    console.log(schema.validate(v, 'value'));
+    const { errors } = schema.validate(v);
+    console.log(`Errors for ${v}:`);
+    console.log(JSON.stringify(errors, null, 4));
+    console.log('\n\n');
 }
 ```
