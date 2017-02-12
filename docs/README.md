@@ -12,7 +12,7 @@ validation feedback is returned in the form of a plain old javascript object tha
 
 ```js
 { 
-    errorsCount: 2,
+    errorsCount: 4,
     errors: { 
         name: [
                 ValidationError {
