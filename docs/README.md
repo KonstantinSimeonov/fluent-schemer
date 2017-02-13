@@ -87,9 +87,9 @@ const schemerInstance = require('./fluent-schemer').createInstance(),
     - Running the tests is as simple as running `npm install && npm test`
     - Reports go into the `coverage` folder as html :)
 
-This will load `./fluent-schemer/index.js`. This file exports a factory function that accepts an configurations and returns all the schemas and a function that allows for new schemas to be dynamically added.
-The concrete schemas are defined as mixins that accept a base schema, create a class that extends it and returns the class. That way a different base schema can be used, if needed.
-Also, introduction of new schemas is trivial - a new `schemaname-schema.js` needs to be created in the `schema` folder. This file should exports a mixin like that:
+# Extending
+
+Introduction of new schemas is trivial - a new `schemaname-schema.js` needs to be created in the `schema` folder. The new script file should exports a mixin like that:
 
 ```js
 'use strict';
@@ -128,7 +128,7 @@ Every schema that extends `BaseSchema` supports `.not()`, `.required()`, `.predi
 | pattern(Regexp)                    | sets a regexp to test values against                         |
 
 ```js
-const { string } = require('./fluent-schemer')().schemas;
+const { string } = require('./fluent-schemer').createInstance().schemas;
 
 const testSchema = string() // create a blank StringSchema
                 .required() // the value must be a string
