@@ -2,7 +2,7 @@
 
 const { expect } = require('chai'),
     { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
-    { union, string, number, bool, object, array } = require('../lib')().schemas,
+    { union, string, number, bool, object, array } = require('../lib').createInstance().schemas,
     { ERROR_TYPES } = require('../lib/errors');
 
 describe('UnionSchema individual methods', () => {

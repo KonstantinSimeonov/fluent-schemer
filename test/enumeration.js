@@ -2,7 +2,7 @@
 
 const { expect } = require('chai'),
     { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
-    { enumeration } = require('../lib')().schemas,
+    { enumeration } = require('../lib').createInstance().schemas,
     { ERROR_TYPES } = require('../lib/errors');
 
 describe('EnumerationSchema with primitive values', () => {

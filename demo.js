@@ -1,8 +1,7 @@
 'use strict';
 
-const validation = require('./lib')(),
-    { string, number, object, array, union, enumeration, bool } = validation.schemas,
-    { validate } = validation;
+const FluentSchemer = require('./lib').createInstance(),
+    { string, number, object, array, union, enumeration, bool } = FluentSchemer.schemas;
 
 const schema = object({
     test: array(object({ name: string().required() })),
@@ -72,3 +71,9 @@ if(errorsCount) {
 // };
 
 // console.log(sch.validate(root, 'root'));
+
+const v = require('./es5').createInstance().schemas,
+string1 = v.string,
+number2 = v.number;
+
+console.log(string1(), number2());

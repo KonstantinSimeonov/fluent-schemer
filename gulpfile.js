@@ -5,7 +5,8 @@ const gulp = require('gulp'),
     transpile = require('gulp-babel'),
     uglify = require('gulp-uglify');
 
-const BUILD_DIR = './browser-build';
+const BROWSER_BUILD_DIR = './browser-build',
+    ES5_BUILD_DIR = './es5-build';
 
 gulp.task('browser-build', () => gulp.src([
     './lib/browser-setup.js',
@@ -17,4 +18,11 @@ gulp.task('browser-build', () => gulp.src([
     .pipe(concat('all.min.js'))
     .pipe(transpile({ presets: ['es2015'] }))
     .pipe(uglify())
-    .pipe(gulp.dest(BUILD_DIR)));
+    .pipe(gulp.dest(BROWSER_BUILD_DIR)));
+
+gulp.task('es5-build', () => gulp
+                                .src('./lib/**/*.js')
+                                .pipe(transpile({ presets: ['es2015'] }))
+                                .pipe(gulp.dest(ES5_BUILD_DIR)));
+
+gulp.task('all', ['browser-build', 'es5-build']);

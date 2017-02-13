@@ -55,27 +55,57 @@ The concrete schemas should also implement the abstract method `.validateType()`
 Also, `BaseSchema.validateWithCorrectType()` validates a value which is known to be of the expected type. This method can be overriden when needed - `ObjectSchema` overrides this method to provide schema nesting.
 
 # Usage
-To use the validator in code, the following snippet is enough:
+
+- **Node.js**
 
 ```js
-const { string, number, object, bool, array, union, enumeration } = require('./fluent-schemer')().schemas;
+const schemerInstance = require('./fluent-schemer').createInstance(),
+    { string, number, object, bool, array, union, enumeration } = schemerInstance.schemas;
 ```
+
+- **Browser**
+    - execute the command `npm run build`. A successful build will generate the `browser-build` folder in the root directory.
+    - index.html:
+    ```html
+        <script src="./node_modules/fluent-schemer/browser-build/all.min.js"></script>
+    ```
+    - in your code:
+    ```js
+        const schemerInstance = window.FluentSchemer.createInstance(),
+            { number, object, bool, array } = schemerInstance.schemas;
+    ```
+
+- **ES5**
+    - after running `npm run build`, a folder named `es5-build` will appear. The folder has the same structure as `lib`, only the scripts are transpiled to es5.
+    ```js
+        var schemerInstance = require('./node_modules/fluent-schemer/es5-build').createInstance(),
+            string = schemerInstance.schemas.string,
+            number = schemerInstance.schemas.number;
+    ```
+
+- **Running the tests**
+    - Running the tests is as simple as running `npm install && npm test`
+    - Reports go into the `coverage` folder as html :)
 
 This will load `./fluent-schemer/index.js`. This file exports a factory function that accepts an configurations and returns all the schemas and a function that allows for new schemas to be dynamically added.
 The concrete schemas are defined as mixins that accept a base schema, create a class that extends it and returns the class. That way a different base schema can be used, if needed.
 Also, introduction of new schemas is trivial - a new `schemaname-schema.js` needs to be created in the `schema` folder. This file should exports a mixin like that:
 
 ```js
-module.exports = (BaseSchema, errors) => {
-    const { 
-        createError, // function that accepts a type, a message and a path and returns an error object
-        ERROR_TYPES // supported error types
-     } = errors;
+'use strict';
 
-    return class CustomSchema extends BaseSchema {
-        // implementation
+(function (module) {
+    module.exports = (BaseSchema, errors) => {
+        const { 
+            createError, // function that accepts a type, a message and a path and returns an error object
+            ERROR_TYPES // supported error types
+        } = errors;
+
+        return class CustomSchema extends BaseSchema {
+            // implementation
+        }
     }
-}
+})(typeof module === 'undefined' ? window.FluentSchemer['yourSchemaName'] = {} : module);
 ```
 
 # Schemas
@@ -137,7 +167,8 @@ console.log(errors);
 - Validate a number value that should represent a person's age:
 
 ```js
-const { number } = require('./fluent-schemer')().schemas,
+const schemerInstance = require('./fluent-schemer').createInstance(),
+    { number } = schemerInstance.schemas;
 
 const ageSchema = number() // blank number schema
                     .required() // the input value must be a number, excluding NaN and Infinity
@@ -160,7 +191,8 @@ for(let a of ages) {
 | -                       | -           |
 
 ```js
-const { bool } = require('./fluent-schemer')().schemas;
+const schemerInstance = require('./fluent-schemer').createInstance(),
+    { bool } = schemerInstance.schemas;
 
 // input values should be either true or false
 const boolSchema = bool().required();
@@ -188,7 +220,8 @@ for(let v of values) {
 - Validate an array of names:
 
 ```js
-const { string, array } = require('./fluent-schemer')().schemas;
+const schemerInstance = require('./fluent-schemer').createInstance(),
+    { string, array } = schemerInstance.schemas;
 
 // input array should contain strictly strings that match the regular expression
 const nameArraySchema = array(string().pattern(/^[a-z]{2,20}$/i))
@@ -232,7 +265,8 @@ console.log(matrixSchema.validate(matrix3));
 - Validate an object that represents a student's info:
 
 ```js
-const { string, number, bool, object, array } = require('./fluent-schemer')().schemas;
+const schemerInstance = require('./fluent-schemer').createInstance(),
+    { string, number, bool, object, array } = schemerInstance.schemas;
 
 const studentSchema = object({
     /**
@@ -296,7 +330,8 @@ Allows creation of union types - for example, a union<string|number> is a value 
 | -                       | -           |
 
 ```js
-const { string, object, union } = require('./fluent-schemer')().schemas;
+const schemerInstance = require('./fluent-schemer').createInstance(),
+    { string, object, union } = schemerInstance.schemas;
 
 const schema = union(
                         string().minlength(5),
@@ -320,7 +355,8 @@ for(const v of values) {
 - Passing the allowed values as parameters:
 
 ```js
-const { enumeration } = require('./fluent-schemer')().schemas;
+const schemerInstance = require('./fluent-schemer').createInstance(),
+    { enumeration } = schemerInstance.schemas;
 
 const schema = enumeration(1, 2, 4, 8, 16);
 

@@ -2,7 +2,7 @@
 
 const { expect } = require('chai'),
     { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
-    { array, string, number, bool, object } = require('../lib')().schemas,
+    { array, string, number, bool, object } = require('../lib').createInstance().schemas,
     { ERROR_TYPES } = require('../lib/errors');
 
 describe('ArraySchema individual methods', () => {

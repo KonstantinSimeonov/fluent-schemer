@@ -2,7 +2,7 @@
 
 const { expect } = require('chai'),
     { shouldReturnErrors, shouldNotReturnErrors, forEachErrors } = require('../helpers/test-templates'),
-    { string } = require('../lib')().schemas,
+    { string } = require('../lib').createInstance().schemas,
     { ERROR_TYPES } = require('../lib/errors');
     
 const ROOT = 'root';

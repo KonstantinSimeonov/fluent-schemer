@@ -1,11 +1,11 @@
 'use strict';
 
 const { expect } = require('chai'),
-    createValidator = require('../lib');
+    createSchemerInstance = require('../lib').createInstance;
 
 describe('API tests', () => {
     it('Providing no include or exclude options should return all schemas', () => {
-        const schemas = createValidator({ include: ['string', 'bool'] }).schemas;
+        const schemas = createSchemerInstance({ include: ['string', 'bool'] }).schemas;
 
         Object.keys(schemas)
             .map(key => schemas[key])
@@ -13,7 +13,7 @@ describe('API tests', () => {
     });
 
     it('Providing include array of type names should return only those schemas', () => {
-        const { string, bool, number, array } = createValidator({ include: ['string', 'bool'] }).schemas;
+        const { string, bool, number, array } = createSchemerInstance({ include: ['string', 'bool'] }).schemas;
 
         expect(string).to.be.a('function');
         expect(bool).to.be.a('function');
@@ -22,7 +22,7 @@ describe('API tests', () => {
     });
 
     it('Providing exclude array of type names should return only the other schemas', () => {
-        const { object, string, union, bool, number } = createValidator({
+        const { object, string, union, bool, number } = createSchemerInstance({
             exclude: [ 'string', 'bool' ]
         }).schemas;
 
@@ -50,7 +50,7 @@ describe('API tests', () => {
             return TestSch;
         }
 
-        const validator = createValidator();
+        const validator = createSchemerInstance();
 
         validator.extendWith('test', testSchemaFactory);
 

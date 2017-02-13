@@ -19,7 +19,7 @@
   "scripts": {
     "test": "nyc --reporter=html --reporter=text mocha",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "build": "npm install && gulp browser-build"
+    "build": "npm install && gulp all"
   },
   "author": "Konstantin Simeonov<kon.simeonov@protonmail.com>",
   "license": "MIT",

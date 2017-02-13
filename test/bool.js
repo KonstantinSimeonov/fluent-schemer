@@ -2,7 +2,7 @@
 
 const { expect } = require('chai'),
     { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
-    { bool } = require('../lib')().schemas,
+    { bool } = require('../lib').createInstance().schemas,
     { ERROR_TYPES } = require('../lib/errors');
 
 const ROOT = 'boolvalue';
