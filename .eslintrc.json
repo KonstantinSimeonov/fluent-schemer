@@ -1,0 +1,74 @@
+{
+    "env": {
+        "node": true,
+        "browser": true,
+        "es6": true
+    },
+    "extends": "eslint:recommended",
+    "rules": {
+        "indent": [
+            "error",
+            4
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quotes": [
+            "error",
+            "single",
+            { "avoidEscape": true, "allowTemplateLiterals": true }
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "eqeqeq": [
+            "warn",
+            "always"
+        ],
+        "brace-style": "error",
+        "array-bracket-spacing": "warn",
+        "constructor-super": "error",
+        "use-isnan": "error",
+        "dot-location": ["error", "property"],
+        "strict": ["error", "global"],
+        "max-depth": "error",
+        "no-empty": "error",
+        "no-multiple-empty-lines": "warn",
+        "no-empty-pattern": "error",
+        "no-const-assign": "error",
+        "no-dupe-args": "error",
+        "no-void": "error",
+        "no-var": "error",
+        "no-useless-escape": "error",
+        "no-useless-constructor": "warn",
+        "no-unused-vars": "warn",
+        "no-unreachable": "error",
+        "no-undefined": "error",
+        "no-catch-shadow": "error",
+        "no-constant-condition": "error",
+        "no-dupe-keys": "error",
+        "no-eval": "warn",
+        "no-redeclare": "error",
+        "no-ex-assign": "error",
+        "no-func-assign": "error",
+        "no-self-assign": "error",
+        "no-native-reassign": "error",
+        "block-spacing": "error",
+        "curly": "error",
+        "eol-last": "warn",
+        "keyword-spacing": "error",
+        "max-params": ["error", 4],
+        "no-dupe-class-members": "error",
+        "newline-before-return": "warn",
+        "no-alert": "error",
+        "object-curly-spacing": "error",
+        "one-var": "error",
+        "prefer-arrow-callback": "warn",
+        "prefer-const": "error",
+        "prefer-rest-params": "warn",
+        "prefer-spread": "warn",
+        "space-before-blocks": "warn"
+    }
+}
