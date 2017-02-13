@@ -1,6 +1,6 @@
 {
   "name": "fluent-schemer",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "repository": "https://github.com/KonstantinSimeonov/fluent-schemer",
   "description": "Small schema validation library that aims to provide declarative, expressive and elegant approach to validation, while providing an intuitive, easy-to-use api",
   "main": "./lib/index.js",
@@ -18,13 +18,20 @@
   },
   "scripts": {
     "test": "nyc --reporter=html --reporter=text mocha",
-    "coverage": "nyc report --reporter=text-lcov | coveralls"
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "build": "npm install && gulp browser-build"
   },
   "author": "Konstantin Simeonov<kon.simeonov@protonmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "babel-preset-es2015": "^6.22.0",
     "chai": "^3.5.0",
     "coveralls": "^2.11.15",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-cli": "^1.2.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-uglify": "^2.0.1",
     "mocha": "^3.2.0",
     "nyc": "^10.1.2"
   }

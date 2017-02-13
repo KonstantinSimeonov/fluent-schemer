@@ -22,14 +22,14 @@ Aims to provide declarative, expressive and elegant approach to validation, whil
 
 ## Planned features/wishful thinking
 
-| features                           | state              |
-|:----------------------------------:|:------------------:|
-| DateSchema                         | under construction |
-| Async api                          | under construction |
-| Better support for recursive types | not started        |
-| ES5 build                          | not confirmed      |
-| Browser build                      | not confirmed      |
-| Typescript type definition         | not confirmed      |
+| features                           | state                                    |
+|:----------------------------------:|:----------------------------------------:|
+| DateSchema                         | under construction                       |
+| Async api                          | under construction                       |
+| Better support for recursive types | not started                              |
+| ES5 build                          | not confirmed                            |
+| Browser build                      | available, still under construction      |
+| Typescript type definition         | not confirmed                            |
 
 ### Running the tests
 
