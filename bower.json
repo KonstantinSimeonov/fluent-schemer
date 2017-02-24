@@ -1,0 +1,26 @@
+{
+  "name": "fluent-schemer",
+  "description": "Small schema validation library that aims to provide declarative, expressive and elegant approach to validation, while providing an intuitive, easy-to-use api",
+  "main": "./lib/index.js",
+  "authors": [
+    "Konstantin Simeonov<kon.simeonov@protonmail.com>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "validation",
+    "validate",
+    "schema",
+    "fluent",
+    "declarative",
+    "es2015",
+    "schemer"
+  ],
+  "homepage": "https://github.com/KonstantinSimeonov/fluent-validator",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

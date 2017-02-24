@@ -3,7 +3,8 @@
 const gulp = require('gulp'),
     concat = require('gulp-concat'),
     transpile = require('gulp-babel'),
-    uglify = require('gulp-uglify');
+    uglify = require('gulp-uglify'),
+    sourcemaps = require('gulp-sourcemaps');
 
 const BROWSER_BUILD_DIR = './browser-build',
     ES5_BUILD_DIR = './es5-build';
@@ -15,9 +16,11 @@ gulp.task('browser-build', () => gulp.src([
     './lib/create-instance.js',
     './lib/browser.js'
 ])
+    .pipe(sourcemaps.init({ debug: true }))
     .pipe(concat('all.min.js'))
     .pipe(transpile({ presets: ['es2015'] }))
     .pipe(uglify())
+    .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest(BROWSER_BUILD_DIR)));
 
 gulp.task('es5-build', () => gulp

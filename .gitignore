@@ -4,4 +4,4 @@ coverage
 npm-debug.log
 .vscode
 browser-build
-es5
+es5-build
