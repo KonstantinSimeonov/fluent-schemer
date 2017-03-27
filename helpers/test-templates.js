@@ -2,6 +2,18 @@
 
 const { expect } = require('chai');
 
+function dfs(root, cb) {
+    if(Array.isArray(root)) {
+        for(const value of root) {
+            cb(value);
+        }
+    } else {
+        for(const key in root) {
+            dfs(root[key], cb);
+        }
+    }
+}
+
 function shouldReturnErrors(schema, values, options = {}) {
     const expectedType = options.type,
         root = options.root || 'root',
@@ -9,7 +21,8 @@ function shouldReturnErrors(schema, values, options = {}) {
 
     const errors = values
         .map(val => {
-            const errorsArray = schema.validate(val, root);
+            const errorsArray = [];
+            dfs(schema.validate(val, root).errors, err => errorsArray.push(err));
             expect(errorsArray.length).to.equal(1);
 
             const [err] = errorsArray;
@@ -25,13 +38,15 @@ function shouldReturnErrors(schema, values, options = {}) {
 
 function shouldNotReturnErrors(schema, values, options = {}) {
     values.forEach(val => {
-        const errorsArray = schema.validate(val, 'root');
+        const errorsArray = [];
+        //dfs(schema.validate(val, 'root').errors, err => errorsArray.push(err));
 
-        expect(errorsArray.length).to.equal(0);
+        expect(schema.validate(val).errorsCount).to.equal(0);
     });
 }
 
 module.exports = {
     shouldReturnErrors,
-    shouldNotReturnErrors
+    shouldNotReturnErrors,
+    forEachErrors: dfs
 }

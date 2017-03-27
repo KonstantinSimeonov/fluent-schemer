@@ -1,14 +1,14 @@
-# fluent-validator
+# fluent-schemer
 
-<a href='https://travis-ci.org/KonstantinSimeonov/fluent-validator'><img src='https://travis-ci.org/KonstantinSimeonov/fluent-validator.svg?branch=master' alt='Coverage Status' /></a><a href='https://coveralls.io/github/KonstantinSimeonov/fluent-validator'><img src='https://coveralls.io/repos/github/KonstantinSimeonov/fluent-validator/badge.svg' alt='Coverage Status' /></a>
+<a href='https://travis-ci.org/KonstantinSimeonov/fluent-schemer'><img src='https://travis-ci.org/KonstantinSimeonov/fluent-schemer.svg?branch=master' alt='Coverage Status' /></a> <a href='https://coveralls.io/github/KonstantinSimeonov/fluent-schemer'><img src='https://coveralls.io/repos/github/KonstantinSimeonov/fluent-schemer/badge.svg' alt='Coverage Status' /></a>
 
 
 Aims to provide declarative, expressive and elegant approach to validation, while providing an intuitive, easy-to-use api.
 
 ## It's cool, because
-- it fully embraces ES2015 features such classes, fat arrow functions, mixins, destructuring statements
+- it fully embraces ES2015 features such as classes, fat arrow functions, mixins, destructuring statements
 - has a fluent, readable and declarative api
-- no production dependencies - using `fluent-validator` does not tie you to any other packages
+- no production dependencies - using `fluent-schemer` does not tie you to any other packages
 - helps developers get rid of long if-else code blocks
 - helps developers reuse validation logic
 - extending the validator with a new schema either statically or dynamically is trivial
@@ -19,6 +19,24 @@ Aims to provide declarative, expressive and elegant approach to validation, whil
 - will be configurable - the ability to plug in your own base classes, error factories or other options is a priority feature
 - documentation with detailed examples for many combinations and use cases incoming!
 - synchronous validation is already provided, async validation with ES2015 promises coming soon
+
+## Planned features/wishful thinking
+
+| features                           | state                                    |
+|:----------------------------------:|:----------------------------------------:|
+| DateSchema                         | under construction                       |
+| Async api                          | under construction                       |
+| Better support for recursive types | not started                              |
+| ES5 build                          | **done**                                 |
+| Browser build                      | **available, still under construction**  |
+| Typescript type definition         | not confirmed                            |
+
+### Running the tests
+
+```
+npm install
+npm test
+```
 
 ### Examples
 

@@ -2,8 +2,8 @@
 
 const { expect } = require('chai'),
     { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
-    { enumeration } = require('../fluent-validator')().schemas,
-    ERROR_TYPES = require('../fluent-validator/errors').ERROR_TYPES;
+    { enumeration } = require('../lib').createInstance().schemas,
+    { ERROR_TYPES } = require('../lib/errors');
 
 describe('EnumerationSchema with primitive values', () => {
     it('Should not return errors for values that are part of the schema enumeration', () => {
@@ -38,7 +38,7 @@ describe('EnumerationSchema with primitive values', () => {
         shouldReturnErrors(schema, ['Engine', 'gosho', 1, 2, true, null, {}, [], 'podlqrkova'], { type: ERROR_TYPES.ARGUMENT });
     });
 
-    it('EnumerationSchema delcared with a map should not erturn errors for values included in the enumeration', () => {
+    it('EnumerationSchema declared with a map should not return errors for values included in the enumeration', () => {
         const errorTypes = {
             engine: 'EngineExecutionError',
             application: 'ApplicationError',

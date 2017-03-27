@@ -10,6 +10,7 @@
 - Functionality
     - implement recursive types
     - date schema
+    - different error reporting strategies
     - ~~bool schema~~
     - ~~enum schema~~
     - ~~make array validations more configurable~~

@@ -2,12 +2,12 @@
 
 const { expect } = require('chai'),
     { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
-    { bool } = require('../fluent-validator')().schemas,
-    ERROR_TYPES = require('../fluent-validator/errors').ERROR_TYPES;
+    { bool } = require('../lib').createInstance().schemas,
+    { ERROR_TYPES } = require('../lib/errors');
 
 const ROOT = 'boolvalue';
 
-describe('Boolschema individual methods', () => {
+describe('BoolSchema individual methods', () => {
     it('BoolSchema.validateType(): should return true for true and false', () => {
         const schema = bool();
 
@@ -39,28 +39,28 @@ describe('Boolschema individual methods', () => {
     });
 
     it('BoolSchema.validate(): should not return errors for strict bool values, regardless of required or not', () => {
-        const emptyArrayString = [] + '';
+        const schema = bool();
 
-        expect(bool().validate(true, ROOT) + '').to.equal(emptyArrayString);
-        expect(bool().validate(false, ROOT) + '').to.equal(emptyArrayString);
+        shouldNotReturnErrors(schema, [true, false]);
 
-        expect(bool().required().validate(true) + '').to.equal(emptyArrayString);
-        expect(bool().required().validate(false) + '').to.equal(emptyArrayString);
+        schema.required();
+
+        shouldNotReturnErrors(schema, [true, false]);
     });
 
-    it('BoolSchema.predicate(): .validate() should return error of type predicate when predicate is not fullfilled', () => {
+    it('BoolSchema.predicate(): .validate() should return error of type predicate when predicate is not fulfilled', () => {
         const schema = bool().predicate(x => x === false);
 
-        const [ predicateError ] = schema.validate(true, ROOT);
+        const { errors: [predicateError] } = schema.validate(true, ROOT);
 
         expect(predicateError.type).to.equal(ERROR_TYPES.PREDICATE);
         expect(predicateError.path).to.equal(ROOT);
     });
 
-    it('BoolSchema.predicate(): .validate() should not return error when predicate is fullfilled', () => {
+    it('BoolSchema.predicate(): .validate() should not return error when predicate is fulfilled', () => {
         const schema = bool().predicate(x => x === false);
 
-        expect(schema.validate(false, ROOT) + '').to.equal([] + '');
+        shouldNotReturnErrors(schema, [false]);
     });
 });
 
@@ -74,7 +74,7 @@ describe('BoolSchema method combinations', () => {
     it('NumberSchema .not() and .required() should cause .validate() to return their respective errors when used together', () => {
         const schema = bool().required().not(true);
 
-        const [ notError ] = schema.validate(true, ROOT);
+        const { errors: [notError] } = schema.validate(true, ROOT);
 
         expect(notError.type).to.equal(ERROR_TYPES.ARGUMENT);
         expect(notError.path).to.equal(ROOT);

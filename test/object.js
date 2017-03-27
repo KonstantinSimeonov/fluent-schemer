@@ -2,14 +2,8 @@
 
 const { expect } = require('chai'),
     { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
-    { string, number, bool, object } = require('../fluent-validator')().schemas;
-
-const ERROR_TYPES = {
-    RANGE: 'range',
-    ARGUMENT: 'argument',
-    TYPE: 'type',
-    PREDICATE: 'predicate'
-};
+    { string, number, bool, object } = require('../lib').createInstance().schemas,
+    { ERROR_TYPES } = require('../lib/errors');
 
 describe('ObjectSchema keys', () => {
     it('ObjectSchema.type should return "object"', () => {
@@ -45,11 +39,13 @@ describe('ObjectSchema keys', () => {
                 age: -1
             };
 
-        const errors = personSchema.validate(invalidPerson, 'person');
-
-        const nameError = errors.find(e => e.path === 'person.name'),
-            ageError = errors.find(e => e.path === 'person.age'),
-            isStudentError = errors.find(e => e.path === 'person.isStudent');
+        const {
+            errors: {
+                name: [nameError],
+                age: [ageError],
+                isStudent: [isStudentError]
+            }
+        } = personSchema.validate(invalidPerson, 'person');
 
         expect(nameError.type).to.equal(ERROR_TYPES.RANGE);
         expect(ageError.type).to.equal(ERROR_TYPES.RANGE);
@@ -70,18 +66,19 @@ describe('ObjectSchema keys', () => {
             size: '10'
         };
 
-        const [
-            isPrivateError,
-            locError,
-            mainLangError,
-            sizeError
-        ] = softwareProjectSchema.validate(invalidProject, 'proj')
-            .sort((a, b) => a.path.localeCompare(b.path));
+        const {
+            errors: {
+                mainLang: [mainLangError],
+                loc: [locError],
+                size: [sizeError],
+                isPrivate: [isPrivateError]
+            }
+        } = softwareProjectSchema.validate(invalidProject, 'gosho');
 
-        expect(isPrivateError.path).to.equal('proj.isPrivate');
-        expect(locError.path).to.equal('proj.loc');
-        expect(mainLangError.path).to.equal('proj.mainLang');
-        expect(sizeError.path).to.equal('proj.size');
+        expect(isPrivateError.type).to.equal(ERROR_TYPES.TYPE);
+        expect(locError.type).to.equal(ERROR_TYPES.TYPE);
+        expect(mainLangError.type).to.equal(ERROR_TYPES.TYPE);
+        expect(sizeError.type).to.equal(ERROR_TYPES.TYPE);
     });
 
     it('Should return errors for keys with invalid values but of correct type when .required() has not been called', () => {
@@ -97,11 +94,13 @@ describe('ObjectSchema keys', () => {
             content: 'aa'
         };
 
-        const [
-            contentError,
-            idError,
-            likesCountError
-        ] = postSchema.validate(invalidPost, 'post').sort((err1, err2) => err1.path.localeCompare(err2.path));
+        const {
+            errors: {
+                content: [contentError],
+                id: [idError],
+                likesCount: [likesCountError]
+            }
+        } = postSchema.validate(invalidPost, 'post');
 
         expect(contentError.path).to.equal('post.content');
         expect(contentError.type).to.equal(ERROR_TYPES.RANGE);
@@ -125,7 +124,7 @@ describe('ObjectSchema keys', () => {
                 isStudent: false
             };
 
-        expect(personSchema.validate(pencho, '') + '').to.equal([] + '');
+        shouldNotReturnErrors(personSchema, [pencho]);
     });
 
     it('Should not return errors for keys that have value of invalid type but are not required', () => {
@@ -135,9 +134,12 @@ describe('ObjectSchema keys', () => {
             carnivore: bool()
         });
 
-        const blankObj = {};
+        const funkyAnimals = [
+            { breed: 101, weightKg: 'doge', carnivore: 'nahman' },
+            { breed: null, weightKg: 'tosho' },
+        ];
 
-        expect(animalSchema.validate(blankObj, '') + '').to.equal([] + '');
+        shouldNotReturnErrors(animalSchema, funkyAnimals);
     });
 });
 
@@ -161,11 +163,15 @@ describe('ObjectSchema nesting', () => {
             }
         };
 
-        const [
-            crossPlatformError,
-            nameError,
-            versionError
-        ] = compilerSchema.validate(invalidCompiler, 'compiler').sort((err1, err2) => err1.path.localeCompare(err2.path));
+        const {
+            errors: {
+                lang: {
+                    name: [nameError],
+                    crossPlatform: [crossPlatformError],
+                    version: [versionError]
+                }
+            }
+        } = compilerSchema.validate(invalidCompiler, 'compiler');
 
         expect(crossPlatformError.path).to.equal('compiler.lang.crossPlatform');
         expect(crossPlatformError.type).to.equal(ERROR_TYPES.TYPE);
@@ -184,11 +190,11 @@ describe('ObjectSchema nesting', () => {
 
         const invalidObj = {};
 
-        const errors = schema.validate(invalidObj, 'obj');
+        const { errors: { options: errors } } = schema.validate(invalidObj, 'obj');
 
         expect(errors.length).to.equal(1);
 
-        const [ error ] = errors;
+        const [error] = errors;
 
         expect(error.type).to.equal(ERROR_TYPES.TYPE);
         expect(error.path).to.equal('obj.options');
@@ -199,8 +205,6 @@ describe('ObjectSchema nesting', () => {
             options: object({ opts: string() })
         });
 
-        const invalidObj = {};
-
-        expect(schema.validate(invalidObj, '') + '').to.equal([] + '');
+        shouldNotReturnErrors(schema, [{}, null]);
     });
 });
