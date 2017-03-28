@@ -2,7 +2,7 @@
 
 const FluentSchemer = require('./lib').createInstance(),
     { string, number, object, array, union, enumeration, bool } = FluentSchemer.schemas;
-
+const c = { name: 1 };
 const schema = object({
     test: array(object({ name: string().required() })),
     name: string().minlength(5).predicate(value => value !== 'ivan'),
