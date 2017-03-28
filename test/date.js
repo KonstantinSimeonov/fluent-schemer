@@ -1,7 +1,7 @@
 const { expect } = require('chai'),
     { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
-    { date } = require('../fluent-validator')().schemas,
-    ERROR_TYPES = require('../fluent-validator/errors').ERROR_TYPES;
+    { date } = require('../lib').createInstance().schemas,
+    ERROR_TYPES = require('../lib/errors').ERROR_TYPES;
 
 describe('DateSchema individual methods', () => {
     it('DateSchema.type: should return date', () => {
@@ -51,7 +51,7 @@ describe('DateSchema individual methods', () => {
 
     it('DateSchema.before(): .validate() should not return errors for dates before or equal to the provided date value', () => {
         const schema = date().before(new Date('02/02/2016')),
-            dates = [new Date('02/02/2016'), new Date('10/10/1993')];
+            dates = [new Date('02/03/2016'), new Date('10/10/2020')];
 
         shouldNotReturnErrors(schema, dates);
     });
@@ -92,35 +92,35 @@ describe('DateSchema individual methods', () => {
     });
 
     it('DateSchema.monthBetween(): .validate() should not return errors for values whose month value is in the provided range when start is greater than end', () => {
-        const schema = date().monthBetween(10, 1),
-            dates = ['11', '12', '01', '02'].map(monthStr => new Date(`${monthStr}/25/1898`));
+        const schema = date().monthBetween(8, 1),
+            dates = ['10', '11', '12', '01'].map(monthStr => new Date(`${monthStr}/25/1898`));
 
         shouldNotReturnErrors(schema, dates);
     });
 
-    it('DateSchema.dayBetween(): .validate() should return errors for dates whose day of month value is not in the provided range when start is less than end', () => {
-        const schema = date().dayBetween(5, 15),
+    it('DateSchema.dateBetween(): .validate() should return errors for dates whose day of month value is not in the provided range when start is less than end', () => {
+        const schema = date().dateBetween(5, 15),
             dates = [0, 1, 2, 3, 4, 16, 17, 18, 19, 30].map(day => new Date(2017, 03, day));
 
         shouldReturnErrors(schema, dates, { type: ERROR_TYPES.RANGE });
     });
 
-    it('DateSchema.dayBetween(): .validate() should return errors for dates whose values are not in the provided range when start is greater than end', () => {
-        const schema = date().dayBetween(15, 5),
+    it('DateSchema.dateBetween(): .validate() should return errors for dates whose values are not in the provided range when start is greater than end', () => {
+        const schema = date().dateBetween(15, 5),
             dates = Array.from({ length: 15 - 6 }).map((_, i) => i + 6).map(day => new Date(2010, 5, day));
 
         shouldReturnErrors(schema, dates, { type: ERROR_TYPES.RANGE });
     });
 
-    it('DateSchema.dayBetween(): .validate() should not return errors with date values with valid days when start is less than end', () => {
-        const schema = date().dayBetween(20, 30),
+    it('DateSchema.dateBetween(): .validate() should not return errors with date values with valid days when start is less than end', () => {
+        const schema = date().dateBetween(20, 30),
             dates = Array.from({ length: 30 - 20 }).map((_, i) => new Date(1777, 2, i + 20));
 
         shouldNotReturnErrors(schema, dates);
     });
 
-    it('DateSchema.dayBetween(): .validate() should not return errors with date values with valid days when start is greater than end', () => {
-        const schema = date().dayBetween(20, 10),
+    it('DateSchema.dateBetween(): .validate() should not return errors with date values with valid days when start is greater than end', () => {
+        const schema = date().dateBetween(20, 10),
             dates = [ 20, 25, 30, 0, 1, 5, 10 ].map(d => new Date(1999, 10, d));
 
         shouldNotReturnErrors(schema, dates);

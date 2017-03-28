@@ -1,7 +1,17 @@
+///</// <reference path="./fluent-schemer.d.ts" />
+
 'use strict';
 
+/**
+ * @type {Schemer.IFluentSchemer}
+ */
 const FluentSchemer = require('./lib').createInstance(),
-    { string, number, object, array, union, enumeration, bool } = FluentSchemer.schemas;
+    {
+        string,
+        number,
+        object,
+        array,
+        union, enumeration, bool } = FluentSchemer.schemas;
 
 const schema = object({
     test: array(object({ name: string().required() })),
@@ -10,7 +20,7 @@ const schema = object({
     money: number().max(100),
     skill: object({
         title: string().required(),
-    level: number().min(1).max(10).integer().required()
+        level: number().min(1).max(10).integer().required()
     })
         .required(),
     weapons: array(string()).required(),
@@ -38,7 +48,7 @@ const value = {
 
 const { errors, errorsCount } = schema.validate(value);
 
-if(errorsCount) {
+if (errorsCount) {
     console.log(errors);
 }
 
@@ -73,7 +83,7 @@ if(errorsCount) {
 // console.log(sch.validate(root, 'root'));
 
 const v = require('./es5').createInstance().schemas,
-string1 = v.string,
-number2 = v.number;
+    string1 = v.string,
+    number2 = v.number;
 
 console.log(string1(), number2());
