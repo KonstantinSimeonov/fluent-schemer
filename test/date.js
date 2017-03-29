@@ -49,9 +49,16 @@ describe('DateSchema individual methods', () => {
         shouldReturnErrors(schema, dates, { type: ERROR_TYPES.RANGE });
     });
 
-    it('DateSchema.before(): .validate() should not return errors for dates before or equal to the provided date value', () => {
-        const schema = date().before(new Date('02/02/2016')),
-            dates = [new Date('02/03/2016'), new Date('10/10/2020')];
+    it('DateSchema.before(): .validate() should not return errors for dates before or equal to the provided date value when date object is provided', () => {
+        const schema = date().before('02/02/2016'),
+            dates = [new Date('02/01/2016'), new Date('10/10/1999')];
+
+        shouldNotReturnErrors(schema, dates);
+    });
+
+    it('DateSchema.before(): .validate() should not return errors for dates before or equal to the provided date value when string date is provided', () => {
+        const schema = date().before('02/02/2016'),
+            dates = ['02/01/2016', '10/10/1999'];
 
         shouldNotReturnErrors(schema, dates);
     });
@@ -63,13 +70,20 @@ describe('DateSchema individual methods', () => {
         shouldReturnErrors(schema, dates, { type: ERROR_TYPES.RANGE });
     });
 
-    it('DateSchema.after(): .validate() should not return errors for values after than or equal to the provided date value', () => {
+    it('DateSchema.after(): .validate() should not return errors for values after than or equal to the provided date value when date objects are provided', () => {
         const schema = date().after(new Date('01/14/2017')),
             laterDates = ['02/14/2017', '02/15/2017', new Date(2017, 1, 14, 23, 59, 59)].map(d => new Date(d));
 
         shouldNotReturnErrors(schema, laterDates);
     });
-    
+
+    it('DateSchema.after(): .validate() should not return errors for values after than or equal to the provided date value when date strings are provided', () => {
+        const schema = date().after(new Date('01/14/2017')),
+            laterDates = ['02/14/2017', '02/15/2017'];
+
+        shouldNotReturnErrors(schema, laterDates);
+    });
+
     it('DateSchema.monthBetween(): .validate() should return errors for values whose month value is not in the provided range when start is less than end', () => {
         const schema = date().monthBetween(3, 7),
             dates = ['01/01/1000', '02/02/1000', '03/10/2016', '09/02/2016'].map(x => new Date(x));
@@ -121,7 +135,7 @@ describe('DateSchema individual methods', () => {
 
     it('DateSchema.dateBetween(): .validate() should not return errors with date values with valid days when start is greater than end', () => {
         const schema = date().dateBetween(20, 10),
-            dates = [ 20, 25, 30, 0, 1, 5, 10 ].map(d => new Date(1999, 10, d));
+            dates = [20, 25, 30, 0, 1, 5, 10].map(d => new Date(1999, 10, d));
 
         shouldNotReturnErrors(schema, dates);
     });
