@@ -6,12 +6,7 @@
  * @type {Schemer.IFluentSchemer}
  */
 const FluentSchemer = require('./lib').createInstance(),
-    {
-        string,
-        number,
-        object,
-        array,
-        union, enumeration, bool } = FluentSchemer.schemas;
+    { string, number, object, array, union, enumeration, bool } = FluentSchemer.schemas;
 
 const schema = object({
     test: array(object({ name: string().required() })),

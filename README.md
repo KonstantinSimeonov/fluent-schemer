@@ -22,14 +22,17 @@ Aims to provide declarative, expressive and elegant approach to validation, whil
 
 ## Planned features/wishful thinking
 
-| features                           | state                                    |
-|:----------------------------------:|:----------------------------------------:|
-| DateSchema                         | under construction                       |
-| Async api                          | under construction                       |
-| Better support for recursive types | not started                              |
-| ES5 build                          | **done**                                 |
-| Browser build                      | **available, still under construction**  |
-| Typescript type definition         | not confirmed                            |
+| features                                                   | state                                    |
+|:----------------------------------------------------------:|:----------------------------------------:|
+| DateSchema                                                 | under construction                       |
+| Async api                                                  | under construction                       |
+| Better support for recursive types                         | not started                              |
+| ES5 build                                                  | **done**                                 |
+| Browser build                                              | **available, still under construction**  |
+| Build-time tree shaking for browser build                  | not started                              |
+| Typescript type definition                                 | not confirmed                            |
+| Immutable schemas                                          | not started                              |
+| Throw errors on rubbish arguments passed to schema methods | not start                                |
 
 ### Running the tests
 
