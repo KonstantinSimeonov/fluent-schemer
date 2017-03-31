@@ -3,10 +3,11 @@
 const fs = require('fs'),
     { expect } = require('chai'),
     getFluentSchemer = () => require('../dist/fluent-schemer'),
-    testTemplates = require('../helpers/test-templates');
+    testTemplates = require('../helpers/test-templates')(expect);
 
-fs.readdirSync(__dirname).filter(fn => fn !== 'node.js').forEach(tfn => {
-    const testFn = require(`${__dirname}/${tfn}`);
+
+fs.readdirSync(`${__dirname}/tests`).filter(fn => fn !== 'node.js' && fn !== 'browser.js' && fn !== 'test.html').forEach(tfn => {
+    const testFn = require(`${__dirname}/tests/${tfn}`);
 
     testFn(expect, getFluentSchemer, testTemplates);
 });

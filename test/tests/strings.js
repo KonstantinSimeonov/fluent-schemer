@@ -1,9 +1,5 @@
+/* globals describe, it */
 'use strict';
-
-// const { expect } = require('chai'),
-//     { shouldReturnErrors, shouldNotReturnErrors, forEachErrors } = require('../helpers/test-templates'),
-//     { string } = require('../dist/fluent-schemer').createInstance().schemas,
-//     { ERROR_TYPES } = require('../dist/fluent-schemer').errorsFactory;
 
 function stringTests(expect, getFluentSchemer, testTemplates) {
     const ROOT = 'root',

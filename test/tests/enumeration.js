@@ -1,9 +1,5 @@
+/* globals describe, it */
 'use strict';
-
-// const { expect } = require('chai'),
-//     { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
-//     { enumeration } = require('../dist/fluent-schemer').createInstance().schemas,
-//     { ERROR_TYPES } = require('../dist/fluent-schemer').errorsFactory;
 
 function enumerationTests(expect, getFluentSchemer, testTemplates) {
     const { shouldReturnErrors, shouldNotReturnErrors } = testTemplates,

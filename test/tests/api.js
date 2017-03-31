@@ -1,7 +1,5 @@
+/* globals describe, it */
 'use strict';
-
-// const { expect } = require('chai'),
-//     createSchemerInstance = require('../dist/fluent-schemer').createInstance;
 
 function apiTests(expect, getFluentSchemer) {
     const createSchemerInstance = getFluentSchemer().createInstance;

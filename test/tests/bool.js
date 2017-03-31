@@ -1,10 +1,5 @@
+/* globals describe, it */
 'use strict';
-
-// const { expect } = require('chai'),
-//     { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
-//     { bool } = require('../dist/fluent-schemer').createInstance().schemas,
-//     { ERROR_TYPES } = require('../dist/fluent-schemer').errorsFactory;
-
 
 function boolTests(expect, getFluentSchemer, testTemplates) {
     const ROOT = 'boolvalue',

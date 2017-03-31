@@ -1,0 +1,51 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Mocha Tests</title>
+    <link href="../node_modules/mocha/mocha.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="mocha"></div>
+
+    <script src="../node_modules/chai/chai.js"></script>
+    <script>
+        const { expect } = chai;
+    </script>
+    <script src="../node_modules/mocha/mocha.js"></script>
+    <script src="../dist/fluent-schemer.es5.min.js"></script>
+
+    <script>
+        mocha.setup('bdd')
+    </script>
+    <script src="../helpers/test-templates.js"></script>
+    <script src="./tests/api.js"></script>
+    <script src="./tests/array.js"></script>
+    <script src="./tests/bool.js"></script>
+    <script src="./tests/enumeration.js"></script>
+    <script src="./tests/numbers.js"></script>7
+    <script src="./tests/object.js"></script>
+    <script src="./tests/strings.js"></script>
+    <script src="./tests/union.js"></script>
+    <script src="./browser.js"></script>
+    <script>
+        const testDependencies = [expect, () => FluentSchemer, getTestHelpers(expect)],
+            tests = [
+                apiTests,
+                arrayTests,
+                boolTests,
+                enumerationTests,
+                numberTests,
+                objectTests,
+                stringTests,
+                unionTests
+            ];
+
+        tests.forEach(t => t(...testDependencies));
+
+        mocha.run();
+    </script>
+</body>
+
+</html>
