@@ -2,8 +2,8 @@
 
 const { expect } = require('chai'),
     { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
-    { enumeration } = require('../lib').createInstance().schemas,
-    { ERROR_TYPES } = require('../lib/errors');
+    { enumeration } = require('../dist/fluent-schemer').createInstance().schemas,
+    { ERROR_TYPES } = require('../dist/fluent-schemer').errorsFactory;
 
 describe('EnumerationSchema with primitive values', () => {
     it('Should not return errors for values that are part of the schema enumeration', () => {

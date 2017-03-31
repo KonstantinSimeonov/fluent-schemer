@@ -237,6 +237,9 @@ const defaultBaseSchema = __WEBPACK_IMPORTED_MODULE_0__schemas_index__["a" /* sc
 const createInstance = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__create_instance__["a" /* default */])(defaultBaseSchema, __WEBPACK_IMPORTED_MODULE_1__errors_js__, __WEBPACK_IMPORTED_MODULE_0__schemas_index__["a" /* schemas */].createConcreteSchemaClassFunctions);
 /* harmony export (immutable) */ __webpack_exports__["createInstance"] = createInstance;
 
+const errorsFactory = __WEBPACK_IMPORTED_MODULE_1__errors_js__;
+/* harmony export (immutable) */ __webpack_exports__["errorsFactory"] = errorsFactory;
+
 
 /***/ }),
 /* 4 */

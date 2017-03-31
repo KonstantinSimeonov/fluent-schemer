@@ -2,8 +2,8 @@
 
 const { expect } = require('chai'),
     { shouldReturnErrors, shouldNotReturnErrors, forEachErrors } = require('../helpers/test-templates'),
-    { string } = require('../lib').createInstance().schemas,
-    { ERROR_TYPES } = require('../lib/errors');
+    { string } = require('../dist/fluent-schemer').createInstance().schemas,
+    { ERROR_TYPES } = require('../dist/fluent-schemer').errorsFactory;
     
 const ROOT = 'root';
 

@@ -2,8 +2,8 @@
 
 const { expect } = require('chai'),
     { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
-    { bool } = require('../lib').createInstance().schemas,
-    { ERROR_TYPES } = require('../lib/errors');
+    { bool } = require('../dist/fluent-schemer').createInstance().schemas,
+    { ERROR_TYPES } = require('../dist/fluent-schemer').errorsFactory;
 
 const ROOT = 'boolvalue';
 

@@ -2,8 +2,8 @@
 
 const { expect } = require('chai'),
     { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
-    { string, number, bool, object } = require('../lib').createInstance().schemas,
-    { ERROR_TYPES } = require('../lib/errors');
+    { string, number, bool, object } = require('../dist/fluent-schemer').createInstance().schemas,
+    { ERROR_TYPES } = require('../dist/fluent-schemer').errorsFactory;
 
 describe('ObjectSchema keys', () => {
     it('ObjectSchema.type should return "object"', () => {
