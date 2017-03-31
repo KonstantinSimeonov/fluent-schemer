@@ -1,7 +1,7 @@
 'use strict';
 
 const { expect } = require('chai'),
-    createSchemerInstance = require('../lib').createInstance;
+    createSchemerInstance = require('../dist/fluent-schemer').createInstance;
 
 describe('API tests', () => {
     it('Providing no include or exclude options should return all schemas', () => {
@@ -36,7 +36,7 @@ describe('API tests', () => {
     it('.extendWith() should add the given schema to the validator', () => {
         let TestSch;
 
-        const testSchemaFactory = (BaseSchema, { createError, ERROR_TYPES }) => {
+        const testSchemaFactory = function test(BaseSchema, { createError, ERROR_TYPES }) {
             expect(BaseSchema).to.be.a('function');
             expect(createError).to.be.a('function');
             expect(ERROR_TYPES).to.be.an('object');
@@ -52,7 +52,7 @@ describe('API tests', () => {
 
         const validator = createSchemerInstance();
 
-        validator.extendWith('test', testSchemaFactory);
+        validator.extendWith(testSchemaFactory);
 
         const { test } = validator.schemas;
 

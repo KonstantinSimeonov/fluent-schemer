@@ -234,11 +234,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 const defaultBaseSchema = __WEBPACK_IMPORTED_MODULE_0__schemas_index__["a" /* schemas */].createBaseSchemaClass(__WEBPACK_IMPORTED_MODULE_1__errors_js__);
 
-const FluentSchemer = {
-    createInstance: __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__create_instance__["a" /* default */])(defaultBaseSchema, __WEBPACK_IMPORTED_MODULE_1__errors_js__, __WEBPACK_IMPORTED_MODULE_0__schemas_index__["a" /* schemas */].createConcreteSchemaClassFunctions)
-};
-/* harmony export (immutable) */ __webpack_exports__["FluentSchemer"] = FluentSchemer;
-
+const createInstance = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__create_instance__["a" /* default */])(defaultBaseSchema, __WEBPACK_IMPORTED_MODULE_1__errors_js__, __WEBPACK_IMPORTED_MODULE_0__schemas_index__["a" /* schemas */].createConcreteSchemaClassFunctions);
+/* harmony export (immutable) */ __webpack_exports__["createInstance"] = createInstance;
 
 
 /***/ }),
