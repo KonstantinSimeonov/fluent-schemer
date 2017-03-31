@@ -1,51 +1,61 @@
 'use strict';
 
-const { expect } = require('chai'),
-    { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
-    { enumeration } = require('../dist/fluent-schemer').createInstance().schemas,
-    { ERROR_TYPES } = require('../dist/fluent-schemer').errorsFactory;
+// const { expect } = require('chai'),
+//     { shouldReturnErrors, shouldNotReturnErrors } = require('../helpers/test-templates'),
+//     { enumeration } = require('../dist/fluent-schemer').createInstance().schemas,
+//     { ERROR_TYPES } = require('../dist/fluent-schemer').errorsFactory;
 
-describe('EnumerationSchema with primitive values', () => {
-    it('Should not return errors for values that are part of the schema enumeration', () => {
-        const someEducationLevels = ['none', 'primary school', 'secondary school', 'bachelor'],
-            educationSchema = enumeration(...someEducationLevels);
+function enumerationTests(expect, getFluentSchemer, testTemplates) {
+    const { shouldReturnErrors, shouldNotReturnErrors } = testTemplates,
+        { enumeration } = getFluentSchemer().createInstance().schemas,
+        { ERROR_TYPES } = getFluentSchemer().errorsFactory;
 
-        shouldNotReturnErrors(educationSchema, someEducationLevels);
+    describe('EnumerationSchema with primitive values', () => {
+        it('Should not return errors for values that are part of the schema enumeration', () => {
+            const someEducationLevels = ['none', 'primary school', 'secondary school', 'bachelor'],
+                educationSchema = enumeration(...someEducationLevels);
+
+            shouldNotReturnErrors(educationSchema, someEducationLevels);
+        });
+
+        it('Should return errors for values that are not a part of the schema enumeration', () => {
+            const enumerationSchema = enumeration(1, 4, 10, 33),
+                notLevels = [-5, 11, 15, 78];
+
+            shouldReturnErrors(enumerationSchema, notLevels, { type: ERROR_TYPES.ARGUMENT, root: 'val' });
+        });
+
+        it('Should not return errors for enumerations with values of different types', () => {
+            const weirdoEnum = [1, true, 'podlena', null],
+                schema = enumeration(...weirdoEnum);
+
+            shouldNotReturnErrors(schema, weirdoEnum);
+        });
+
+        it('EnumerationSchema declared with a map should return errors for values that are not included', () => {
+            const errorTypes = {
+                engine: 'EngineExecutionError',
+                application: 'ApplicationError',
+                database: 'DatabaseError'
+            },
+                schema = enumeration(errorTypes);
+
+            shouldReturnErrors(schema, ['Engine', 'gosho', 1, 2, true, null, {}, [], 'podlqrkova'], { type: ERROR_TYPES.ARGUMENT });
+        });
+
+        it('EnumerationSchema declared with a map should not return errors for values included in the enumeration', () => {
+            const errorTypes = {
+                engine: 'EngineExecutionError',
+                application: 'ApplicationError',
+                database: 'DatabaseError'
+            },
+                schema = enumeration(errorTypes);
+
+            shouldNotReturnErrors(schema, Object.keys(errorTypes).map(k => errorTypes[k]));
+        });
     });
+}
 
-    it('Should return errors for values that are not a part of the schema enumeration', () => {
-        const enumerationSchema = enumeration(1, 4, 10, 33),
-            notLevels = [-5, 11, 15, 78];
-
-        shouldReturnErrors(enumerationSchema, notLevels, { type: ERROR_TYPES.ARGUMENT, root: 'val' });
-    });
-
-    it('Should not return errors for enumerations with values of different types', () => {
-        const weirdoEnum = [1, true, 'podlena', null],
-            schema = enumeration(...weirdoEnum);
-
-        shouldNotReturnErrors(schema, weirdoEnum);
-    });
-
-    it('EnumerationSchema declared with a map should return errors for values that are not included', () => {
-        const errorTypes = {
-            engine: 'EngineExecutionError',
-            application: 'ApplicationError',
-            database: 'DatabaseError'
-        },
-            schema = enumeration(errorTypes);
-
-        shouldReturnErrors(schema, ['Engine', 'gosho', 1, 2, true, null, {}, [], 'podlqrkova'], { type: ERROR_TYPES.ARGUMENT });
-    });
-
-    it('EnumerationSchema declared with a map should not return errors for values included in the enumeration', () => {
-        const errorTypes = {
-            engine: 'EngineExecutionError',
-            application: 'ApplicationError',
-            database: 'DatabaseError'
-        },
-            schema = enumeration(errorTypes);
-
-        shouldNotReturnErrors(schema, Object.keys(errorTypes).map(k => errorTypes[k]));
-    });
-});
+if(typeof module !== 'undefined' && module.exports) {
+    module.exports = enumerationTests;
+}
