@@ -1,1 +1,1 @@
-rm -rf node_modules es5-build browser-build coverage .nyc_output
+rm -rf node_modules dist coverage .nyc_output

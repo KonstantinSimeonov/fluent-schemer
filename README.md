@@ -32,7 +32,8 @@ Aims to provide declarative, expressive and elegant approach to validation, whil
 | Build-time tree shaking for browser build                  | not started                              |
 | Typescript type definition                                 | not confirmed                            |
 | Immutable schemas                                          | not started                              |
-| Throw errors on rubbish arguments passed to schema methods | not start                                |
+| Throw errors on rubbish arguments passed to schema methods | not started                              |
+| UMD compliance                                             | under construction                       |
 
 ### Running the tests
 
