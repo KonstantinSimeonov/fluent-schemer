@@ -52,7 +52,7 @@ describe('API tests', () => {
 
         const validator = createSchemerInstance();
 
-        validator.extendWith(testSchemaFactory);
+        validator.extendWith('test', testSchemaFactory);
 
         const { test } = validator.schemas;
 
