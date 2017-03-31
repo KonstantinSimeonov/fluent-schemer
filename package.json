@@ -1,8 +1,8 @@
 {
   "name": "fluent-schemer",
-  "version": "0.12.0",
+  "version": "1.0.0",
   "repository": "https://github.com/KonstantinSimeonov/fluent-schemer",
-  "description": "Small schema validation library that aims to provide declarative, expressive and elegant approach to validation, while providing an intuitive, easy-to-use api",
+  "description": "Small umd compliant schema validation library that aims to provide declarative, expressive and elegant approach to validation, while providing an intuitive, easy-to-use api.",
   "main": "./dist/fluent-schemer.js",
   "keywords": [
     "validation",
@@ -13,9 +13,6 @@
     "es2015",
     "schemer"
   ],
-  "directories": {
-    "test": "tests"
-  },
   "scripts": {
     "test": "nyc --reporter=html --reporter=text mocha ./test/node.js",
     "browser-test": "node ./test/browser.js",

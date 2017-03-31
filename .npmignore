@@ -1,0 +1,11 @@
+clean.sh
+.gitignore
+TODOS.md
+demo.js
+bower.json
+typings
+node_modules
+.nyc_output
+coverage
+.travis.yml
+typings.json

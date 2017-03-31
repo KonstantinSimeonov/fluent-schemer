@@ -2,17 +2,17 @@
 
 <a href='https://travis-ci.org/KonstantinSimeonov/fluent-schemer'><img src='https://travis-ci.org/KonstantinSimeonov/fluent-schemer.svg?branch=master' alt='Coverage Status' /></a> <a href='https://coveralls.io/github/KonstantinSimeonov/fluent-schemer'><img src='https://coveralls.io/repos/github/KonstantinSimeonov/fluent-schemer/badge.svg' alt='Coverage Status' /></a>
 
-
 Aims to provide declarative, expressive and elegant approach to validation, while providing an intuitive, easy-to-use api.
 
 ## It's cool, because
-- it fully embraces ES2015 features such as classes, fat arrow functions, mixins, destructuring statements
-- has a fluent, readable and declarative api
-- no production dependencies - using `fluent-schemer` does not tie you to any other packages
-- helps developers get rid of long if-else code blocks
-- helps developers reuse validation logic
-- extending the validator with a new schema either statically or dynamically is trivial
-- the codebase is small - having a problem or just curious? Reading the source code won't be time consuming :)
+- it **fully embraces ES2015** features such as classes, fat arrow functions, mixins, destructuring statements, modules
+- has a **fluent, readable and declarative** api
+- **umd compliant** - use it with node or in the browser with scripts tags or module loaders
+- **no production dependencies** - using `fluent-schemer` does not tie you to any other packages
+- helps developers **get rid of long if-else code** blocks
+- **promotes code reuse** (you can even share validation code between server and client)
+- easy to extends with custom schemas
+- **small codebase** - having a problem or just curious? Reading the source code won't be time consuming :)
 
 ## It will be cool, because
 - every script, that is part of the validator, will eventually be thoroughly unit tested
@@ -27,18 +27,16 @@ Aims to provide declarative, expressive and elegant approach to validation, whil
 | DateSchema                                                 | under construction                       |
 | Async api                                                  | under construction                       |
 | Better support for recursive types                         | not started                              |
-| ES5 build                                                  | **done**                                 |
-| Browser build                                              | **available, still under construction**  |
 | Build-time tree shaking for browser build                  | not started                              |
-| Typescript type definition                                 | not confirmed                            |
+| Typescript type definition                                 | under construction                       |
 | Immutable schemas                                          | not started                              |
 | Throw errors on rubbish arguments passed to schema methods | not started                              |
-| UMD compliance                                             | under construction                       |
 
 ### Running the tests
 
 ```
 npm install
+npm run build
 npm test
 ```
 

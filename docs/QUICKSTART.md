@@ -10,12 +10,25 @@ or
 ## Set it up in your code
 
 ### Node.js
+
+- ES2015
 ```js
 const FluentSchemer = require('fluent-schemer'),
     validator = FluentSchemer.createInstance(),
     { number, string, bool, object, array } = validator.schemas;
 
 const ageSchema = number().min(0).integer().required();
+
+console.log(ageSchema.validate(-1.5));
+```
+
+- ES5
+```js
+var FluentSchemer = require('path_to_modules/fluent-schemer/dist/fluent-schemer.es5'),
+    validator = FluentSchemer.createInstance(),
+    number = validator.schemas.number;
+
+var ageSchema = number().min(0).integer().required();
 
 console.log(ageSchema.validate(-1.5));
 ```
