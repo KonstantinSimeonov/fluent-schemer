@@ -1,5 +1,7 @@
 # `ObjectSchema` **extends** `BaseSchema` 
 
+`ObjectSchema` is aliased as `object`. Valid objects are anything that satisfies `typeof v === 'object'` and is neither a function nor an array. Provides recursive validation for objects - the object schema accepts a map of subschemas. When a value is being validated, it will have it's values validated by the schemas at the respective keys in the object schema. Object schemas can be nested as desired. Validation errors are return in a map - each key hold the errors that occurred for it's value.
+
 - **NOTES**
     - recursive types are not yet supported, but are a planned feature
 

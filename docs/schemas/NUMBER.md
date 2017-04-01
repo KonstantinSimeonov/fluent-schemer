@@ -1,8 +1,10 @@
 # `NumberSchema` **extends** `BaseSchema` 
 
+`NumberSchema` is aliased under the name `number`. Primitive number values or `Number` objects are the only values that are considered valid numbers. `NaN` and `Infinity` are considered invalid by default. This can be overwritten. Provides validations for ranges(min, max), whether a number is an integer. Also provides validations for safe integers. Any validation errors are returned as an array of error objects.
+
 | schema-specific methods                   | explanation                                                                                                                                                          |
 |:----------------------------------------- |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| validateType(value)                       | returns `true` is the value is a primitive or object number and is not `NaN` or `Infinity`.<br> This behaviour can be changed using .allowNaN() and .allowInfinity() |
+| validateType(value)                       | returns `true` is the value is a primitive or object number and is not `NaN` or `Infinity`.<br> This behavior can be changed using .allowNaN() and .allowInfinity() |
 | min(number)                               | set a minimal possible value for the schema                                                                                                                          |
 | max(number)                               | set a maximal possible value for the schema                                                                                                                          |
 | integer()                                 | value should be an integer                                                                                                                                           |

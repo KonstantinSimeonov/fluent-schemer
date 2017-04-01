@@ -1,4 +1,6 @@
-# `StringSchema` **extends** `BaseSchema` 
+# `StringSchema` **extends** `BaseSchema`
+
+`StringSchema` is aliased as `string`. Only primitive string values and `String` objects are considered valid strings. Provides validation for string length and validation by a given regular expression. Any validation errors are returned as an array of error objects.
 
 | schema-specific methods            | explanation                                                  |
 |:---------------------------------- |:------------------------------------------------------------ |
