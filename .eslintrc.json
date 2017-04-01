@@ -1,4 +1,7 @@
 {
+    "parserOptions": {
+        "sourceType": "module"
+    },
     "env": {
         "node": true,
         "browser": true,
@@ -64,7 +67,6 @@
         "newline-before-return": "warn",
         "no-alert": "error",
         "object-curly-spacing": ["warn", "always"],
-        "one-var": "error",
         "prefer-arrow-callback": "warn",
         "prefer-const": "error",
         "prefer-rest-params": "warn",
