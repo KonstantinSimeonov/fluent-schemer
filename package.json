@@ -14,8 +14,8 @@
     "schemer"
   ],
   "scripts": {
-    "test": "npm run build && nyc --reporter=html --reporter=text mocha ./test/node.js",
-    "browser-test": "npm run build && node ./test/browser.js",
+    "test": "nyc --reporter=html --reporter=text mocha ./test/node.js",
+    "browser-test": "node ./test/browser.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "build": "webpack"
   },
