@@ -1,6 +1,3 @@
-/* globals describe, it */
-'use strict';
-
 function arrayTests(expect, getFluentSchemer, testTemplates) {
 	const { shouldReturnErrors, shouldNotReturnErrors } = testTemplates,
 		{ array, string, number, bool, object } = getFluentSchemer().createInstance().schemas,
