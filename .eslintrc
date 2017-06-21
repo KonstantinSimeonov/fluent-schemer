@@ -40,7 +40,6 @@
         "no-var": "error",
         "no-useless-escape": "error",
         "no-unreachable": "error",
-        "no-undefined": "error",
         "no-catch-shadow": "error",
         "no-constant-condition": "error",
         "no-dupe-keys": "error",
