@@ -44,5 +44,5 @@ npm test
 
 Examples can be found in the [docs](./docs).
 
-## [Documentation](./docs)
+## [Documentation](./docs/QUICKSTART.md)
 ## [Task list](./TODOS.md)

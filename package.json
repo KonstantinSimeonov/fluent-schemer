@@ -14,10 +14,10 @@
     "schemer"
   ],
   "scripts": {
-    "test": "nyc --reporter=html --reporter=text mocha ./test/node.js",
-    "browser-test": "node ./test/browser.js",
+    "test": "yarn build && nyc --reporter=html --reporter=text mocha ./test/node.js",
+    "browser-test": "yarn build && node ./test/browser.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "build": "webpack"
+    "build": "yarn && webpack"
   },
   "author": "Konstantin Simeonov<kon.simeonov@protonmail.com>",
   "license": "MIT",
