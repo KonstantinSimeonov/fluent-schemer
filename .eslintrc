@@ -14,7 +14,7 @@
             4
         ],
         "linebreak-style": [
-            "error",
+            "warn",
             "unix"
         ],
         "quotes": [
@@ -22,37 +22,29 @@
             "single",
             { "avoidEscape": true, "allowTemplateLiterals": true }
         ],
-        "semi": [
-            "error",
-            "always"
-        ],
-        "eqeqeq": [
-            "warn",
-            "always"
-        ],
+        "semi": "error",,
+        "eqeqeq": "warn",
         "brace-style": "error",
-        "array-bracket-spacing": "warn",
         "constructor-super": "error",
         "use-isnan": "error",
-        "dot-location": ["error", "property"],
         "strict": ["error", "global"],
         "max-depth": "error",
+		"no-multi-spaces":"error",
+		"no-unexpected-multiline":"error",
         "no-empty": "error",
-        "no-multiple-empty-lines": "warn",
         "no-empty-pattern": "error",
         "no-const-assign": "error",
+		"no-console": "error",
         "no-dupe-args": "error",
         "no-void": "error",
         "no-var": "error",
         "no-useless-escape": "error",
-        "no-useless-constructor": "warn",
-        "no-unused-vars": "warn",
         "no-unreachable": "error",
         "no-undefined": "error",
         "no-catch-shadow": "error",
         "no-constant-condition": "error",
         "no-dupe-keys": "error",
-        "no-eval": "warn",
+        "no-eval": "error",
         "no-redeclare": "error",
         "no-ex-assign": "error",
         "no-func-assign": "error",
@@ -60,17 +52,23 @@
         "no-native-reassign": "error",
         "block-spacing": "error",
         "curly": "error",
-        "eol-last": "warn",
-        "keyword-spacing": "warn",
         "max-params": ["error", 4],
         "no-dupe-class-members": "error",
-        "newline-before-return": "warn",
         "no-alert": "error",
+        "prefer-const": "error",
+        "no-useless-constructor": "warn",
+        "no-unused-vars": "warn",
+        "dot-location": ["warn", "property"],
+        "array-bracket-spacing": "warn",
+        "no-multiple-empty-lines": "warn",
+        "eol-last": "warn",
+        "keyword-spacing": "warn",
+        "newline-before-return": "warn",
         "object-curly-spacing": ["warn", "always"],
         "prefer-arrow-callback": "warn",
-        "prefer-const": "error",
         "prefer-rest-params": "warn",
         "prefer-spread": "warn",
         "space-before-blocks": "warn"
     }
 }
+
