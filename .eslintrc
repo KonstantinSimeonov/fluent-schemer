@@ -11,7 +11,7 @@
     "rules": {
         "indent": [
             "error",
-            4
+            "tab"
         ],
         "linebreak-style": [
             "warn",
@@ -22,7 +22,7 @@
             "single",
             { "avoidEscape": true, "allowTemplateLiterals": true }
         ],
-        "semi": "error",,
+        "semi": "error",
         "eqeqeq": "warn",
         "brace-style": "error",
         "constructor-super": "error",
