@@ -17,10 +17,6 @@
 			"error",
 			"tab"
 		],
-		"linebreak-style": [
-			"warn",
-			"unix"
-		],
 		"quotes": [
 			"error",
 			"single",
