@@ -1,5 +1,1 @@
-'use strict';
-
-const open = require('open');
-
-open(`${__dirname}/test.html`);
+require('open')(`${__dirname}/test.html`);
