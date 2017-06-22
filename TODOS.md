@@ -1,19 +1,22 @@
 # TODO list
 - Unit test every schema
-    - ~~There is a lot of repeating steps in the tests, abstract them~~
+	- There are still a lot of repeating steps
+	- Tests need to be redesigned
+	- Test generation may work
+	- How to make the tests more helpful, descriptive and maintainable?
 - Unit test sync and async api
+	- Would someone ever use an async api?
 - Test public api
 - Analyze performance
+	- Tree shaking would be nice
 - Write documentation
+	- Decide what to do with JSDoc
+- Reduce complexity where possible
+	- Doing away with factory functions in schema definitions is an option
 - Try out typescript type definitions
-- Define browser build
+	- Or maybe rewrite the whole codebase in typescript?
 - Functionality
-    - implement recursive types
-    - date schema
-    - different error reporting strategies
-    - ~~bool schema~~
-    - ~~enum schema~~
-    - ~~make array validations more configurable~~
-    - ~~implement allowNaN(), allowInfinity(), safeInteger() for numbers~~
-    - ~~extract error types from the schemas~~
-    - ~~extract the error message creation~~
+	- implement recursive types
+	- date schema
+	- different error reporting strategies
+		- Some lazy evaluated thingy might be worth checking out
