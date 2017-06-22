@@ -3,8 +3,9 @@
 /**
  * @type {Schemer.IFluentSchemer}
  */
-const FluentSchemer = require('./lib').createInstance(),
-	{ string, number, object, array, union, enumeration, bool } = FluentSchemer.schemas;
+const FluentSchemer = require('./dist/fluent-schemer').createInstance(),
+	{ string, number, object, array, union, enumeration, bool, date } = FluentSchemer.schemas;
+	console.log(FluentSchemer.schemas);
 // const c = { name: 1 };
 // const schema = object({
 // 	test: array(object({ name: string().required() })),
@@ -81,6 +82,4 @@ const FluentSchemer = require('./lib').createInstance(),
 
 // // console.log(string1(), number2());
 
-const arr = array().distinct();
-
-console.log(arr.validate([1, 2, 3]));
+date().required();

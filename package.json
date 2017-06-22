@@ -17,8 +17,8 @@
     "test": "nyc --reporter=html --reporter=text mocha ./test/node.js",
     "browser-test": "node ./test/browser.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "build": "yarn && webpack",
-	"watch": "yarn && webpack-dev-server"
+    "build": "yarn && webpack --progress",
+    "watch": "yarn && webpack --watch --progress"
   },
   "author": "Konstantin Simeonov<kon.simeonov@protonmail.com>",
   "license": "MIT",
@@ -35,7 +35,5 @@
     "uglifyjs-webpack-plugin": "^0.4.0",
     "webpack": "^2.3.2"
   },
-  "dependencies": {
-    "webpack-dev-server": "^2.5.0"
-  }
+  "dependencies": {}
 }
