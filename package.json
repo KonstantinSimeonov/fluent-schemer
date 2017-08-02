@@ -35,5 +35,8 @@
     "uglifyjs-webpack-plugin": "^0.4.0",
     "webpack": "^2.3.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "global": "^4.3.2",
+    "tsc": "^1.20150623.0"
+  }
 }

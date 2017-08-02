@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "alwaysStrict": true,
+        "declaration": true,
+        "declarationDir": "./typings",
+        "target": "es2015",
+        "module": "umd",
+        "noImplicitAny": true,
+        "noUnusedLocals": true,
+        "outDir": "./build",
+        "strict": true,
+        "pretty": true
+    }
+}
