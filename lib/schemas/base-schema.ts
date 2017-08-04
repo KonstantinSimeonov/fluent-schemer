@@ -68,7 +68,7 @@ export default abstract class BaseSchema {
 	 * Virtual method that is used to compare two values for equality in .not(). Can be overridden in child classes.
 	 * @returns {Boolean} - Returns true if the two values are equal, otherwise returns false.
 	 */
-	protected areEqual<T>(firstValue: T, secondValue: T) {
+	protected areEqual(firstValue: any, secondValue: any) {
 		return firstValue === secondValue;
 	}
 

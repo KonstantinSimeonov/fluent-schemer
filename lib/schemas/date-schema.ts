@@ -1,3 +1,4 @@
+import { IValidationError } from '../contracts';
 import { createError, ERROR_TYPES } from '../errors';
 import BaseSchema from './base-schema';
 
@@ -20,8 +21,15 @@ function isInRange(start: number, end: number, value: number) {
 	}
 }
 
+/**
+ * This function is here because typescript is stupid and doesn't understand javascript types and has not compile time templating.
+ * 
+ * @param {keyof Date} componentName 
+ * @param {Date} dateInstance 
+ * @returns {number} 
+ */
 function getDateComponent(componentName: keyof Date, dateInstance: Date): number {
-	switch(componentName) {
+	switch (componentName) {
 		case 'getSeconds':
 		case 'getMinutes':
 		case 'getHours':
@@ -35,7 +43,14 @@ function getDateComponent(componentName: keyof Date, dateInstance: Date): number
 	}
 }
 
-function betweenValidation(start: number, end: number, ranges: { [key: string]: number }, name: string) {
+function betweenValidation(
+	start: number,
+	end: number,
+	ranges: { [key: string]: number },
+	componentName: keyof Date
+) {
+	const name = componentName.replace(/get/, '').toLowerCase();
+
 	if (!is.Undefined(start && end)) {
 		throw new Error(`Cannot set start and end for ${name} twice on a single DateSchema instance`);
 	}
@@ -47,10 +62,10 @@ function betweenValidation(start: number, end: number, ranges: { [key: string]: 
 	ranges['_start' + name] = start;
 	ranges['_end' + name] = end;
 
-	return (value: any, path: string) => {
+	return (value: Date, path: string) => {
 		const rstart = ranges['_start' + name];
 		const rend = ranges['_end' + name];
-		const valueNumber = value['get' + name]();
+		const valueNumber = getDateComponent(componentName, value);
 
 		if (!isInRange(rstart, rend, valueNumber)) {
 			return createError(ERROR_TYPES.RANGE, `Expected ${name} to be in range ${start}:${end} but got ${value}`, path);
@@ -65,8 +80,8 @@ type DateSchemaState = {
 }
 
 export default class DateSchema extends BaseSchema {
-
-	private state: DateSchemaState
+	protected validationFunctions: Array<((value: Date, path: string) => IValidationError)>;
+	private state: DateSchemaState;
 
 	public get type() {
 		return typeName;
@@ -86,7 +101,7 @@ export default class DateSchema extends BaseSchema {
 	 * @param {any} dateConstructorArgs - Arguments that you will typically pass to the Date constructor. 
 	 * @returns {DateSchema} - Returns the current DateSchema instance to enable chaining.
 	 */
-	public before(...dateConstructorArgs) {
+	public before<T>(...dateConstructorArgs: Array<T>) {
 		if (!is.Undefined(this.state._before)) {
 			throw new Error('Cannot set before date twice for a date schema instance');
 		}
@@ -115,7 +130,7 @@ export default class DateSchema extends BaseSchema {
 	 * @param {any} dateConstructorArgs - Arguments that you will typically pass to the Date constructor. 
 	 * @returns {DateSchema} - Returns the current DateSchema instance to enable chaining.
 	 */
-	public after(...dateConstructorArgs) {
+	public after<T>(...dateConstructorArgs: Array<T>) {
 		if (!is.Undefined(this.state._after)) {
 			throw new Error('Cannot set after date twice for a date schema instance');
 		}
@@ -143,93 +158,51 @@ export default class DateSchema extends BaseSchema {
 	 * Set validation for range on date in month.
 	 * If start < end, value will be validated against the range [start, end]
 	 * If start > end, value will be validated against the ranges [0, start] and [end, 31]
-	 * @param {number} start
-	 * @param {number} end
-	 * @returns {DateSchema}
 	 */
 	public dateBetween(start: number, end: number) {
-		const validation = betweenValidation(start, end, this.state.ranges, 'Date');
-		this.pushValidationFn(validation);
+		this.pushValidationFn(
+			betweenValidation(start, end, this.state.ranges, 'getDate')
+		);
 
 		return this;
 	}
 
 	public monthBetween(start: number, end: number) {
-		if (!is.Undefined(this._startMonth || this._endMonth)) {
-			throw new Error('Cannot set an month between on a date schema instance twice');
-		}
-
-		if (!validateRangeBound(start) || !validateRangeBound(end)) {
-			throw new TypeError(`Expected sane integer numbers for monthBetween, but got ${start} and ${end}`);
-		}
-
-		this.pushValidationFn(validateDateTimeRange.bind(null, this, 'getMonth'));
-		this._startMonth = start;
-		this._endMonth = end;
+		this.pushValidationFn(
+			betweenValidation(start, end, this.state.ranges, 'getMonth')
+		);
 
 		return this;
 	}
 
 	public hourBetween(start: number, end: number) {
-		if (!is.Undefined(this._startHours || this._endHours)) {
-			throw new Error('Cannot set an hour between on a date schema instance twice');
-		}
-
-		if (!validateRangeBound(start) || !validateRangeBound(end)) {
-			throw new TypeError(`Expected sane integer numbers for hourBetween, but got ${start} and ${end}`);
-		}
-
-		this.pushValidationFn(validateDateTimeRange.bind(null, this, 'getHours'));
-		this._startHours = start;
-		this._endHours = end;
+		this.pushValidationFn(
+			betweenValidation(start, end, this.state.ranges, 'getHours')
+		);
 
 		return this;
 	}
 
 	public weekdayBetween(start: number, end: number) {
-		if (!is.Undefined(this._startDay || this._endDay)) {
-			throw new Error('Cannot set weekday between on a date schema instance twice');
-		}
-
-		if (!validateRangeBound(start) || !validateRangeBound(end)) {
-			throw new TypeError(`Expected sane integer numbers for weekdayBetween, but got ${start} and ${end}`);
-		}
-
-		this.pushValidationFn((value, path) => validateDateTimeRange(this._startDay, this._endDay, 'getDay', value, path));
-		this._startDay = start;
-		this._endDay = end;
+		this.pushValidationFn(
+			betweenValidation(start, end, this.state.ranges, 'getDay')
+		);
 
 		return this;
 	}
 
 	public minutesBetween(start: number, end: number) {
-		if (!is.Undefined(this._startMinutes || this._endMinutes)) {
-			throw new Error('Cannot set minute between on a date schema instance twice');
-		}
-
-		if (!validateRangeBound(start) || !validateRangeBound(end)) {
-			throw new TypeError(`Expected sane integer numbers for minutesBetween, but got ${start} and ${end}`);
-		}
-
-		this.pushValidationFn(validateDateTimeRange.bind(null, this, 'getMinutes'));
-		this._startMinutes = start;
-		this._endMinutes = end;
+		this.pushValidationFn(
+			betweenValidation(start, end, this.state.ranges, 'getMinutes')
+		);
 
 		return this;
 	}
 
 	public secondsBetween(start: number, end: number) {
-		if (!is.Undefined(this._startSeconds || this._endSeconds)) {
-			throw new Error('Cannot set second between on a date schema instance twice');
-		}
-
-		if (!validateRangeBound(start) || !validateRangeBound(end)) {
-			throw new TypeError(`Expected sane integer numbers for secondsBetween, but got ${start} and ${end}`);
-		}
-
-		this.pushValidationFn(validateDateTimeRange.bind(null, this, 'getSeconds'));
-		this._startSeconds = start;
-		this._endSeconds = end;
+		this.pushValidationFn(
+			betweenValidation(start, end, this.state.ranges, 'getSeconds')
+		);
 
 		return this;
 	}

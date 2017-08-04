@@ -1,56 +1,58 @@
-import { createError, ERROR_TYPES } from '../errors';
 import BaseSchema from './base-schema';
-
 import * as is from '../is';
 
 export const name = 'object';
 
 const typeName = 'object';
 
+type ObjectSchemaState = {
+	subschema: { [id: string]: BaseSchema };
+	allowFunctions: boolean;
+	allowArrays: boolean;
+}
+
 export default class ObjectSchema extends BaseSchema {
-	private subschema: { [id: string]: BaseSchema }
-	private _allowFunctions: boolean
-	private _allowArrays: boolean
+	private _state: ObjectSchemaState;
 
 	public constructor(subschema: { [id: string]: BaseSchema }) {
 		super();
-		this.subschema = subschema || {};
-		this._allowFunctions = false;
-		this._allowArrays = false;
+		this._state.subschema = subschema || {};
+		this._state.allowFunctions = false;
+		this._state.allowArrays = false;
 	}
 
 	public get type() {
 		return typeName;
 	}
 
-	public validateType(value) {
-		const valueIsArray = is.array(value),
-			valueIsFunction = is.function(value);
+	public validateType(value: any) {
+		const valueIsArray = is.Array(value);
+		const valueIsFunction = is.Function(value);
 
-		return is.object(value)
-			|| (this._allowArrays && valueIsArray)
-			|| (this._allowFunctions && valueIsFunction);
+		return is.Object(value)
+			|| (this._state.allowArrays && valueIsArray)
+			|| (this._state.allowFunctions && valueIsFunction);
 	}
 
 	public allowArrays() {
-		this._allowArrays = true;
+		this._state.allowArrays = true;
 
 		return this;
 	}
 
 	public allowFunctions() {
-		this._allowFunctions = true;
+		this._state.allowFunctions = true;
 
 		return this;
 	}
 
-	protected validateValueWithCorrectType(value, path?: string) {
+	protected validateValueWithCorrectType(value: any, path?: string) {
 		const errorsMap = Object.create(null);
 
 		let currentErrorsCount = 0;
 
-		for (const key in this.subschema) {
-			const { errors, errorsCount } = this.subschema[key].validate(value[key], path ? path + '.' + key : key);
+		for (const key in this._state.subschema) {
+			const { errors, errorsCount } = this._state.subschema[key].validate(value[key], path ? path + '.' + key : key);
 			currentErrorsCount += errorsCount;
 			errorsMap[key] = errors;
 		}
