@@ -15,11 +15,11 @@ export default class EnumerationSchema extends BaseSchema {
 	public constructor(...args: any[]) {
 		super();
 
-		if (args.length === 1 && typeof args[0] === 'object') {
-			this._state.allowedValues = Object.keys(args[0]).map(key => args[0][key]);
-		} else {
-			this._state.allowedValues = args;
-		}
+		const isMapEnum = args.length === 1 && typeof args[0] === 'object';
+
+		this._state = {
+			allowedValues: isMapEnum ? Object.keys(args[0]).map(key => args[0][key]) : args
+		};
 
 		this.pushValidationFn((value, path) => {
 			const index = this._state.allowedValues.indexOf(value);

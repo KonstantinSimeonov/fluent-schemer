@@ -1,7 +1,7 @@
-function dateTests(expect, getFluentSchemer, testTemplates) {
+function dateTests(expect, fluentSchemer, testTemplates) {
 	const { shouldReturnErrors, shouldNotReturnErrors } = testTemplates;
-	const { date } = getFluentSchemer().createInstance().schemas;
-	const { ERROR_TYPES } = getFluentSchemer().errorsFactory;
+	const { date } = fluentSchemer;
+	const { ERROR_TYPES } = fluentSchemer;
 
 	describe('DateSchema', () => {
 		describe('get type():', () => {

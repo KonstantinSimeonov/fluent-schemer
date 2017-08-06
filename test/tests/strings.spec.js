@@ -1,8 +1,8 @@
-function stringTests(expect, getFluentSchemer, testTemplates) {
+function stringTests(expect, fluentSchemer, testTemplates) {
 	const ROOT = 'root',
 		{ shouldReturnErrors, shouldNotReturnErrors } = testTemplates,
-		{ string } = getFluentSchemer().createInstance().schemas,
-		{ ERROR_TYPES } = getFluentSchemer().errorsFactory;
+		{ string } = fluentSchemer,
+		{ ERROR_TYPES } = fluentSchemer;
 
 	describe('StringSchema individual methods', () => {
 		it('StringSchema.type should return string', () => {

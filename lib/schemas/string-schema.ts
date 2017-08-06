@@ -7,13 +7,18 @@ export const name = 'string';
 const typeName = 'string';
 
 type StringSchemaState = {
-	minlength: number;
-	maxlength: number;
-	pattern: RegExp
+	minlength?: number;
+	maxlength?: number;
+	pattern?: RegExp
 };
 
 export default class StringSchema extends BaseSchema {
 	private _state: StringSchemaState;
+
+	constructor() {
+		super();
+		this._state = {};
+	}
 
 	public get type() {
 		return typeName;
@@ -30,9 +35,9 @@ export default class StringSchema extends BaseSchema {
 
 		this._state.minlength = length;
 
-		this.pushValidationFn((value, path) => {
-			if (this._state.minlength < length) {
-				return createError(ERROR_TYPES.RANGE, `Expected string with length at least ${length} but got ${value}`, path);
+		this.pushValidationFn((value: string, path: string) => {
+			if (!is.Undefined(this._state.minlength) && this._state.minlength > value.length) {
+				return createError(ERROR_TYPES.RANGE, `Expected string with length at least ${this._state.minlength} but got ${value.length}`, path);
 			}
 		});
 
@@ -40,15 +45,15 @@ export default class StringSchema extends BaseSchema {
 	}
 
 	public maxlength(length: number) {
-		if (!is.Undefined(this._state.minlength)) {
+		if (!is.Undefined(this._state.maxlength)) {
 			throw new Error('Cannot set maxlength twice for a number schema instance');
 		}
 
 		this._state.maxlength = length;
 
-		this.pushValidationFn((value, path) => {
-			if (this._state.maxlength > length) {
-				return createError(ERROR_TYPES.RANGE, `Expected string with length at most ${length} but got ${value}`, path);
+		this.pushValidationFn((value: string, path: string) => {
+			if (!is.Undefined(this._state.maxlength) && this._state.maxlength < value.length) {
+				return createError(ERROR_TYPES.RANGE, `Expected string with length at most ${this._state.minlength} but got ${value.length}`, path);
 			}
 		});
 
@@ -56,14 +61,14 @@ export default class StringSchema extends BaseSchema {
 	}
 
 	public pattern(regexp: RegExp) {
-		if (!is.Undefined(this._state.minlength)) {
+		if (!is.Undefined(this._state.pattern)) {
 			throw new Error('Cannot set maxlength twice for a number schema instance');
 		}
 
 		this._state.pattern = regexp;
 
-		this.pushValidationFn((value, path) => {
-			if (!this._state.pattern.test(value)) {
+		this.pushValidationFn((value: string, path: string) => {
+			if (!is.Undefined(this._state.pattern) && !this._state.pattern.test(value)) {
 				return createError(ERROR_TYPES.ARGUMENT, `Expected ${value} to match pattern but it did not`, path);
 			}
 		});

@@ -1,7 +1,7 @@
-function unionTests(expect, getFluentSchemer, testTemplates) {
+function unionTests(expect, fluentSchemer, testTemplates) {
 	const { shouldReturnErrors, shouldNotReturnErrors } = testTemplates,
-		{ union, string, number, bool, array } = getFluentSchemer().createInstance().schemas,
-		{ ERROR_TYPES } = getFluentSchemer().errorsFactory;
+		{ union, string, number, bool, array } = fluentSchemer,
+		{ ERROR_TYPES } = fluentSchemer;
 
 	describe('UnionSchema individual methods', () => {
 		it('UnionSchema.type: should return concatenation of all possible types', () => {

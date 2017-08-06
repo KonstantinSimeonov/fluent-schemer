@@ -5,7 +5,7 @@ export const name = 'union';
 
 type UnionSchemaState = {
 	subschemas: Array<BaseSchema>;
-	typestring: string
+	typestring?: string
 };
 
 export default class UnionSchema extends BaseSchema {
@@ -14,7 +14,7 @@ export default class UnionSchema extends BaseSchema {
 	public constructor(...subschemas: Array<BaseSchema>) {
 		super();
 
-		this._state.subschemas = subschemas.map(x => x.required());
+		this._state = { subschemas: subschemas.map(x => x.required()) };
 	}
 
 	public get type() {

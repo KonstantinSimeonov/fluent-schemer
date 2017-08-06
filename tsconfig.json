@@ -4,10 +4,9 @@
         "declaration": true,
         "declarationDir": "./typings",
         "target": "es2015",
-        "module": "umd",
+        "module": "commonjs",
         "noImplicitAny": true,
         "noUnusedLocals": true,
-        "outDir": "./build",
         "strict": true,
         "pretty": true
     }

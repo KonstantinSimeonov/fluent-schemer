@@ -6,12 +6,12 @@ import * as is from '../is';
 export const name = 'array';
 
 type ArraySchemaState = {
-	typestring: string;
-	subschema: BaseSchema;
+	typestring?: string;
+	subschema?: BaseSchema;
 	minlength: number;
 	maxlength: number;
-	hasMinLength: boolean;
-	hasMaxLength: boolean;
+	hasMinLength?: boolean;
+	hasMaxLength?: boolean;
 }
 
 export default class ArraySchema extends BaseSchema {
@@ -19,8 +19,11 @@ export default class ArraySchema extends BaseSchema {
 
 	public constructor(subschema: BaseSchema) {
 		super();
-		if (subschema instanceof BaseSchema) {
-			this._state.subschema = subschema.required();
+		if (!is.NullOrUndefined(subschema)) {
+
+			this._state = { subschema: subschema.required(), minlength: 0, maxlength: Infinity };
+		} else {
+			this._state = { minlength: 0, maxlength: Infinity };
 		}
 	}
 
@@ -33,7 +36,7 @@ export default class ArraySchema extends BaseSchema {
 	}
 
 	public validateType(value: any): value is any[] {
-		return is.Array(value) && (!this._state.subschema || value.every((x: any) => this._state.subschema.validateType(x)));
+		return is.Array(value) && (is.NullOrUndefined(this._state.subschema) || value.every((x: any) => this._state.subschema.validateType(x)));
 	}
 
 	public minlength(length: number) {

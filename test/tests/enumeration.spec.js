@@ -1,7 +1,7 @@
-function enumerationTests(expect, getFluentSchemer, testTemplates) {
+function enumerationTests(expect, fluentSchemer, testTemplates) {
 	const { shouldReturnErrors, shouldNotReturnErrors } = testTemplates,
-		{ enumeration } = getFluentSchemer().createInstance().schemas,
-		{ ERROR_TYPES } = getFluentSchemer().errorsFactory;
+		{ enumeration } = fluentSchemer,
+		{ ERROR_TYPES } = fluentSchemer;
 
 	describe('EnumerationSchema with primitive values', () => {
 		it('Should not return errors for values that are part of the schema enumeration', () => {

@@ -1,7 +1,7 @@
-function numberTests(expect, getFluentSchemer, testTemplates) {
+function numberTests(expect, fluentSchemer, testTemplates) {
 	const { shouldReturnErrors, shouldNotReturnErrors } = testTemplates,
-		{ number } = getFluentSchemer().createInstance().schemas,
-		{ ERROR_TYPES } = getFluentSchemer().errorsFactory;
+		{ number } = fluentSchemer,
+		{ ERROR_TYPES } = fluentSchemer;
 
 	describe('NumberSchema individual methods', () => {
 		it('NumberSchema.type: should return "number"', () => {

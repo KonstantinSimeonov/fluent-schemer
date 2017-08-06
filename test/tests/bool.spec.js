@@ -1,8 +1,8 @@
-function boolTests(expect, getFluentSchemer, testTemplates) {
+function boolTests(expect, fluentSchemer, testTemplates) {
 	const ROOT = 'boolvalue',
 		{ shouldReturnErrors, shouldNotReturnErrors } = testTemplates,
-		{ bool } = getFluentSchemer().createInstance().schemas,
-		{ ERROR_TYPES } = getFluentSchemer().errorsFactory;
+		{ bool } = fluentSchemer,
+		{ ERROR_TYPES } = fluentSchemer;
 
 	describe('BoolSchema individual methods', () => {
 		it('BoolSchema.validateType(): should return true for true and false', () => {

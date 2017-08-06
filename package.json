@@ -17,8 +17,8 @@
     "test": "nyc --reporter=html --reporter=text mocha ./test/node.js",
     "browser-test": "node ./test/browser.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "build": "yarn && webpack --progress",
-    "watch": "yarn && webpack --watch --progress"
+    "build": "yarn && webpack --progress --colors --profile",
+    "watch": "yarn && webpack --watch --progress --colors --profile"
   },
   "author": "Konstantin Simeonov<kon.simeonov@protonmail.com>",
   "license": "MIT",
@@ -32,6 +32,8 @@
     "mocha": "^3.2.0",
     "nyc": "^10.1.2",
     "open": "0.0.5",
+    "ts-loader": "^2.3.2",
+    "typescript": "^2.4.2",
     "uglifyjs-webpack-plugin": "^0.4.0",
     "webpack": "^2.3.2"
   },

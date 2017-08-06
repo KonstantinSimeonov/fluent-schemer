@@ -51,7 +51,7 @@ function betweenValidation(
 ) {
 	const name = componentName.replace(/get/, '').toLowerCase();
 
-	if (!is.Undefined(start && end)) {
+	if (!is.Undefined(ranges['_start' + name] && ranges['_end' + name])) {
 		throw new Error(`Cannot set start and end for ${name} twice on a single DateSchema instance`);
 	}
 
@@ -61,12 +61,12 @@ function betweenValidation(
 
 	ranges['_start' + name] = start;
 	ranges['_end' + name] = end;
-
+	
 	return (value: Date, path: string) => {
 		const rstart = ranges['_start' + name];
 		const rend = ranges['_end' + name];
 		const valueNumber = getDateComponent(componentName, value);
-
+		console.log(rstart, rend, valueNumber, !isInRange(rstart, rend, valueNumber));
 		if (!isInRange(rstart, rend, valueNumber)) {
 			return createError(ERROR_TYPES.RANGE, `Expected ${name} to be in range ${start}:${end} but got ${value}`, path);
 		}
@@ -74,14 +74,19 @@ function betweenValidation(
 }
 
 type DateSchemaState = {
-	_before: Date
-	_after: Date
+	_before?: Date
+	_after?: Date
 	ranges: { [key: string]: number }
 }
 
 export default class DateSchema extends BaseSchema {
 	protected validationFunctions: Array<((value: Date, path: string) => IValidationError)>;
-	private state: DateSchemaState;
+	private _state: DateSchemaState;
+
+	constructor() {
+		super();
+		this._state = { ranges: {} };
+	}
 
 	public get type() {
 		return typeName;
@@ -102,7 +107,7 @@ export default class DateSchema extends BaseSchema {
 	 * @returns {DateSchema} - Returns the current DateSchema instance to enable chaining.
 	 */
 	public before<T>(...dateConstructorArgs: Array<T>) {
-		if (!is.Undefined(this.state._before)) {
+		if (!is.Undefined(this._state._before)) {
 			throw new Error('Cannot set before date twice for a date schema instance');
 		}
 
@@ -112,13 +117,13 @@ export default class DateSchema extends BaseSchema {
 			throw new TypeError(`The value provided to .before() is not a valid date string or object ${dateConstructorArgs}`);
 		}
 
-		const { state } = this;
+		const { _state } = this;
 
-		state._before = beforeDate;
+		_state._before = beforeDate;
 
 		this.pushValidationFn((value, path) => {
-			if (value >= state._before) {
-				return createError(ERROR_TYPES.RANGE, `Expected date before ${state._before} but got ${value}`, path);
+			if (!is.NullOrUndefined(_state._before) && value >= _state._before) {
+				return createError(ERROR_TYPES.RANGE, `Expected date before ${_state._before} but got ${value}`, path);
 			}
 		});
 
@@ -131,7 +136,7 @@ export default class DateSchema extends BaseSchema {
 	 * @returns {DateSchema} - Returns the current DateSchema instance to enable chaining.
 	 */
 	public after<T>(...dateConstructorArgs: Array<T>) {
-		if (!is.Undefined(this.state._after)) {
+		if (!is.Undefined(this._state._after)) {
 			throw new Error('Cannot set after date twice for a date schema instance');
 		}
 
@@ -141,13 +146,13 @@ export default class DateSchema extends BaseSchema {
 			throw new TypeError(`The value provided to .after() is not a valid date string or object ${dateConstructorArgs}`);
 		}
 
-		const { state } = this;
+		const { _state } = this;
 
-		state._after = afterDate;
+		_state._after = afterDate;
 
 		this.pushValidationFn((value, path) => {
-			if (value <= state._after) {
-				return createError(ERROR_TYPES.RANGE, `Expected date after ${state._after} but got ${value}`, path);
+			if (!is.NullOrUndefined(_state._after) && value <= _state._after) {
+				return createError(ERROR_TYPES.RANGE, `Expected date after ${_state._after} but got ${value}`, path);
 			}
 		});
 
@@ -161,7 +166,7 @@ export default class DateSchema extends BaseSchema {
 	 */
 	public dateBetween(start: number, end: number) {
 		this.pushValidationFn(
-			betweenValidation(start, end, this.state.ranges, 'getDate')
+			betweenValidation(start, end, this._state.ranges, 'getDate')
 		);
 
 		return this;
@@ -169,7 +174,7 @@ export default class DateSchema extends BaseSchema {
 
 	public monthBetween(start: number, end: number) {
 		this.pushValidationFn(
-			betweenValidation(start, end, this.state.ranges, 'getMonth')
+			betweenValidation(start, end, this._state.ranges, 'getMonth')
 		);
 
 		return this;
@@ -177,7 +182,7 @@ export default class DateSchema extends BaseSchema {
 
 	public hourBetween(start: number, end: number) {
 		this.pushValidationFn(
-			betweenValidation(start, end, this.state.ranges, 'getHours')
+			betweenValidation(start, end, this._state.ranges, 'getHours')
 		);
 
 		return this;
@@ -185,7 +190,7 @@ export default class DateSchema extends BaseSchema {
 
 	public weekdayBetween(start: number, end: number) {
 		this.pushValidationFn(
-			betweenValidation(start, end, this.state.ranges, 'getDay')
+			betweenValidation(start, end, this._state.ranges, 'getDay')
 		);
 
 		return this;
@@ -193,7 +198,7 @@ export default class DateSchema extends BaseSchema {
 
 	public minutesBetween(start: number, end: number) {
 		this.pushValidationFn(
-			betweenValidation(start, end, this.state.ranges, 'getMinutes')
+			betweenValidation(start, end, this._state.ranges, 'getMinutes')
 		);
 
 		return this;
@@ -201,7 +206,7 @@ export default class DateSchema extends BaseSchema {
 
 	public secondsBetween(start: number, end: number) {
 		this.pushValidationFn(
-			betweenValidation(start, end, this.state.ranges, 'getSeconds')
+			betweenValidation(start, end, this._state.ranges, 'getSeconds')
 		);
 
 		return this;

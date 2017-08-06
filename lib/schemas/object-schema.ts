@@ -16,9 +16,11 @@ export default class ObjectSchema extends BaseSchema {
 
 	public constructor(subschema: { [id: string]: BaseSchema }) {
 		super();
-		this._state.subschema = subschema || {};
-		this._state.allowFunctions = false;
-		this._state.allowArrays = false;
+		this._state = {
+			subschema: subschema || {},
+			allowFunctions: false,
+			allowArrays: false
+		};
 	}
 
 	public get type() {
@@ -29,7 +31,7 @@ export default class ObjectSchema extends BaseSchema {
 		const valueIsArray = is.Array(value);
 		const valueIsFunction = is.Function(value);
 
-		return is.Object(value)
+		return is.Obj(value)
 			|| (this._state.allowArrays && valueIsArray)
 			|| (this._state.allowFunctions && valueIsFunction);
 	}

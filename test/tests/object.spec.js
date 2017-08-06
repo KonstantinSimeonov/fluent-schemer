@@ -1,7 +1,7 @@
-function objectTests(expect, getFluentSchemer, testTemplates) {
+function objectTests(expect, fluentSchemer, testTemplates) {
 	const { shouldNotReturnErrors } = testTemplates,
-		{ string, number, bool, object } = getFluentSchemer().createInstance().schemas,
-		{ ERROR_TYPES } = getFluentSchemer().errorsFactory;
+		{ string, number, bool, object } = fluentSchemer,
+		{ ERROR_TYPES } = fluentSchemer;
 
 	describe('ObjectSchema keys', () => {
 		it('ObjectSchema.type should return "object"', () => {

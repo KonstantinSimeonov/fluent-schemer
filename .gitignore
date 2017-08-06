@@ -7,3 +7,4 @@ jsconfig.json
 typings.json
 typings
 dist
+*.d.ts
