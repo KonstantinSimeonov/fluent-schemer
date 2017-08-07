@@ -14,7 +14,7 @@
     "schemer"
   ],
   "scripts": {
-    "test": "nyc --reporter=html --reporter=text mocha ./test/node.js",
+    "test": "nyc --reporter=html --reporter=text mocha ./test/**/*.spec.js --compilers babel-register",
     "browser-test": "node ./test/browser.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "build": "yarn && webpack --progress --colors --profile",
@@ -25,13 +25,13 @@
   "devDependencies": {
     "babel-core": "^6.24.0",
     "babel-loader": "^6.4.1",
-    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-register": "^6.24.1",
     "chai": "^3.5.0",
     "coveralls": "^2.11.15",
     "eslint": "^3.15.0",
     "mocha": "^3.2.0",
     "nyc": "^10.1.2",
-    "open": "0.0.5",
     "ts-loader": "^2.3.2",
     "typescript": "^2.4.2",
     "uglifyjs-webpack-plugin": "^0.4.0",
