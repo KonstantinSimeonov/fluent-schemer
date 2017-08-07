@@ -7,17 +7,17 @@ console.warn('Warning: DateSchema is still experimental! API changes are possibl
 
 export const name = 'date';
 
-function validateRangeBound(bound: any): boolean {
-	return is.Number(bound) && !Number.isNaN(bound);
+function validateInteger(bound: any): boolean {
+	return Number.isInteger(bound);
 }
 
 const typeName = 'date';
 
 function isInRange(start: number, end: number, value: number) {
 	if (start < end) {
-		return (value < start || end < value);
+		return (start <= value) && (value <= end);
 	} else {
-		return (end < value && value < start);
+		return (value <= end) || (start <= value);
 	}
 }
 
@@ -49,14 +49,13 @@ function betweenValidation(
 	ranges: { [key: string]: number },
 	componentName: keyof Date
 ) {
-	const name = componentName.replace(/get/, '').toLowerCase();
-
+	const name = componentName.replace(/get/, '');
 	if (!is.Undefined(ranges['_start' + name] && ranges['_end' + name])) {
 		throw new Error(`Cannot set start and end for ${name} twice on a single DateSchema instance`);
 	}
 
-	if (!validateRangeBound(start) || !validateRangeBound(end)) {
-		throw new RangeError(`Expected sane integer numbers for start and end of ${name}, but got ${start} and ${end}`);
+	if (!validateInteger(start) || !validateInteger(end)) {
+		throw new TypeError(`Expected integer numbers for start and end of ${name}, but got ${start} and ${end}`);
 	}
 
 	ranges['_start' + name] = start;
@@ -66,7 +65,6 @@ function betweenValidation(
 		const rstart = ranges['_start' + name];
 		const rend = ranges['_end' + name];
 		const valueNumber = getDateComponent(componentName, value);
-		console.log(rstart, rend, valueNumber, !isInRange(rstart, rend, valueNumber));
 		if (!isInRange(rstart, rend, valueNumber)) {
 			return createError(ERROR_TYPES.RANGE, `Expected ${name} to be in range ${start}:${end} but got ${value}`, path);
 		}
@@ -121,7 +119,7 @@ export default class DateSchema extends BaseSchema {
 
 		_state._before = beforeDate;
 
-		this.pushValidationFn((value, path) => {
+		this.pushValidationFn((value: Date, path: string) => {
 			if (!is.NullOrUndefined(_state._before) && value >= _state._before) {
 				return createError(ERROR_TYPES.RANGE, `Expected date before ${_state._before} but got ${value}`, path);
 			}
