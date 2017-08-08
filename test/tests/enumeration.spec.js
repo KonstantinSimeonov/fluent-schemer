@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { enumeration, ERROR_TYPES } from '../../index';
+import { enumeration, ERROR_TYPES } from '../../';
 import { shouldReturnErrors, shouldNotReturnErrors } from '../helpers';
 
 describe('EnumerationSchema with primitive values', () => {

@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { string, ERROR_TYPES } from '../../index';
+import { string, ERROR_TYPES } from '../../';
 import { shouldReturnErrors, shouldNotReturnErrors } from '../helpers';
 
 const ROOT = 'root';

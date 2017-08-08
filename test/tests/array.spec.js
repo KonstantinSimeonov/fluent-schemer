@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { array, string, number, object, bool, ERROR_TYPES } from '../../index';
+import { array, string, number, object, bool, ERROR_TYPES } from '../../';
 import { shouldReturnErrors, shouldNotReturnErrors } from '../helpers';
 
 // function typeGetterTest(type) {

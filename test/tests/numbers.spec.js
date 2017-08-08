@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { number, ERROR_TYPES } from '../../index';
+import { number, ERROR_TYPES } from '../../';
 import { shouldReturnErrors, shouldNotReturnErrors } from '../helpers';
 
 describe('NumberSchema individual methods', () => {

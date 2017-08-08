@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { string, bool, number, object, ERROR_TYPES } from '../../index';
-import { shouldReturnErrors, shouldNotReturnErrors } from '../helpers';
+import { string, bool, number, object, ERROR_TYPES } from '../../';
+import { shouldNotReturnErrors } from '../helpers';
 
 describe('ObjectSchema keys', () => {
 	it('ObjectSchema.type should return "object"', () => {

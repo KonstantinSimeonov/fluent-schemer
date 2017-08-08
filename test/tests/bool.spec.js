@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { bool, ERROR_TYPES } from '../../index';
+import { bool, ERROR_TYPES } from '../../';
 import { shouldReturnErrors, shouldNotReturnErrors } from '../helpers';
 
 const ROOT = 'boolvalue';

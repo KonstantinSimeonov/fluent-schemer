@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { date, ERROR_TYPES } from '../../index';
+import { date, ERROR_TYPES } from '../../';
 import { shouldReturnErrors, shouldNotReturnErrors } from '../helpers';
 
 describe('DateSchema', () => {

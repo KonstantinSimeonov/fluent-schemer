@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { union, string, number, bool, array, ERROR_TYPES } from '../../index';
+import { union, string, number, bool, array, ERROR_TYPES } from '../../';
 import { shouldReturnErrors, shouldNotReturnErrors } from '../helpers';
 
 describe('UnionSchema individual methods', () => {
