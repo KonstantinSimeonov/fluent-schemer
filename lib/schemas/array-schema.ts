@@ -36,7 +36,7 @@ export default class ArraySchema extends BaseSchema {
 	}
 
 	public validateType(value: any): value is any[] {
-		return is.Array(value) && (is.NullOrUndefined(this._state.subschema) || value.every((x: any) => this._state.subschema.validateType(x)));
+		return is.Array(value) && (is.NullOrUndefined(this._state.subschema) || value.every((x: any) => this.validateElementsType(x)));
 	}
 
 	public minlength(length: number) {
@@ -108,6 +108,14 @@ export default class ArraySchema extends BaseSchema {
 		}
 
 		return { errors, errorsCount: errors.length };
+	}
+
+	private validateElementsType(value: any): boolean {
+		if(!this._state.subschema) {
+			return true;
+		}
+
+		return this._state.subschema.validateType(value);
 	}
 
 	private static _isValidArrayLength(value: any) {

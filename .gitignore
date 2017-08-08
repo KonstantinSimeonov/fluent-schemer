@@ -8,3 +8,6 @@ typings.json
 typings
 dist
 *.d.ts
+*.map
+index.js
+index.es.min.js
