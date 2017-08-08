@@ -9,7 +9,7 @@ const es6Config = {
 	output: {
 		filename: 'index.js',
 		path: BUILD_DIR,
-		library: 'fluent-schemer',
+		library: 'FluentSchemer',
 		libraryTarget: 'umd'
 	},
 	resolve: {
@@ -31,7 +31,7 @@ const es5MinConfig = {
 	output: {
 		filename: 'index.es5.min.js',
 		path: BUILD_DIR,
-		library: 'fluent-schemer',
+		library: 'FluentSchemer',
 		libraryTarget: 'umd',
 		sourceMapFilename: 'index.es5.min.js.map'
 	},

@@ -6,51 +6,141 @@ Below are examples of validation schemas for array<string>, array<array<int>> an
 
 | schema-specific methods                 | explanation                                   |
 |:--------------------------------------- |:--------------------------------------------- |
-| minlength(number)                       | set a minimum array length of the schema      |
-| maxlength(number)                       | set a maximum array length of the schema      |
+| minlength(number)                       | set a minimum array length                    |
+| maxlength(number)                       | set a maximum array length                    |
+| withLength(number)                      | array should have an exact length             |
+| district()                              | values in the array should be unique          |
 
-- Validate an array of names:
+## Validate an array of names:
 
 ```js
-const schemerInstance = require('./fluent-schemer').createInstance(),
-    { string, array } = schemerInstance.schemas;
+const { string, array } = require('fluent-schemer');
 
 // input array should contain strictly strings that match the regular expression
-const nameArraySchema = array(string().pattern(/^[a-z]{2,20}$/i))
-                            .required();
-
+const nameArraySchema = array(string().pattern(/^[a-z]{2,20}$/i)).required();
 const names = ['george', 'ivan', 'todor', '', 'tom1', null, 10];
 
-console.log(JSON.stringify(nameArraySchema.validate(names), null, 4));
+const errors = nameArraySchema.validate(names);
+
+if(errors.errorsCount > 0) {
+	console.log('Errors occurred:');
+	console.log(errors);
+}
 ```
 
-- Integer matrix validation:
+- This will output the following error object:
+```js
+{
+    errorsCount: 1,
+    errors: [
+        {
+            type: 'type',
+            message: 'Expected type array<string> but got object',
+            path: ''
+        }
+    ]
+}
+```
+
+## Integer matrix validation:
 
 ```js
-const matrixSchema = array(array(number().integer()));
+const { array, number } = require('fluent-schemer');
+const matrixSchema = array(
+	array(number().integer())
+).required();
 
 const matrix = [
     [1, 2, 3],
     [4, 5, 6],
     [7, 8, 9]
-],
-    matrix2 = null,
-    matrix3 = [
-        [1, 2, 3],
-        ['not number']
-    ];
+];
+const matrix2 = null;
+const matrix3 = [
+    [1, 2, 3],
+	['not number'],
+	[3, 7, 8]
+];
 
 console.log(matrixSchema.validate(matrix));
 console.log(matrixSchema.validate(matrix2));
 console.log(matrixSchema.validate(matrix3));
 ```
 
-- Untyped arrays:
-    - The types of the values in the array are not validated
+- This will output:
+```js
+// matrix 1
+{ errors: [], errorsCount: 0 }
+
+// matrix 2
+{
+	errorsCount: 1,
+	errors: [ ValidationError {
+		type: 'type',
+		message: 'Expected type array<array<number>> but got object',
+		path: ''
+	} ]
+}
+
+// matrix 3
+{
+	errorsCount: 1,
+	errors: [ ValidationError {
+		type: 'type',
+		message: 'Expected type array<array<number>> but got object',
+		path: ''
+	} ]
+}
+```
+
+## Untyped arrays:
+
+- The types of the values in the array are not validated.
+	- This could be useful for an arrays of mixed values, or when their types doesn't matter.
 
 ```js
-const freeSlotsSchema = array().minlength(2).maxlength(10).required();
+const { array } = require('fluent-schemer');
+const untypedArraySchema = array().minlength(2).maxlength(10).required();
 
-console.log(freeSlotsSchema.validate([1, null, 10]));
-console.log(freeSlotsSchema.validate(['hello']));
+console.log(untypedArraySchema.validate([1, null, 10]));
+console.log(untypedArraySchema.validate(['hello']));
+```
+
+- Output:
+```js
+// the first array has a valid length
+{ errors: [], errorsCount: 0 }
+// but the second does not
+{ errors:
+	errorsCount: 1,
+	[ ValidationError {
+		type: 'range',
+		message: 'Expected an array<any> with length at least 2 but got length 1',
+		path: ''
+	} ]
+}
+```
+
+## Arrays of distinct elements:
+
+```js
+const { array, number } = require('fluent-schemer');
+const arrayOfUniqInts = array(number().integer()).distinct().required();
+
+console.log(arrayOfUniqInts.validate([1, 2, 3, 44, 99]));
+console.log(arrayOfUniqInts.validate([1, 2, 3, 3, 44, 99]));
+```
+
+- Output:
+
+```js
+{ errors: [], errorsCount: 0 }
+{
+	errorsCount: 1,
+	errors:	[ ValidationError {
+		type: 'argument',
+		message: 'Expected values in 1,2,3,3,44,99 to be distinct',
+		path: ''
+	} ]	
+}
 ```

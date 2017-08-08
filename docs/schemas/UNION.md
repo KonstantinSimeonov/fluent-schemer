@@ -6,17 +6,16 @@
 |:-----------------------:|:-----------:|
 | -                       | -           |
 
-- Sample union<string|object>:
+## Sample union<string|object>:
 
 ```js
-const schemerInstance = require('./fluent-schemer').createInstance(),
-    { string, object, union } = schemerInstance.schemas;
+import { string } from 'fluent-schemer';
 
 const schema = union(
-                        string().minlength(5),
-                        object({ name: string().minlength(10) })
-                    )
-                    .required();
+						string().minlength(5),
+						object({ name: string().minlength(10) })
+					)
+					.required();
 
 const values = ['ivancho', { name: 'ivancho' }, 'dsf', null, { name: 'kyci' }];
 
@@ -28,12 +27,11 @@ for(const v of values) {
 - Sample union<bool|number|array>:
 
 ```js
-const schemerInstance = require('./fluent-schemer').createInstance(),
-    { string, object, union } = schemerInstance.schemas;
+import { string } from 'fluent-schemer';
 
 const schema = union(
-                        number().min(0),
-                        bool(),
-                        array().minlength(3)
-                    ).required();
+						number().min(0),
+						bool(),
+						array().minlength(3)
+					).required();
 ```

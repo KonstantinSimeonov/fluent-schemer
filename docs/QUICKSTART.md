@@ -1,11 +1,11 @@
 # How to get going in a minute
 
-## Download via npm or bower
+## Download via npm/bower/yarn
 `npm install fluent-schemer`
 
-or
-
 `bower install fluent-schemer`
+
+`yarn add fluent-schemer`
 
 ## Set it up in your code
 
@@ -13,9 +13,7 @@ or
 
 - ES2015
 ```js
-const FluentSchemer = require('fluent-schemer'),
-    validator = FluentSchemer.createInstance(),
-    { number, string, bool, object, array } = validator.schemas;
+import { number } from 'fluent-schemer';
 
 const ageSchema = number().min(0).integer().required();
 
@@ -24,9 +22,7 @@ console.log(ageSchema.validate(-1.5));
 
 - ES5
 ```js
-var FluentSchemer = require('path_to_modules/fluent-schemer/dist/fluent-schemer.es5'),
-    validator = FluentSchemer.createInstance(),
-    number = validator.schemas.number;
+const { string } = require('fluent-schemer');
 
 var ageSchema = number().min(0).integer().required();
 
@@ -35,12 +31,11 @@ console.log(ageSchema.validate(-1.5));
 
 ### Browser
 ```html
-<script src="path_to_modules/fluent-schemer/dist/fluent-schemer.es5.min.js"></script>
+<script src="path_to_modules/fluent-schemer/dist/index.es5.min.js"></script>
 ```
 
 ```js
-const validator = window.FluentSchemer.createInstance(),
-    { number, string, bool, object, array } = validator.schemas;
+const { number } = window.FluentSchemer;
 
 const ageSchema = number().min(0).integer().required();
 
@@ -49,10 +44,7 @@ console.log(ageSchema.validate(-1.5));
 
 ### ES2015 (Harmony) modules
 ```js
-import * as FluentSchemer from 'fluent-schemer';
-
-const validator = FluentSchemer.createInstance(),
-    { number, string, bool, object, array } = validator.schemas;
+import { number, string, bool, object, array } from 'fluent-schemer';
 
 const ageSchema = number().min(0).integer().required();
 

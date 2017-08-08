@@ -47,9 +47,3 @@ validation feedback is returned in the form of a plain old javascript object tha
 ```
 
 If the feedback array is empty, that means no errors occurred and the passed value is valid.
-
-Schemas are defined as functions that accept dependencies(currently a function that creates errors and a map of error types) and return ES6 classes. There is the `BaseSchema` class that packs all the common functionality in it, such as `.required()`, 
-`.not()`, `.validate()`, `.predicate()`. The `BaseSchema` is meant to be inherited in order to create a concrete validation schema - such as the `StringSchema` or the `NumberSchema`.
-Each schema extends the `BaseSchema` with it's own methods - for example `StringSchema.minlength()` allows to set a minimum length for a string value.
-The concrete schemas should also implement the abstract method `.validateType()` - validate whether a passed value is of the desired type and `.type` - returns the type of the schema as a string.
-Also, `BaseSchema.validateWithCorrectType()` validates a value which is known to be of the expected type. This method can be overriden when needed - `ObjectSchema` overrides this method to provide schema nesting.
