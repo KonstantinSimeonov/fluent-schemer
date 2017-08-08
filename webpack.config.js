@@ -1,12 +1,14 @@
 const path = require('path');
 const webpack = require('webpack');
 
+const BUILD_DIR = path.resolve(__dirname, 'dist');
+
 const es6Config = {
 	devtool: 'source-map',
 	entry: path.resolve(__dirname, 'index.ts'),
 	output: {
 		filename: 'index.js',
-		path: __dirname,
+		path: BUILD_DIR,
 		library: 'fluent-schemer',
 		libraryTarget: 'umd'
 	},
@@ -28,7 +30,7 @@ const es5MinConfig = {
 	entry: path.resolve(__dirname, 'index.ts'),
 	output: {
 		filename: 'index.es5.min.js',
-		path: __dirname,
+		path: BUILD_DIR,
 		library: 'fluent-schemer',
 		libraryTarget: 'umd',
 		sourceMapFilename: 'index.es5.min.js.map'

@@ -9,7 +9,7 @@ node_modules
 coverage
 .travis.yml
 typings.json
-.eslintrc
+.eslintrc.json
 .eslintignore
 ./test
 .travis.yml

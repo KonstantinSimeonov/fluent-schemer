@@ -1,13 +1,12 @@
 {
     "compilerOptions": {
         "alwaysStrict": true,
-        "declaration": true,
-        "declarationDir": "./typings",
+		"declaration": true,
         "target": "es6",
         "module": "commonjs",
         "noImplicitAny": true,
         "noUnusedLocals": true,
         "strict": true,
-        "pretty": true
+		"pretty": true
     }
 }

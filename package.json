@@ -3,7 +3,8 @@
 	"version": "1.0.0",
 	"repository": "https://github.com/KonstantinSimeonov/fluent-schemer",
 	"description": "Small umd compliant schema validation library that aims to provide declarative, expressive and elegant approach to validation, while providing an intuitive, easy-to-use api.",
-	"main": "./index.js",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
 	"keywords": [
 		"validation",
 		"validate",
