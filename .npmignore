@@ -13,3 +13,7 @@ typings.json
 .eslintignore
 ./test
 .travis.yml
+./lib
+tsconfig.json
+webpack.config.js
+yarn.lock
