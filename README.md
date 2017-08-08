@@ -6,38 +6,34 @@ Aims to provide declarative, expressive and elegant approach to validation, whil
 
 ## It's cool, because
 - it **fully embraces ES2015** features such as classes, fat arrow functions, mixins, destructuring statements, modules
+- has **typescript type definitions** - v2.0 comes with typings for enhanced development experience
+- **easy to use and pick up**, write a little code for a lot of common validation logic
 - has a **fluent, readable and declarative** api
-- **umd compliant** - use it with node or in the browser with scripts tags or module loaders
-- **no production dependencies** - using `fluent-schemer` does not tie you to any other packages
-- helps developers **get rid of long if-else code** blocks
-- **promotes code reuse** (you can even share validation code between server and client)
+- **umd compliant** - use in node/browser, with commonjs, umd, script tags, harmony modules, whatever
+- **no production dependencies**, small codebase
+- helps developers **get rid of imperative code, long if-else's** and writing boring validations all over again
+- **promotes code reuse** - easily share code between modules, between clients, servers and across projects
 - easy to extends with custom schemas
-- **small codebase** - having a problem or just curious? Reading the source code won't be time consuming :)
+- **statically type checked** with typescript, checked for correctness with a bunch of **unit tests**
 
 ## It will be cool, because
 - every script, that is part of the validator, will eventually be thoroughly unit tested
-- will be configurable - the ability to plug in your own base classes, error factories or other options is a priority feature
 - documentation with detailed examples for many combinations and use cases incoming!
-- synchronous validation is already provided, async validation with ES2015 promises coming soon
+- async validation for large arrays/objects is planned
 
 ## Planned features/wishful thinking
 
 | features                                                   | state                                    |
 |:----------------------------------------------------------:|:----------------------------------------:|
-| DateSchema                                                 | under construction                       |
-| Async api                                                  | under construction                       |
+| DateSchema                                                 | available, but still experimental        |
+| Async validation for large arrays/objects                  | not started                              |
 | Better support for recursive types                         | not started                              |
-| Build-time tree shaking for browser build                  | not started                              |
-| Typescript type definition                                 | under construction                       |
-| Immutable schemas                                          | not started                              |
 | Throw errors on rubbish arguments passed to schema methods | not started                              |
 
 ### Running the tests
 
 ```
-npm install
-npm run build
-npm test
+yarn build && yarn test
 ```
 
 ### Examples
