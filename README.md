@@ -2,6 +2,11 @@
 
 <a href='https://travis-ci.org/KonstantinSimeonov/fluent-schemer'><img src='https://travis-ci.org/KonstantinSimeonov/fluent-schemer.svg?branch=master' alt='Coverage Status' /></a> <a href='https://coveralls.io/github/KonstantinSimeonov/fluent-schemer'><img src='https://coveralls.io/repos/github/KonstantinSimeonov/fluent-schemer/badge.svg' alt='Coverage Status' /></a>
 
+## Incoming:
+- **flow typedefs**
+- **throw errors on invalid arguments** passed to schema methods
+	- _Example_: `number.minlength('fail'); date().before([]);`
+
 Aims to provide declarative, expressive and elegant approach to validation, while providing an intuitive, easy-to-use api.
 
 ## It's cool, because
@@ -20,15 +25,6 @@ Aims to provide declarative, expressive and elegant approach to validation, whil
 - every script, that is part of the validator, will eventually be thoroughly unit tested
 - documentation with detailed examples for many combinations and use cases incoming!
 - async validation for large arrays/objects is planned
-
-## Planned features/wishful thinking
-
-| features                                                   | state                                    |
-|:----------------------------------------------------------:|:----------------------------------------:|
-| DateSchema                                                 | available, but still experimental        |
-| Async validation for large arrays/objects                  | not started                              |
-| Better support for recursive types                         | not started                              |
-| Throw errors on rubbish arguments passed to schema methods | not started                              |
 
 ### Running the tests
 
