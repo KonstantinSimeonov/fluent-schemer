@@ -1,5 +1,7 @@
 # fluent-schemer
 
+<a href='https://david-dm.org/KonstantinSimeonov/fluent-schemer'><img src='https://img.shields.io/david/KonstantinSimeonov/fluent-schemer.svg'></a>
+[![devDependencies Status](https://david-dm.org/KonstantinSimeonov/fluent-schemer/dev-status.svg)](https://david-dm.org/KonstantinSimeonov/fluent-schemer?type=dev)
 <a href='https://travis-ci.org/KonstantinSimeonov/fluent-schemer'><img src='https://travis-ci.org/KonstantinSimeonov/fluent-schemer.svg?branch=master' alt='Coverage Status' /></a> <a href='https://coveralls.io/github/KonstantinSimeonov/fluent-schemer'><img src='https://coveralls.io/repos/github/KonstantinSimeonov/fluent-schemer/badge.svg' alt='Coverage Status' /></a>
 
 ## Incoming:
