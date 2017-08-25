@@ -1,27 +1,20 @@
+import { IErrorFeedback, IValidationError } from '../contracts';
 import { createError, ERROR_TYPES } from '../errors';
-import { IValidationError, IErrorFeedback } from '../contracts';
 import * as is from '../is';
 
 export const name = 'base';
 
 export default abstract class BaseSchema {
-	public abstract validateType(value: any): boolean
-	public abstract get type(): string
-	protected validationFunctions: Array<(value: any, path: string) => IValidationError|undefined>
-	private _required: boolean
+
+	protected validationFunctions: Array<(value: any, path: string) => IValidationError | undefined>;
+	private _required: boolean;
 
 	public constructor() {
 		this.validationFunctions = [];
 	}
 
-	/**
-	 * Adds a validation callback to the validations to be performed on a value passed to .validate()
-	 * @param {function} validationFn
-	 */
-	protected pushValidationFn(validationFn: (value: any, path: string) => IValidationError|undefined) {
-		this.validationFunctions.push(validationFn);
-	}
-
+	public abstract validateType(value: any): boolean;
+	public abstract get type(): string;
 
 	/**
 	 * Values validated with this schema must match the schema type. Other types are not allowed by default.
@@ -39,7 +32,7 @@ export default abstract class BaseSchema {
 	 * @returns {BaseSchema} - The current instance of the BaseSchema.
 	 */
 	public predicate(predicateFn: (value: any) => boolean) {
-		if(!is.Function(predicateFn)) {
+		if (!is.Function(predicateFn)) {
 			throw new TypeError(`Expected function as predicate but got value of type ${typeof predicateFn}`);
 		}
 
@@ -70,14 +63,6 @@ export default abstract class BaseSchema {
 	}
 
 	/**
-	 * Virtual method that is used to compare two values for equality in .not(). Can be overridden in child classes.
-	 * @returns {Boolean} - Returns true if the two values are equal, otherwise returns false.
-	 */
-	protected areEqual(firstValue: any, secondValue: any) {
-		return firstValue === secondValue;
-	}
-
-	/**
 	 * Synchronously validates whether a value satisfies the validation rules in the schema instance.
 	 * @param {any} value - The value to validate.
 	 * @param {string} path - The key of the value to validate.
@@ -87,8 +72,8 @@ export default abstract class BaseSchema {
 		if (!this.validateType(value)) {
 			if (this._required) {
 				return {
+					errors: [createError(ERROR_TYPES.TYPE, `Expected type ${this.type} but got ${typeof value}`, path)],
 					errorsCount: 1,
-					errors: [createError(ERROR_TYPES.TYPE, `Expected type ${this.type} but got ${typeof value}`, path)]
 				};
 			}
 
@@ -96,6 +81,22 @@ export default abstract class BaseSchema {
 		}
 
 		return this.validateValueWithCorrectType(value, path);
+	}
+
+	/**
+	 * Adds a validation callback to the validations to be performed on a value passed to .validate()
+	 * @param {function} validationFn
+	 */
+	protected pushValidationFn(validationFn: (value: any, path: string) => IValidationError | undefined) {
+		this.validationFunctions.push(validationFn);
+	}
+
+	/**
+	 * Virtual method that is used to compare two values for equality in .not(). Can be overridden in child classes.
+	 * @returns {Boolean} - Returns true if the two values are equal, otherwise returns false.
+	 */
+	protected areEqual(firstValue: any, secondValue: any) {
+		return firstValue === secondValue;
 	}
 
 	/**

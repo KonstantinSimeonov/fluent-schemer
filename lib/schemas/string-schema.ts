@@ -1,19 +1,19 @@
 import { createError, ERROR_TYPES } from '../errors';
-import BaseSchema from './base-schema';
 import * as is from '../is';
+import BaseSchema from './base-schema';
 
 export const name = 'string';
 
 const typeName = 'string';
 
-type StringSchemaState = {
+type TStringSchemaState = {
 	minlength?: number;
 	maxlength?: number;
 	pattern?: RegExp
 };
 
 export default class StringSchema extends BaseSchema {
-	private _state: StringSchemaState;
+	private _state: TStringSchemaState;
 
 	constructor() {
 		super();
@@ -41,7 +41,11 @@ export default class StringSchema extends BaseSchema {
 
 		this.pushValidationFn((value: string, path: string) => {
 			if (!is.Undefined(this._state.minlength) && this._state.minlength > value.length) {
-				return createError(ERROR_TYPES.RANGE, `Expected string with length at least ${this._state.minlength} but got ${value.length}`, path);
+				return createError(
+					ERROR_TYPES.RANGE,
+					`Expected string with length at least ${this._state.minlength} but got ${value.length}`,
+					path,
+				);
 			}
 		});
 
@@ -61,7 +65,11 @@ export default class StringSchema extends BaseSchema {
 
 		this.pushValidationFn((value: string, path: string) => {
 			if (!is.Undefined(this._state.maxlength) && this._state.maxlength < value.length) {
-				return createError(ERROR_TYPES.RANGE, `Expected string with length at most ${this._state.minlength} but got ${value.length}`, path);
+				return createError(
+					ERROR_TYPES.RANGE,
+					`Expected string with length at most ${this._state.minlength} but got ${value.length}`,
+					path,
+				);
 			}
 		});
 
@@ -69,7 +77,7 @@ export default class StringSchema extends BaseSchema {
 	}
 
 	public pattern(regexp: RegExp) {
-		if(!is.RegExp(regexp)) {
+		if (!is.RegExp(regexp)) {
 			throw new TypeError(`Expected regular expression as pattern, but got value of type ${typeof regexp}`);
 		}
 
@@ -81,7 +89,11 @@ export default class StringSchema extends BaseSchema {
 
 		this.pushValidationFn((value: string, path: string) => {
 			if (!is.Undefined(this._state.pattern) && !this._state.pattern.test(value)) {
-				return createError(ERROR_TYPES.ARGUMENT, `Expected ${value} to match pattern but it did not`, path);
+				return createError(
+					ERROR_TYPES.ARGUMENT,
+					`Expected ${value} to match pattern but it did not`,
+					path,
+				);
 			}
 		});
 

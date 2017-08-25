@@ -8,11 +8,11 @@ export const name = 'number';
 const typeName = 'number';
 
 export default class NumberSchema extends BaseSchema {
-	private _precision: number
-	private _minvalue: number
-	private _maxvalue: number
-	private _nanAllowed: boolean
-	private _infinityAllowed: boolean
+	private _precision: number;
+	private _minvalue: number;
+	private _maxvalue: number;
+	private _nanAllowed: boolean;
+	private _infinityAllowed: boolean;
 
 	public constructor() {
 		super();
@@ -30,7 +30,7 @@ export default class NumberSchema extends BaseSchema {
 	}
 
 	public precision(allowedDiff: number) {
-		if(Number.isNaN(+allowedDiff) || allowedDiff < 0) {
+		if (Number.isNaN(+allowedDiff) || allowedDiff < 0) {
 			throw new TypeError(`Expected allowedDiff to be a valid positive number but got ${allowedDiff}`);
 		}
 
@@ -52,21 +52,25 @@ export default class NumberSchema extends BaseSchema {
 	}
 
 	public safeInteger() {
-		const newMin = Math.max(this._minvalue || -Number.MAX_SAFE_INTEGER, -Number.MAX_SAFE_INTEGER),
-			newMax = Math.min(this._maxvalue || Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER);
+		const newMin = Math.max(this._minvalue || -Number.MAX_SAFE_INTEGER, -Number.MAX_SAFE_INTEGER);
+		const newMax = Math.min(this._maxvalue || Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER);
 
 		return this.min(newMin).max(newMax);
 	}
 
 	public min(minvalue: number) {
-		if(Number.isNaN(minvalue)) {
+		if (Number.isNaN(minvalue)) {
 			throw new TypeError('Expected a valid number as minimal value, but got NaN');
 		}
 
 		if (is.Undefined(this._minvalue)) {
 			this.pushValidationFn((value, path) => {
 				if (value < this._minvalue) {
-					return createError(ERROR_TYPES.RANGE, `Expected value greater than or equal to ${minvalue} but got ${value}`, path);
+					return createError(
+						ERROR_TYPES.RANGE,
+						`Expected value greater than or equal to ${minvalue} but got ${value}`,
+						path,
+					);
 				}
 			});
 		}
@@ -77,14 +81,18 @@ export default class NumberSchema extends BaseSchema {
 	}
 
 	public max(maxvalue: number) {
-		if(Number.isNaN(maxvalue)) {
+		if (Number.isNaN(maxvalue)) {
 			throw new TypeError('Expected a valid number as minimal value, but got NaN');
 		}
 
 		if (is.Undefined(this._maxvalue)) {
 			this.pushValidationFn((value, path) => {
 				if (value > maxvalue) {
-					return createError(ERROR_TYPES.RANGE, `Expected value less than or equal to ${maxvalue} but got ${value}`, path);
+					return createError(
+						ERROR_TYPES.RANGE,
+						`Expected value less than or equal to ${maxvalue} but got ${value}`,
+						path,
+					);
 				}
 			});
 		}
@@ -97,7 +105,11 @@ export default class NumberSchema extends BaseSchema {
 	public integer() {
 		this.pushValidationFn((value, path) => {
 			if (!Number.isInteger(value + 0)) {
-				return createError(ERROR_TYPES.ARGUMENT, `Expected integer number but got ${value}`, path);
+				return createError(
+					ERROR_TYPES.ARGUMENT,
+					`Expected integer number but got ${value}`,
+					path,
+				);
 			}
 		});
 

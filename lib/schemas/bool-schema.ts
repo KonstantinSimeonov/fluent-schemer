@@ -1,5 +1,5 @@
-import BaseSchema from './base-schema';
 import * as is from '../is';
+import BaseSchema from './base-schema';
 
 export const name = 'bool';
 

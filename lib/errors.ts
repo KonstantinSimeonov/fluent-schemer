@@ -1,7 +1,7 @@
 export class ValidationError {
-	public type: string
-	public message: string
-	public path: string
+	public type: string;
+	public message: string;
+	public path: string;
 
 	constructor(type: string, message: string, path: string) {
 		this.type = type;
@@ -11,10 +11,10 @@ export class ValidationError {
 }
 
 export const ERROR_TYPES = Object.freeze({
-	'RANGE': 'range',
-	'ARGUMENT': 'argument',
-	'TYPE': 'type',
-	'PREDICATE': 'predicate'
+	ARGUMENT: 'argument',
+	PREDICATE: 'predicate',
+	RANGE: 'range',
+	TYPE: 'type',
 });
 
 export const createError = (type: string, message: string, path: string) => new ValidationError(type, message, path);

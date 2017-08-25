@@ -1,12 +1,12 @@
+import ArraySchema from './lib/schemas/array-schema';
 import BaseSchema from './lib/schemas/base-schema';
 import BoolSchema from './lib/schemas/bool-schema';
-import ArraySchema from './lib/schemas/array-schema';
+import DateSchema from './lib/schemas/date-schema';
 import EnumerationSchema from './lib/schemas/enumeration-schema';
 import NumberSchema from './lib/schemas/number-schema';
 import ObjectSchema from './lib/schemas/object-schema';
 import StringSchema from './lib/schemas/string-schema';
 import UnionSchema from './lib/schemas/union-schema';
-import DateSchema from './lib/schemas/date-schema';
 
 export const string = () => new StringSchema;
 export const number = () => new NumberSchema;

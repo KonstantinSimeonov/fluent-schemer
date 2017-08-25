@@ -1,24 +1,25 @@
-import BaseSchema from './base-schema';
 import { IValidationError } from '../contracts';
+import BaseSchema from './base-schema';
 
 export const name = 'union';
 
-type UnionSchemaState = {
-	subschemas: Array<BaseSchema>;
-	typestring?: string
+type TUnionSchemaState = {
+	subschemas: BaseSchema[];
+	typestring?: string;
 };
 
 export default class UnionSchema extends BaseSchema {
-	private _state: UnionSchemaState;
+	private _state: TUnionSchemaState;
 
-	public constructor(...subschemas: Array<BaseSchema>) {
+	public constructor(...subschemas: BaseSchema[]) {
 		super();
 
 		this._state = { subschemas: subschemas.map(x => x.required()) };
 	}
 
 	public get type() {
-		return this._state.typestring || (this._state.typestring = this._state.subschemas.map(schema => schema.type).join('|'));
+		return this._state.typestring
+				|| (this._state.typestring = this._state.subschemas.map(schema => schema.type).join('|'));
 	}
 
 	public validateType(value: any) {
@@ -28,8 +29,8 @@ export default class UnionSchema extends BaseSchema {
 	// TODO: refactor
 	// TODO: improve performance, currently .validateType() is executed twice
 	protected validateValueWithCorrectType(value: any, path?: string) {
-		const errors: IValidationError[] = [],
-			unionErrors: IValidationError[] = [];
+		const errors: IValidationError[] = [];
+		const unionErrors: IValidationError[] = [];
 
 		for (const schema of this._state.subschemas) {
 

@@ -1,21 +1,21 @@
 import { IErrorFeedback } from '../contracts';
 import { createError, ERROR_TYPES } from '../errors';
-import BaseSchema from './base-schema';
 import * as is from '../is';
+import BaseSchema from './base-schema';
 
 export const name = 'array';
 
-type ArraySchemaState = {
+type TArraySchemaState = {
 	typestring?: string;
 	subschema?: BaseSchema;
 	minlength: number;
 	maxlength: number;
 	hasMinLength?: boolean;
 	hasMaxLength?: boolean;
-}
+};
 
 export default class ArraySchema extends BaseSchema {
-	private _state: ArraySchemaState;
+	private _state: TArraySchemaState;
 
 	public constructor(subschema: BaseSchema) {
 		super();
@@ -35,12 +35,13 @@ export default class ArraySchema extends BaseSchema {
 	}
 
 	public validateType(value: any): value is any[] {
-		return is.Array(value) && (is.NullOrUndefined(this._state.subschema) || value.every((x: any) => this.validateElementsType(x)));
+		return is.Array(value)
+			&& (is.NullOrUndefined(this._state.subschema) || value.every((x: any) => this.validateElementsType(x)));
 	}
 
 	public minlength(length: number) {
 		if (!is.ValidLength(length)) {
-			throw new TypeError(`Expected a finite number larger than 0 as an array length but got ${length}`);			
+			throw new TypeError(`Expected a finite number larger than 0 as an array length but got ${length}`);
 		}
 
 		this._state.minlength = length;
@@ -78,14 +79,24 @@ export default class ArraySchema extends BaseSchema {
 		const { errors } = super.validateValueWithCorrectType(value, path);
 
 		if (this._state.hasMinLength && (value.length < this._state.minlength)) {
-			const minLengthError = createError(ERROR_TYPES.RANGE, `Expected an ${this.type} with length at least ${this._state.minlength} but got length ${value.length}`, path);
+			const minLengthError = createError(
+				ERROR_TYPES.RANGE,
+				`Expected an ${this.type} with length at least ${this._state.minlength} but got length ${value.length}`,
+				path,
+			);
+
 			errors.push(minLengthError);
 
 			return { errors, errorsCount: errors.length };
 		}
 
 		if (this._state.hasMaxLength && (value.length > this._state.maxlength)) {
-			const maxLengthError = createError(ERROR_TYPES.RANGE, `Expected an ${this.type} with length at most ${this._state.maxlength} but got length ${value.length}`, path);
+			const maxLengthError = createError(
+				ERROR_TYPES.RANGE,
+				`Expected an ${this.type} with length at most ${this._state.maxlength} but got length ${value.length}`,
+				path,
+			);
+
 			errors.push(maxLengthError);
 
 			return { errors, errorsCount: errors.length };

@@ -1,25 +1,25 @@
-import BaseSchema from './base-schema';
 import * as is from '../is';
+import BaseSchema from './base-schema';
 
 export const name = 'object';
 
 const typeName = 'object';
 
-type ObjectSchemaState = {
+type TObjectSchemaState = {
 	subschema: { [id: string]: BaseSchema };
 	allowFunctions: boolean;
 	allowArrays: boolean;
-}
+};
 
 export default class ObjectSchema extends BaseSchema {
-	private _state: ObjectSchemaState;
+	private _state: TObjectSchemaState;
 
 	public constructor(subschema: { [id: string]: BaseSchema }) {
 		super();
 		this._state = {
-			subschema: subschema || {},
+			allowArrays: false,
 			allowFunctions: false,
-			allowArrays: false
+			subschema: subschema || {},
 		};
 	}
 
@@ -53,11 +53,13 @@ export default class ObjectSchema extends BaseSchema {
 
 		let currentErrorsCount = 0;
 
+		/* tslint:disable forin */
 		for (const key in this._state.subschema) {
 			const { errors, errorsCount } = this._state.subschema[key].validate(value[key], path ? path + '.' + key : key);
 			currentErrorsCount += errorsCount;
 			errorsMap[key] = errors;
 		}
+		/* tslint:enable forin */
 
 		return { errors: errorsMap, errorsCount: currentErrorsCount };
 	}

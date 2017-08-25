@@ -5,12 +5,12 @@ export const name = 'enumeration';
 
 const typeName = 'enumeration';
 
-type EnumerationSchemaState = {
-	allowedValues: any[]
+type TEnumerationSchemaState = {
+	allowedValues: any[];
 };
 
 export default class EnumerationSchema extends BaseSchema {
-	private _state: EnumerationSchemaState;
+	private _state: TEnumerationSchemaState;
 
 	public constructor(...args: any[]) {
 		super();
@@ -24,7 +24,11 @@ export default class EnumerationSchema extends BaseSchema {
 		this.pushValidationFn((value, path) => {
 			const index = this._state.allowedValues.indexOf(value);
 			if (index === -1) {
-				return createError(ERROR_TYPES.ARGUMENT, `Expected one of ${this._state.allowedValues} but got ${value}`, path);
+				return createError(
+					ERROR_TYPES.ARGUMENT,
+					`Expected one of ${this._state.allowedValues} but got ${value}`,
+					path,
+				);
 			}
 		});
 	}
