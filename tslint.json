@@ -1,7 +1,4 @@
 {
-	"parserOptions": {
-		"sourceType": "module"
-	},
 	"env": {
 		"node": true,
 		"browser": true,
@@ -11,19 +8,15 @@
 		"describe": true,
 		"it": true
 	},
-	"extends": "eslint:recommended",
+	"extends": "tslint:recommended",
 	"rules": {
 		"indent": [
 			"error",
 			"tab"
 		],
-		"quotes": [
-			"error",
-			"single",
-			{
-				"avoidEscape": true,
-				"allowTemplateLiterals": true
-			}
+		"quotemark": [
+			true,
+			"single"
 		],
 		"semi": "error",
 		"eqeqeq": "warn",
