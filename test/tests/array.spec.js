@@ -1,32 +1,38 @@
 import { expect } from 'chai';
-import { array, string, number, object, bool, ERROR_TYPES } from '../../';
+import * as FluentSchemer from '../../';
 import { shouldReturnErrors, shouldNotReturnErrors } from '../helpers';
 
-// function typeGetterTest(type) {
-// 	it(`returns array<${type}> type for subschema of type ${type}`, () => {
-// 		const schema = array(schemas[type]());
-// 		expect(schema.type).to.equal(`array<${type}>`);
-// 	});
-// }
+function typeGetterTest(type) {
+	it(`returns array<${type}> type for subschema of type ${type}`, () => {
+		const schema = array(FluentSchemer[type]());
+		expect(schema.type).to.equal(`array<${type}>`);
+	});
+}
 
-// function validateTypeTest(subschemaType, arrayToValidate, valid = true) {
-// 	const validStr = valid.toString();
+const { array, string, number, object, bool, ERROR_TYPES } = FluentSchemer;
 
-// 	it(`returns "${validStr}" for array<${subschemaType}> when array contains only values of type ${subschemaType}`, () => {
-// 		const typedArraySchema = array(schemas[subschemaType]());
-// 		const isValidArray = typedArraySchema.validateType(arrayToValidate);
-// 		expect(isValidArray).to.be[validStr];
-// 	});
-// }
+function validateTypeTest(subschemaType, arrayToValidate, valid = true) {
+	const validStr = valid.toString();
+
+	it(`returns "${validStr}" for array<${subschemaType}> when array contains only values of type ${subschemaType}`, () => {
+		const typedArraySchema = array(FluentSchemer[subschemaType]());
+		const isValidArray = typedArraySchema.validateType(arrayToValidate);
+		expect(isValidArray).to.be[validStr];
+	});
+}
 
 describe('ArraySchema', () => {
-	// describe('get type():', () => {
-	// 	Object.keys(schemas).filter(x => x !== 'array' && x !== 'union').forEach(typeGetterTest);
+	describe('get type():', () => {
+		const schemas = ['bool', 'string', 'number', 'object'];
 
-	// 	it('returns array<any> for untyped array', () => {
-	// 		expect(array().type).to.equal('array<any>');
-	// 	});
-	// });
+		for(const schemaName of schemas) {
+			typeGetterTest(schemaName);
+		}
+
+		it('returns array<any> for untyped array', () => {
+			expect(array().type).to.equal('array<any>');
+		});
+	});
 
 	describe('validateType(): ', () => {
 		it('returns "true" for untyped array with values of distinct types', () => {
@@ -42,10 +48,10 @@ describe('ArraySchema', () => {
 			expect(array(bool()).validateType([])).to.equal(true);
 		});
 
-		// validateTypeTest('string', ['a', 'spica', 'huffman', 'beer', new String('fire')]);
-		// validateTypeTest('bool', [true, false, new Boolean(true)]);
-		// validateTypeTest('number', [1, 2, 3, 4, 10, -20, new Number(10), new Number(0)]);
-		// validateTypeTest('object', [{}, { zdr: 'kp' }]);
+		validateTypeTest('string', ['a', 'spica', 'huffman', 'beer', new String('fire')]);
+		validateTypeTest('bool', [true, false, new Boolean(true)]);
+		validateTypeTest('number', [1, 2, 3, 4, 10, -20, new Number(10), new Number(0)]);
+		validateTypeTest('object', [{}, { zdr: 'kp' }]);
 
 		it('returns `false` for arrays with values of invalid types', () => {
 			const invalidStrings = [null, 1, NaN, {}, [], () => 1, true, undefined];
