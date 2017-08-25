@@ -17,4 +17,4 @@ export const enumeration = (...values: any[]) => new EnumerationSchema(...values
 export const object = (subschema: { [id: string]: BaseSchema }) => new ObjectSchema(subschema);
 export const union = (...subschemas: BaseSchema[]) => new UnionSchema(...subschemas);
 
-export * from './lib/errors';
+export * from './lib/errors'

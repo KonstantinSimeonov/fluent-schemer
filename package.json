@@ -15,8 +15,8 @@
 		"schemer"
 	],
 	"scripts": {
+		"tslint": "tslint ./index.ts ./lib/**/*.ts",
 		"test": "nyc --reporter=html --reporter=text mocha ./test/**/*.spec.js --compilers babel-register",
-		"browser-test": "node ./test/browser.js",
 		"coverage": "nyc report --reporter=text-lcov | coveralls",
 		"build": "webpack --progress --colors --profile",
 		"watch": "webpack --watch --progress --colors --profile"

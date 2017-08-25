@@ -18,7 +18,7 @@ export default class EnumerationSchema extends BaseSchema {
 		const isMapEnum = args.length === 1 && typeof args[0] === 'object';
 
 		this._state = {
-			allowedValues: isMapEnum ? Object.keys(args[0]).map(key => args[0][key]) : args
+			allowedValues: isMapEnum ? Object.keys(args[0]).map(key => args[0][key]) : args,
 		};
 
 		this.pushValidationFn((value, path) => {

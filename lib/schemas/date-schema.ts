@@ -77,9 +77,9 @@ function betweenValidation(
 }
 
 type TDateSchemaState = {
-	_before?: Date
-	_after?: Date
-	ranges: { [key: string]: number }
+	_before?: Date;
+	_after?: Date;
+	ranges: { [key: string]: number };
 };
 
 export default class DateSchema extends BaseSchema {

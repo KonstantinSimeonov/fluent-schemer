@@ -23,10 +23,6 @@
 		"variable-name": [
 			"allow-leading-underscore"
 		],
-		"semi": "error",
-		"eqeqeq": "warn",
-		"brace-style": "error",
-		"constructor-super": "error",
 		"use-isnan": true
 	}
 }
