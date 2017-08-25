@@ -16,6 +16,7 @@
 	],
 	"scripts": {
 		"tslint": "tslint",
+		"lint": "yarn tslint ./index.ts ./lib/**/*.ts",
 		"test": "nyc --reporter=html --reporter=text mocha ./test/**/*.spec.js --compilers babel-register",
 		"coverage": "nyc report --reporter=text-lcov | coveralls",
 		"build": "webpack --progress --colors --profile",
