@@ -17,3 +17,5 @@ typings.json
 tsconfig.json
 webpack.config.js
 yarn.lock
+./git-hooks
+init-hooks.sh

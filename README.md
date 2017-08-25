@@ -4,8 +4,6 @@
 
 ## Incoming:
 - **flow typedefs**
-- **throw errors on invalid arguments** passed to schema methods
-	- _Example_: `number.minlength('fail'); date().before([]);`
 
 Aims to provide declarative, expressive and elegant approach to validation, while providing an intuitive, easy-to-use api.
 
@@ -20,6 +18,7 @@ Aims to provide declarative, expressive and elegant approach to validation, whil
 - **promotes code reuse** - easily share code between modules, between clients, servers and across projects
 - easy to extends with custom schemas
 - **statically type checked** with typescript, checked for correctness with a bunch of **unit tests**
+- **throws errors** when rubbish arguments are provided to schema methods, instead of failing silently
 
 ## It will be cool, because
 - every script, that is part of the validator, will eventually be thoroughly unit tested
