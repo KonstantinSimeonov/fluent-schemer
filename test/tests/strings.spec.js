@@ -5,59 +5,68 @@ import { shouldReturnErrors, shouldNotReturnErrors } from '../helpers';
 const ROOT = 'root';
 
 describe('StringSchema individual methods', () => {
-	it('StringSchema.type should return string', () => {
-		expect(string().type).to.equal('string');
+	describe('get type():', () => {
+		it('StringSchema.type should return string', () => {
+			expect(string().type).to.equal('string');
+		});
 	});
 
-	it('StringSchema.validateType(): should return true for primitive strings and string objects', () => {
-		const primitives = ['1', '', 'sdfsdf', '324jn'],
-			stringObjects = primitives.map(str => new String(str)),
-			schema = string();
+	describe('.validateType():', () => {
+		it('StringSchema.validateType(): should return true for primitive strings and string objects', () => {
+			const primitives = ['1', '', 'sdfsdf', '324jn'];
+			const stringObjects = primitives.map(str => new String(str));
+			const schema = string();
 
-		const allAreStrings = primitives.concat(stringObjects).every(str => schema.validateType(str));
+			const allAreStrings = primitives.concat(stringObjects).every(str => schema.validateType(str));
 
-		expect(allAreStrings).to.equal(true);
+			expect(allAreStrings).to.equal(true);
+		});
 	});
 
-	it('StringSchema.required(): should return errors with invalid types when required has been called', () => {
+	describe('.required():', () => {
+		it('.validate() returns errors with invalid types when required has been called', () => {
 
-		const schema = string().required(),
-			values = [true, {}, 10, [], null, undefined];
+			const schema = string().required();
+			const values = [true, {}, 10, [], null, undefined];
 
-		shouldReturnErrors(schema, values, { type: ERROR_TYPES.TYPE });
+			shouldReturnErrors(schema, values, { type: ERROR_TYPES.TYPE });
+		});
+
+		it('.validate() does not return errors with invalid types when no required has been called', () => {
+			const schema = string();
+			const invalidTypeValues = [true, {}, 10, null, [], undefined];
+
+			shouldNotReturnErrors(schema, invalidTypeValues);
+		});
+
+		it('.validate() does not return errors with valid strings when required has been called', () => {
+			const schema = string();
+			const stringValues = ['', 'gosho', new String('10'), new String(10)];
+
+			shouldNotReturnErrors(schema, stringValues);
+		});
 	});
 
-	it('StringSchema.required(): should not return errors with invalid types when no required has been called', () => {
-		const schema = string(),
-			invalidTypeValues = [true, {}, 10, null, [], undefined];
+	describe('.minlength():', () => {
+		it('returns range error for too short string', () => {
+			const schema = string().minlength(5);
+			const tooShortStrings = ['a', '', 'b', 'ivan', 'pe'];
 
-		shouldNotReturnErrors(schema, invalidTypeValues);
+			shouldReturnErrors(schema, tooShortStrings, { type: ERROR_TYPES.RANGE });
+		});
+
+		it('does not return errors for strings with at least minlength length', () => {
+			const schema = string().minlength(10);
+			const validStrings = ['kalata shte hodi na fitnes', 'petya e iskreno i nepodkupno parche', 'tedi lyje, mami i obicha da tancuva'];
+
+			shouldNotReturnErrors(schema, validStrings);
+		});
 	});
 
-	it('StringSchema.required(): should not return errors with valid strings when required has been called', () => {
-		const schema = string(),
-			stringValues = ['', 'gosho', new String('10'), new String(10)];
-
-		shouldNotReturnErrors(schema, stringValues);
-	});
-
-	it('StringSchema.minlength(): should return range error for too short string', () => {
-		const schema = string().minlength(5),
-			tooShortStrings = ['a', '', 'b', 'ivan', 'pe'];
-
-		shouldReturnErrors(schema, tooShortStrings, { type: ERROR_TYPES.RANGE });
-	});
-
-	it('StringSchema.minlength(): should not return errors for strings with at least minlength length', () => {
-		const schema = string().minlength(10),
-			validStrings = ['kalata shte hodi na fitnes', 'petya e iskreno i nepodkupno parche', 'tedi lyje, mami i obicha da tancuva'];
-
-		shouldNotReturnErrors(schema, validStrings);
-	});
-
-	it('StringSchema.maxlength(): should return errors for strings with more than allowed length', () => {
-		const schema = string().maxlength(8),
-			tooLongStrings = [
+	describe('.maxlength(): ', () => {
+		it('return serrors for strings with more than allowed length', () => {
+			const schema = string().maxlength(8);
+			const tooLongStrings = [
 				'iskam si shala, inache shte te obesya',
 				'6al 6al 6al 6al',
 				'4ao 4ao 4ao 4ao s tvoya 6al 6al 6al 6al 6al',
@@ -65,28 +74,31 @@ describe('StringSchema individual methods', () => {
 				'gosho tosho pesho shosho rosho'
 			];
 
-		shouldReturnErrors(schema, tooLongStrings, { type: ERROR_TYPES.RANGE });
+			shouldReturnErrors(schema, tooLongStrings, { type: ERROR_TYPES.RANGE });
+		});
+
+		it('does not return errors for strings with less than or equal to allowed length', () => {
+			const schema = string().maxlength(5);
+			const validStrings = ['', '1', 'gg', 'ooo', 'four', 'gosho'];
+
+			shouldNotReturnErrors(schema, validStrings);
+		});
 	});
 
-	it('StringSchema.maxlength(): should not return errors for strings with less than or equal to allowed length', () => {
-		const schema = string().maxlength(5),
-			validStrings = ['', '1', 'gg', 'ooo', 'four', 'gosho'];
+	describe('.pattern(): ', () => {
+		it('returns errors for strings that do not match the provided regexp', () => {
+			const schema = string().pattern(/^[a-z]{5,10}$/i);
+			const invalidStrings = ['abc', 'gg', 'kot', 'tedi pish-e i krad-e i lyj-e i mam-i i zaplashv-a i gled-a lo6o', 'testtesttest'];
 
-		shouldNotReturnErrors(schema, validStrings);
-	});
+			shouldReturnErrors(schema, invalidStrings, { type: ERROR_TYPES.ARGUMENT });
+		});
 
-	it('StringSchema.pattern(): should return errors for strings that do not match the provided regexp', () => {
-		const schema = string().pattern(/^[a-z]{5,10}$/i),
-			invalidStrings = ['abc', 'gg', 'kot', 'tedi pish-e i krad-e i lyj-e i mam-i i zaplashv-a i gled-a lo6o', 'testtesttest'];
+		it('does not return errors for strings that match the provided regexp', () => {
+			const schema = string().pattern(/^[a-z]{5,10}$/i);
+			const validStrings = ['Goshko', 'TEODORA', 'petya', 'chieftain', 'viktor', 'cykuchev'];
 
-		shouldReturnErrors(schema, invalidStrings, { type: ERROR_TYPES.ARGUMENT });
-	});
-
-	it('StringSchema.pattern(): should not return errors for strings that match the provided regexp', () => {
-		const schema = string().pattern(/^[a-z]{5,10}$/i),
-			validStrings = ['Goshko', 'TEODORA', 'petya', 'chieftain', 'viktor', 'cykuchev'];
-
-		shouldNotReturnErrors(schema, validStrings);
+			shouldNotReturnErrors(schema, validStrings);
+		});
 	});
 });
 
@@ -102,7 +114,7 @@ describe('StringSchema method combinations', () => {
 		expect(schema.validate).to.be.a('function');
 	});
 
-	it('StringSchema .minlength(), .maxlength(), .required() should return errors together with invalid strings', () => {
+	it('.minlength(), .maxlength(), .required() should return errors together with invalid strings', () => {
 		const schema = string()
 			.required()
 			.minlength(7)
@@ -120,7 +132,7 @@ describe('StringSchema method combinations', () => {
 
 	});
 
-	it('StringSchema methods should return type error when validating value of incorrect type', () => {
+	it('methods should return type error when validating value of incorrect type', () => {
 		const schema = string()
 			.minlength(10)
 			.maxlength(20)
@@ -145,7 +157,7 @@ describe('StringSchema method combinations', () => {
 			});
 	});
 
-	it('StringSchema methods should not return errors when .required() has not been called', () => {
+	it('methods should not return errors when .required() has not been called', () => {
 		const schema = string()
 			.minlength(10)
 			.maxlength(20)
@@ -157,7 +169,7 @@ describe('StringSchema method combinations', () => {
 		shouldNotReturnErrors(schema, notStrings);
 	});
 
-	it('StringSchema methods should not return errors for valid strings', () => {
+	it('methods should not return errors for valid strings', () => {
 		const schema = string()
 			.required()
 			.minlength(2)

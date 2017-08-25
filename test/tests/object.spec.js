@@ -30,11 +30,11 @@ describe('ObjectSchema keys', () => {
 			name: string().minlength(3).maxlength(10),
 			age: number().min(0).max(100),
 			isStudent: bool().required()
-		}),
-			invalidPerson = {
-				name: '1',
-				age: -1
-			};
+		});
+		const invalidPerson = {
+			name: '1',
+			age: -1
+		};
 
 		const {
             errors: {
@@ -114,12 +114,12 @@ describe('ObjectSchema keys', () => {
 			name: string().minlength(3).maxlength(10),
 			age: number().min(0).max(100),
 			isStudent: bool().required()
-		}),
-			pencho = {
-				name: 'pencho',
-				age: 5,
-				isStudent: false
-			};
+		});
+		const pencho = {
+			name: 'pencho',
+			age: 5,
+			isStudent: false
+		};
 
 		shouldNotReturnErrors(personSchema, [pencho]);
 	});
@@ -186,7 +186,6 @@ describe('ObjectSchema nesting', () => {
 		});
 
 		const invalidObj = {};
-
 		const { errors: { options: errors } } = schema.validate(invalidObj, 'obj');
 
 		expect(errors.length).to.equal(1);

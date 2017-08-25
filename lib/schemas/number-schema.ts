@@ -24,7 +24,7 @@ export default class NumberSchema extends BaseSchema {
 	}
 
 	public validateType(value: any): value is number {
-		return is.Number(value)
+		return is.Numeric(value)
 			&& (this._nanAllowed || !isNaN(value))
 			&& (this._infinityAllowed || isFinite(value) || isNaN(value));
 	}
@@ -59,8 +59,8 @@ export default class NumberSchema extends BaseSchema {
 	}
 
 	public min(minvalue: number) {
-		if (Number.isNaN(minvalue)) {
-			throw new TypeError('Expected a valid number as minimal value, but got NaN');
+		if (!is.StrictNumber(minvalue)) {
+			throw new TypeError(`Expected a valid number as minimal value, but got ${minvalue}`);
 		}
 
 		if (is.Undefined(this._minvalue)) {
@@ -81,8 +81,8 @@ export default class NumberSchema extends BaseSchema {
 	}
 
 	public max(maxvalue: number) {
-		if (Number.isNaN(maxvalue)) {
-			throw new TypeError('Expected a valid number as minimal value, but got NaN');
+		if (!is.StrictNumber(maxvalue)) {
+			throw new TypeError(`Expected a valid number as minimal value, but got ${maxvalue}`);
 		}
 
 		if (is.Undefined(this._maxvalue)) {
