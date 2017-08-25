@@ -18,8 +18,8 @@
 		"test": "nyc --reporter=html --reporter=text mocha ./test/**/*.spec.js --compilers babel-register",
 		"browser-test": "node ./test/browser.js",
 		"coverage": "nyc report --reporter=text-lcov | coveralls",
-		"build": "yarn && webpack --progress --colors --profile",
-		"watch": "yarn && webpack --watch --progress --colors --profile"
+		"build": "webpack --progress --colors --profile",
+		"watch": "webpack --watch --progress --colors --profile"
 	},
 	"author": "Konstantin Simeonov<kon.simeonov@protonmail.com>",
 	"license": "MIT",

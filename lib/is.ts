@@ -14,3 +14,4 @@ export const Date = createIs<Date>('date');
 export const Array = createIs<Array<any>>('array');
 export const Function = createIs<Function>('function');
 export const NullOrUndefined = (value: any): value is (null | undefined) => Null(value) || Undefined(value);
+export const ValidLength = (value: any): boolean => 0 <= value && isFinite(value);

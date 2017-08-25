@@ -7,8 +7,8 @@ console.warn('Warning: DateSchema is still experimental! API changes are possibl
 
 export const name = 'date';
 
-function validateInteger(bound: any): boolean {
-	return Number.isInteger(bound);
+function validatePositiveInteger(bound: any): boolean {
+	return Number.isInteger(bound) && (0 <= bound);
 }
 
 const typeName = 'date';
@@ -54,7 +54,7 @@ function betweenValidation(
 		throw new Error(`Cannot set start and end for ${name} twice on a single DateSchema instance`);
 	}
 
-	if (!validateInteger(start) || !validateInteger(end)) {
+	if (!validatePositiveInteger(start) || !validatePositiveInteger(end)) {
 		throw new TypeError(`Expected integer numbers for start and end of ${name}, but got ${start} and ${end}`);
 	}
 

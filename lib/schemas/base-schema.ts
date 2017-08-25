@@ -1,5 +1,6 @@
 import { createError, ERROR_TYPES } from '../errors';
 import { IValidationError, IErrorFeedback } from '../contracts';
+import * as is from '../is';
 
 export const name = 'base';
 
@@ -38,6 +39,10 @@ export default abstract class BaseSchema {
 	 * @returns {BaseSchema} - The current instance of the BaseSchema.
 	 */
 	public predicate(predicateFn: (value: any) => boolean) {
+		if(!is.Function(predicateFn)) {
+			throw new TypeError(`Expected function as predicate but got value of type ${typeof predicateFn}`);
+		}
+
 		this.pushValidationFn((value, path) => {
 			if (!predicateFn(value)) {
 				return createError(ERROR_TYPES.PREDICATE, 'Value failed predicate', path);

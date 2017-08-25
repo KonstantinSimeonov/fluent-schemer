@@ -30,6 +30,10 @@ export default class NumberSchema extends BaseSchema {
 	}
 
 	public precision(allowedDiff: number) {
+		if(Number.isNaN(+allowedDiff) || allowedDiff < 0) {
+			throw new TypeError(`Expected allowedDiff to be a valid positive number but got ${allowedDiff}`);
+		}
+
 		this._precision = allowedDiff;
 
 		return this;
@@ -55,6 +59,10 @@ export default class NumberSchema extends BaseSchema {
 	}
 
 	public min(minvalue: number) {
+		if(Number.isNaN(minvalue)) {
+			throw new TypeError('Expected a valid number as minimal value, but got NaN');
+		}
+
 		if (is.Undefined(this._minvalue)) {
 			this.pushValidationFn((value, path) => {
 				if (value < this._minvalue) {
@@ -69,6 +77,10 @@ export default class NumberSchema extends BaseSchema {
 	}
 
 	public max(maxvalue: number) {
+		if(Number.isNaN(maxvalue)) {
+			throw new TypeError('Expected a valid number as minimal value, but got NaN');
+		}
+
 		if (is.Undefined(this._maxvalue)) {
 			this.pushValidationFn((value, path) => {
 				if (value > maxvalue) {

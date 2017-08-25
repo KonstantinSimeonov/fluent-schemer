@@ -20,7 +20,6 @@ export default class ArraySchema extends BaseSchema {
 	public constructor(subschema: BaseSchema) {
 		super();
 		if (!is.NullOrUndefined(subschema)) {
-
 			this._state = { subschema: subschema.required(), minlength: 0, maxlength: Infinity };
 		} else {
 			this._state = { minlength: 0, maxlength: Infinity };
@@ -40,19 +39,23 @@ export default class ArraySchema extends BaseSchema {
 	}
 
 	public minlength(length: number) {
-		if (ArraySchema._isValidArrayLength(length)) {
-			this._state.minlength = length;
-			this._state.hasMinLength = true;
+		if (!is.ValidLength(length)) {
+			throw new TypeError(`Expected a finite number larger than 0 as an array length but got ${length}`);			
 		}
+
+		this._state.minlength = length;
+		this._state.hasMinLength = true;
 
 		return this;
 	}
 
 	public maxlength(length: number) {
-		if (ArraySchema._isValidArrayLength(length)) {
-			this._state.maxlength = length;
-			this._state.hasMaxLength = true;
+		if (!is.ValidLength(length)) {
+			throw new TypeError(`Expected a finite number larger than 0 as an array length but got ${length}`);
 		}
+
+		this._state.maxlength = length;
+		this._state.hasMaxLength = true;
 
 		return this;
 	}
@@ -111,14 +114,10 @@ export default class ArraySchema extends BaseSchema {
 	}
 
 	private validateElementsType(value: any): boolean {
-		if(!this._state.subschema) {
+		if (!this._state.subschema) {
 			return true;
 		}
 
 		return this._state.subschema.validateType(value);
-	}
-
-	private static _isValidArrayLength(value: any) {
-		return !isNaN(value) && (value >= 0) && isFinite(value);
 	}
 }

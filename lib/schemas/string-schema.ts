@@ -29,6 +29,10 @@ export default class StringSchema extends BaseSchema {
 	}
 
 	public minlength(length: number) {
+		if (!is.ValidLength(length)) {
+			throw new TypeError(`Expected finite positive number as minimal string length, but got ${length}`);
+		}
+
 		if (!is.Undefined(this._state.minlength)) {
 			throw new Error('Cannot set minlength twice for a number schema instance');
 		}
@@ -45,6 +49,10 @@ export default class StringSchema extends BaseSchema {
 	}
 
 	public maxlength(length: number) {
+		if (!is.ValidLength(length)) {
+			throw new TypeError(`Expected finite positive number as minimal string length, but got ${length}`);
+		}
+
 		if (!is.Undefined(this._state.maxlength)) {
 			throw new Error('Cannot set maxlength twice for a number schema instance');
 		}
@@ -61,6 +69,10 @@ export default class StringSchema extends BaseSchema {
 	}
 
 	public pattern(regexp: RegExp) {
+		if(!is.RegExp(regexp)) {
+			throw new TypeError(`Expected regular expression as pattern, but got value of type ${typeof regexp}`);
+		}
+
 		if (!is.Undefined(this._state.pattern)) {
 			throw new Error('Cannot set maxlength twice for a number schema instance');
 		}
