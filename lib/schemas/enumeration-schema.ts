@@ -9,9 +9,32 @@ type TEnumerationSchemaState = {
 	allowedValues: Set<any>;
 };
 
+/**
+ * Provides validation whether a specific value belongs to a set of whitelisted values.
+ *
+ * @export
+ * @class EnumerationSchema
+ * @extends {BaseSchema}
+ */
 export default class EnumerationSchema extends BaseSchema {
 	private _state: TEnumerationSchemaState;
 
+	/**
+	 * Creates an instance of EnumerationSchema by a collection of whitelisted values.
+	 * Whitelisted values will be kept in a set, which would prevent automatic garbage collection.
+	 * @param {...any[]} args Either comma-separated whitelist values or an object, whose values will be whitelisted.
+	 * @memberof EnumerationSchema
+	 *
+	 * @example
+	 * // both declarations below are equivalent:
+	 *
+	 * const triState = enumeration(null, true, false);
+	 * const triStateFromMap = enumeration({
+	 *     unknown: null,
+	 *     true: true,
+	 *     false: false
+	 * });
+	 */
 	public constructor(...args: any[]) {
 		super();
 
@@ -32,10 +55,23 @@ export default class EnumerationSchema extends BaseSchema {
 		});
 	}
 
+	/**
+	 * Returns 'enumeration'.
+	 *
+	 * @readonly
+	 * @type {string}
+	 * @memberof EnumerationSchema
+	 */
 	public get type(): string {
 		return typeName;
 	}
 
+	/**
+	 * Always returns true.
+	 *
+	 * @returns {boolean}
+	 * @memberof EnumerationSchema
+	 */
 	public validateType(): boolean {
 		return true;
 	}

@@ -4,21 +4,73 @@ import * as is from '../is';
 
 export const name = 'base';
 
+/**
+ * Base class for all schemas. Implements common functionality such as
+ * marking a schema as required, attachment of predicates to schemas,
+ * blacklisting values and validation steps. Meant to be extended, not
+ * instantiated directly.
+ * @exports
+ */
 export default abstract class BaseSchema {
 
 	protected validationFunctions: Array<(value: any, path: string) => IValidationError | undefined>;
 	private _required: boolean;
 
+	/**
+	 * Creates an instance of BaseSchema.
+	 * @memberof BaseSchema
+	 */
 	public constructor() {
 		this.validationFunctions = [];
 	}
 
+	/**
+	 * Perform a type validation on the value.
+	 * Used internally by the schemas, but could also be useful as individual method.
+	 * Every schema provides an implementation.
+	 * @abstract
+	 * @param {*} value - The value that will be type checked.
+	 * @returns {boolean} - Whether the value passed the type check.
+	 * @memberof BaseSchema
+	 *
+	 * @example
+	 * number().validateType('356'); // false
+	 * string().validateType('356'); // true
+	 * array(bool()).validateType([true, true, false, 0]); // false
+	 */
 	public abstract validateType(value: any): boolean;
+
+	/**
+	 * Return a string representation of the schemas's type.
+	 * @readonly
+	 * @abstract
+	 * @type {string}
+	 * @memberof BaseSchema
+	 *
+	 * @example
+	 * string().type
+	 * array().type
+	 */
 	public abstract get type(): string;
 
 	/**
-	 * Values validated with this schema must match the schema type. Other types are not allowed by default.
-	 * @returns {BaseSchema} - The current instance of the BaseSchema.
+	 * Mark the schema type validation return an error for value who fail the type validation.
+	 * This behaviour will probably be made the default behaviour for all schemas in the future.
+	 * @returns {this} - The current instance of the BaseSchema.
+	 * @memberof BaseSchema
+	 *
+	 * @example
+	 * const age = number().required();
+	 * // error, type mismatch
+	 * age.validate('42asd');
+	 *
+	 * @example
+	 *
+	 * // no error, value is not required and is considered missing
+	 * number().validate('42asd');
+	 *
+	 * // error, types match but value does not satifsy logical rules
+	 * number().min(0).validate(-5)'
 	 */
 	public required() {
 		this._required = true;
@@ -29,7 +81,12 @@ export default abstract class BaseSchema {
 	/**
 	 * Specify a predicate that will be used to validate the values.
 	 * @param {function} predicateFn
-	 * @returns {BaseSchema} - The current instance of the BaseSchema.
+	 * @returns {this} - The current instance of the BaseSchema.
+	 * @memberof BaseSchema
+	 *
+	 * @example
+	 * // predicate for odd numbers
+	 * number().predicate(n => n % 2 !== 0);
 	 */
 	public predicate(predicateFn: (value: any) => boolean) {
 		if (!is.Function(predicateFn)) {
@@ -46,9 +103,15 @@ export default abstract class BaseSchema {
 	}
 
 	/**
-	 * Specify a set of values that are not valid.
-	 * @param {Array.<any>} values
-	 * @returns {BaseSchema} - The current instance of the BaseSchema.
+	 * Specify blacklisted values.
+	 * @param {...any[]} values - The blacklisted values.
+	 * @returns {this}
+	 * @memberof BaseSchema
+	 *
+	 * @example
+	 *
+	 * // error, because 'ts' is blacklisted
+	 * string().not('ts', 'c#', 'java').validate('ts');
 	 */
 	public not(...values: any[]) {
 		this.pushValidationFn((value, path) => {
@@ -63,10 +126,15 @@ export default abstract class BaseSchema {
 	}
 
 	/**
-	 * Synchronously validates whether a value satisfies the validation rules in the schema instance.
-	 * @param {any} value - The value to validate.
-	 * @param {string} path - The key of the value to validate.
-	 * @param {?[]} errors - Optional error array to push possible validation errors to.
+	 * Validate whether the provided value matches the type and the set of rules specified
+	 * by the current schema instance. For non-require'd schemas, failure of type validations will
+	 * result in no errors, because the schema rules will not be evaluated. Require'd schemas
+	 * will simply return type errors.
+	 * @param {*} value - The value to validate.
+	 * @param {string} [path='']
+	 * @param {IValidationError[]} [currentErrors]
+	 * @returns {IErrorFeedback}
+	 * @memberof BaseSchema
 	 */
 	public validate(value: any, path = '', currentErrors?: IValidationError[]): IErrorFeedback {
 		if (!this.validateType(value)) {

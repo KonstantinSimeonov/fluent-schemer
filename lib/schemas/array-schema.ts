@@ -14,10 +14,30 @@ type TArraySchemaState = {
 	hasMaxLength?: boolean;
 };
 
+/**
+ * Provides array validations for min/max array length, distinct elements.
+ * Elements can also be validated with a subschema.
+ * @export
+ * @class ArraySchema
+ * @extends {BaseSchema}
+ */
 export default class ArraySchema extends BaseSchema {
 	private _state: TArraySchemaState;
 
-	public constructor(subschema: BaseSchema) {
+	/**
+	 * Creates an instance of ArraySchema.
+	 * @param {BaseSchema} [subschema] - Specify a schema which is used to validate the elements of an array.
+	 * @memberof ArraySchema
+	 *
+	 * @example
+	 * // array of positive numbers
+	 * array(number().min(0))
+	 *
+	 * @example
+	 * // untyped array
+	 * array().minlength(5)
+	 */
+	public constructor(subschema?: BaseSchema) {
 		super();
 		if (!is.NullOrUndefined(subschema)) {
 			this._state = { subschema: subschema.required(), minlength: 0, maxlength: Infinity };
