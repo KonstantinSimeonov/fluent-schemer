@@ -6,7 +6,7 @@ export const name = 'enumeration';
 const typeName = 'enumeration';
 
 type TEnumerationSchemaState = {
-	allowedValues: any[];
+	allowedValues: Set<any>;
 };
 
 export default class EnumerationSchema extends BaseSchema {
@@ -18,12 +18,11 @@ export default class EnumerationSchema extends BaseSchema {
 		const isMapEnum = args.length === 1 && typeof args[0] === 'object';
 
 		this._state = {
-			allowedValues: isMapEnum ? Object.keys(args[0]).map(key => args[0][key]) : args,
+			allowedValues: new Set(isMapEnum ? Object.keys(args[0]).map(key => args[0][key]) : args),
 		};
 
 		this.pushValidationFn((value, path) => {
-			const index = this._state.allowedValues.indexOf(value);
-			if (index === -1) {
+			if (!this._state.allowedValues.has(value)) {
 				return createError(
 					ERROR_TYPES.ARGUMENT,
 					`Expected one of ${this._state.allowedValues} but got ${value}`,
