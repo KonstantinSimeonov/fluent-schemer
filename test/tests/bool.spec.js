@@ -1,89 +1,49 @@
-import { expect } from 'chai';
+import test from 'ava';
 import { bool, ERROR_TYPES } from '../../';
 import { shouldReturnErrors, shouldNotReturnErrors } from '../helpers';
 
 const ROOT = 'boolvalue';
 
-describe('BoolSchema individual methods', () => {
-	describe('get type(): ', () => {
-		it('returns "bool"', () => expect(bool().type).to.equal('bool'))
-	});
+test('bool.type :', assert => assert.is(bool().type, 'bool'));
 
-	describe('.validateType(): ', () => {
-		it('returns true for true and false', () => {
-			const schema = bool();
+test('bool.validateType() returns "true" for true and false', assert => {
+	const schema = bool();
 
-			expect(schema.validateType(true)).to.equal(true);
-			expect(schema.validateType(false)).to.equal(true);
-		});
-
-		it('returns false for all other values', () => {
-			const schema = bool();
-			const values = [{}, [], [1], null, undefined, NaN, Infinity, 1, 0, '', 'plamyche', Function, Symbol, 'true', 'false'];
-
-			const falseForAll = values.every(v => !schema.validateType(v));
-
-			expect(falseForAll).to.equal(true);
-		});
-	});
-
-	describe('.validate(): ', () => {
-		it('returns errors for values not of strict boolean type when .required() has been called', () => {
-			const schema = bool().required();
-			const values = [{}, [], [1], null, undefined, NaN, Infinity, 1, 0, '', 'plamyche', Function, Symbol, 'true', 'false'];
-
-			shouldReturnErrors(schema, values, { type: ERROR_TYPES.TYPE });
-		});
-
-		it('does not return errors for values of other types when required has not been called', () => {
-			const schema = bool();
-			const values = [{}, [], [1], null, undefined, NaN, Infinity, 1, 0, '', 'plamyche', Function, Symbol, 'true', 'false'];
-
-			shouldNotReturnErrors(schema, values);
-		});
-
-		it('does not return errors for strict bool values, regardless of required or not', () => {
-			const schema = bool();
-			shouldNotReturnErrors(schema, [true, false]);
-			schema.required();
-			shouldNotReturnErrors(schema, [true, false]);
-		});
-	});
-
-	describe('.predicate(): ', () => {
-		it('returns error of type predicate when predicate is not fulfilled', () => {
-			const schema = bool().predicate(x => x === false);
-			const { errors: [predicateError] } = schema.validate(true, ROOT);
-
-			expect(predicateError.type).to.equal(ERROR_TYPES.PREDICATE);
-			expect(predicateError.path).to.equal(ROOT);
-		});
-
-		it('does not return error when predicate is fulfilled', () => {
-			const schema = bool().predicate(x => x === false);
-
-			shouldNotReturnErrors(schema, [false]);
-		});
-	});
+	assert.true(schema.validateType(true));
+	assert.true(schema.validateType(false));
 });
 
-describe('BoolSchema method combinations', () => {
-	it('All methods should enable chaining', () => {
-		const schema = bool().required().not(false).predicate(x => x);
+test('bool.validateType() returns false for values of various other types', assert => {
+	const schema = bool();
+	const values = [{}, [], [1], null, undefined, NaN, Infinity, 1, 0, '', 'plamyche', Function, Symbol, 'true', 'false'];
 
-		expect(schema.validate).to.be.a('function');
-	});
+	values.map(v => schema.validateType(v)).forEach(isValid => assert.false(isValid));
+});
 
-	it('.not() and .required() should cause .validate() to return their respective errors when used together', () => {
-		const schema = bool().required().not(true);
+test('bool.validate() returns errors for values not of struct boolean type', assert => {
+	const schema = bool().required();
+	const values = [{}, [], [1], null, undefined, NaN, Infinity, 1, 0, '', 'plamyche', Function, Symbol, 'true', 'false'];
 
-		const { errors: [notError] } = schema.validate(true, ROOT);
+	shouldReturnErrors(assert, schema, values, { type: ERROR_TYPES.TYPE });
+});
 
-		expect(notError.type).to.equal(ERROR_TYPES.ARGUMENT);
-		expect(notError.path).to.equal(ROOT);
+test('bool.validate() does not return errors for values of other types with no required', assert => {
+	const schema = bool();
+	const values = [{}, [], [1], null, undefined, NaN, Infinity, 1, 0, '', 'plamyche', Function, Symbol, 'true', 'false'];
 
-		const notBools = [NaN, 1, 0, {}, [], null, undefined, '', 'pesho i petya pisali .net'];
+	shouldNotReturnErrors(assert, schema, values);
+});
 
-		shouldReturnErrors(schema, notBools, { type: ERROR_TYPES.TYPE });
-	});
+test('bool.validate() returns predicate errors when predicate is not satisfied', assert => {
+	const schema = bool().predicate(x => x === false);
+	const { errors: [predicateError] } = schema.validate(true, ROOT);
+
+	assert.is(predicateError.type, ERROR_TYPES.PREDICATE);
+	assert.is(predicateError.path, ROOT);
+});
+
+test('All methods should enable chaining', assert => {
+	const schema = bool().required().not(false).predicate(x => x);
+
+	assert.is(typeof schema.validate, 'function');
 });

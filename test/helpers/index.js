@@ -1,5 +1,3 @@
-import { expect } from 'chai';
-
 export function dfs(root, cb) {
 	if (Array.isArray(root)) {
 		for (const value of root) {
@@ -12,7 +10,7 @@ export function dfs(root, cb) {
 	}
 }
 
-export function shouldReturnErrors(schema, values, options = {}) {
+export const shouldReturnErrors = (test, schema, values, options = {}) => {
 	const expectedType = options.type;
 	const root = options.root || 'root';
 	const expectedPath = options.path || root;
@@ -20,14 +18,14 @@ export function shouldReturnErrors(schema, values, options = {}) {
 	for (const val of values) {
 		const errorsArray = [];
 		dfs(schema.validate(val, root).errors, err => errorsArray.push(err));
-		expect(errorsArray.length).to.equal(1);
+		test.is(errorsArray.length, 1);
 		const [err] = errorsArray;
 
-		expect(err.path).to.equal(expectedPath);
-		expect(err.type).to.equal(expectedType);
+		test.is(err.path, expectedPath);
+		test.is(err.type, expectedType);
 	}
 }
 
-export function shouldNotReturnErrors(schema, values) {
-	values.forEach(val => expect(schema.validate(val).errorsCount).to.equal(0));
+export function shouldNotReturnErrors(test, schema, values) {
+	values.forEach(val => test.is(schema.validate(val).errorsCount, 0));
 }
