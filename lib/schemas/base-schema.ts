@@ -21,6 +21,7 @@ export default abstract class BaseSchema {
 	 * @memberof BaseSchema
 	 */
 	public constructor() {
+		this._required = true;
 		this.validationFunctions = [];
 	}
 
@@ -54,26 +55,18 @@ export default abstract class BaseSchema {
 	public abstract get type(): string;
 
 	/**
-	 * Mark the schema type validation return an error for value who fail the type validation.
-	 * This behaviour will probably be made the default behaviour for all schemas in the future.
-	 * @returns {this} - The current instance of the BaseSchema.
+	 * If the value fails type validation, do not emit errors.
+	 * 
+	 * @returns {this}
 	 * @memberof BaseSchema
-	 *
+	 * 
 	 * @example
-	 * const age = number().required();
-	 * // error, type mismatch
-	 * age.validate('42asd');
-	 *
-	 * @example
-	 *
-	 * // no error, value is not required and is considered missing
-	 * number().validate('42asd');
-	 *
-	 * // error, types match but value does not satifsy logical rules
-	 * number().min(0).validate(-5)'
+	 * const maybeNaturalNumber = number().min(1).optional();
+	 * maybeNaturalNumber.validate(-5); // error, type is number, but min validation fails
+	 * maybeNaturalNnumber.validate('-5'); // no errors, type validation does not pass
 	 */
-	public required() {
-		this._required = true;
+	public optional() {
+		this._required = false;
 
 		return this;
 	}

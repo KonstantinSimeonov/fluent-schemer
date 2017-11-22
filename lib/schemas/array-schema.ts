@@ -40,7 +40,7 @@ export default class ArraySchema extends BaseSchema {
 	public constructor(subschema?: BaseSchema) {
 		super();
 		if (!is.NullOrUndefined(subschema)) {
-			this._state = { subschema: subschema.required(), minlength: 0, maxlength: Infinity };
+			this._state = { subschema, minlength: 0, maxlength: Infinity };
 		} else {
 			this._state = { minlength: 0, maxlength: Infinity };
 		}

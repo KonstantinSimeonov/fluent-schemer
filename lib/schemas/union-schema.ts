@@ -36,7 +36,7 @@ export default class UnionSchema extends BaseSchema {
 	public constructor(...subschemas: BaseSchema[]) {
 		super();
 
-		this._state = { subschemas: subschemas.map(x => x.required()) };
+		this._state = { subschemas };
 	}
 
 	/**

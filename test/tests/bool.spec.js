@@ -20,15 +20,15 @@ test('bool.validateType() returns false for values of various other types', asse
 	values.map(v => schema.validateType(v)).forEach(isValid => assert.false(isValid));
 });
 
-test('bool.validate() returns errors for values not of struct boolean type', assert => {
-	const schema = bool().required();
+test('bool.validate() returns errors for values not of strict boolean type', assert => {
+	const schema = bool();
 	const values = [{}, [], [1], null, undefined, NaN, Infinity, 1, 0, '', 'plamyche', Function, Symbol, 'true', 'false'];
-
+	
 	shouldReturnErrors(assert, schema, values, { type: ERROR_TYPES.TYPE });
 });
 
-test('bool.validate() does not return errors for values of other types with no required', assert => {
-	const schema = bool();
+test('bool.validate() does not return errors for values of other types when optional', assert => {
+	const schema = bool().optional();
 	const values = [{}, [], [1], null, undefined, NaN, Infinity, 1, 0, '', 'plamyche', Function, Symbol, 'true', 'false'];
 
 	shouldNotReturnErrors(assert, schema, values);
@@ -43,7 +43,7 @@ test('bool.validate() returns predicate errors when predicate is not satisfied',
 });
 
 test('All methods should enable chaining', assert => {
-	const schema = bool().required().not(false).predicate(x => x);
+	const schema = bool().optional().not(false).predicate(x => x);
 
 	assert.is(typeof schema.validate, 'function');
 });
