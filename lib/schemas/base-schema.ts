@@ -56,10 +56,10 @@ export default abstract class BaseSchema {
 
 	/**
 	 * If the value fails type validation, do not emit errors.
-	 * 
+	 *
 	 * @returns {this}
 	 * @memberof BaseSchema
-	 * 
+	 *
 	 * @example
 	 * const maybeNaturalNumber = number().min(1).optional();
 	 * maybeNaturalNumber.validate(-5); // error, type is number, but min validation fails
