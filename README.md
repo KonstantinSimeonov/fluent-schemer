@@ -4,8 +4,30 @@
 [![devDependencies Status](https://david-dm.org/KonstantinSimeonov/fluent-schemer/dev-status.svg)](https://david-dm.org/KonstantinSimeonov/fluent-schemer?type=dev)
 <a href='https://travis-ci.org/KonstantinSimeonov/fluent-schemer'><img src='https://travis-ci.org/KonstantinSimeonov/fluent-schemer.svg?branch=master' alt='Coverage Status' /></a> <a href='https://coveralls.io/github/KonstantinSimeonov/fluent-schemer'><img src='https://coveralls.io/repos/github/KonstantinSimeonov/fluent-schemer/badge.svg' alt='Coverage Status' /></a>
 
+```js
+const librarySchema = object({
+	dependenciesCount: number().min(0).max(10).integer().optional(),
+	name: string().minlength(2).maxlength(10),
+	testCoverage: number().min(0).max(100).optional(),
+	lastCommitDate: date().after(new Date(new Date().setMonth(new Date().getMonth() - 1))),
+	contributors: array(
+		object({
+			username: string().minlength(5),
+			email: string().pattern(/\S+@\S+\.\S+/)
+		})
+	),
+	issues: array(string()),
+	activelyMaintained: bool(),
+	license: enumeration('MIT', 'BSD', 'GPL')
+});
+
+const { errorCounts, errors } = librarySchema.validate(someLibraryRecord);
+```
+
 ## Incoming:
 - **flow typedefs**
+- **serialization/deserialization from/to JSON**
+- **convenient way to specify validations to be run on all keys/values/entries of an object**
 
 Aims to provide declarative, expressive and elegant approach to validation, while providing an intuitive, easy-to-use api.
 
@@ -20,7 +42,7 @@ Aims to provide declarative, expressive and elegant approach to validation, whil
 - **promotes code reuse** - easily share code between modules, between clients, servers and across projects
 - easy to extends with custom schemas
 - **statically type checked** with typescript, checked for correctness with a bunch of **unit tests**
-- **throws errors** when rubbish arguments are provided to schema methods, instead of failing silently
+- **throws errors when rubbish arguments are provided** to schema methods, instead of failing silently
 
 ## It will be cool, because
 - every script, that is part of the validator, will eventually be thoroughly unit tested
@@ -30,12 +52,11 @@ Aims to provide declarative, expressive and elegant approach to validation, whil
 ### Running the tests
 
 ```
-yarn build && yarn test
+yarn build && yarn lint && yarn test
 ```
 
 ### Examples
 
-Examples can be found in the [docs](./docs).
+Examples can be found in the [docs](./docs), in the source code and in the tests.
 
 ## [Documentation](./docs/QUICKSTART.md)
-## [Task list](./TODOS.md)
