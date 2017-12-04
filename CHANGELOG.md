@@ -1,4 +1,11 @@
-# fluent-schemer changelog
+# CHANGELOG
+
+## 04.15.2017 - `.required()` api method on BaseSchema is deprecated, using `ava` as test runner.
+- _Notes_:
+	- all tests rewritten with `ava`
+	- `.required()` has been removed
+		- all schemas will now be considered `required` by default
+		- `.optional()` method has been introduces, which will mark the schema as optional. Calling this has the same behaviour as not calling `.required()` previously did.
 
 ## 25.08.2017 - Throw errors on rubbish arguments, few internal changes
 - _Notes_:
@@ -19,8 +26,8 @@
 
 ## 31.03.2017 - UMD compliance
 - _Notes:_
-    - codebase is re-written using ES2015 harmony modules (`import`, `export`)
-    - the codebase is built into a bundle that complies with UMD
-    - bundling is now done via webpack instead of gulp
-    - tests now run on the built codebase
-    - nothing has been removed from the public API
+	- codebase is re-written using ES2015 harmony modules (`import`, `export`)
+	- the codebase is built into a bundle that complies with UMD
+	- bundling is now done via webpack instead of gulp
+	- tests now run on the built codebase
+	- nothing has been removed from the public API
