@@ -1,184 +1,165 @@
-import { expect } from 'chai';
+import test from 'ava';
 import { string, ERROR_TYPES } from '../../';
 import { shouldReturnErrors, shouldNotReturnErrors } from '../helpers';
 
 const ROOT = 'root';
 
-describe('StringSchema individual methods', () => {
-	describe('get type():', () => {
-		it('StringSchema.type should return string', () => {
-			expect(string().type).to.equal('string');
-		});
-	});
-
-	describe('.validateType():', () => {
-		it('StringSchema.validateType(): should return true for primitive strings and string objects', () => {
-			const primitives = ['1', '', 'sdfsdf', '324jn'];
-			const stringObjects = primitives.map(str => new String(str));
-			const schema = string();
-
-			const allAreStrings = primitives.concat(stringObjects).every(str => schema.validateType(str));
-
-			expect(allAreStrings).to.equal(true);
-		});
-	});
-
-	describe('.required():', () => {
-		it('.validate() returns errors with invalid types when required has been called', () => {
-
-			const schema = string().required();
-			const values = [true, {}, 10, [], null, undefined];
-
-			shouldReturnErrors(schema, values, { type: ERROR_TYPES.TYPE });
-		});
-
-		it('.validate() does not return errors with invalid types when no required has been called', () => {
-			const schema = string();
-			const invalidTypeValues = [true, {}, 10, null, [], undefined];
-
-			shouldNotReturnErrors(schema, invalidTypeValues);
-		});
-
-		it('.validate() does not return errors with valid strings when required has been called', () => {
-			const schema = string();
-			const stringValues = ['', 'gosho', new String('10'), new String(10)];
-
-			shouldNotReturnErrors(schema, stringValues);
-		});
-	});
-
-	describe('.minlength():', () => {
-		it('returns range error for too short string', () => {
-			const schema = string().minlength(5);
-			const tooShortStrings = ['a', '', 'b', 'ivan', 'pe'];
-
-			shouldReturnErrors(schema, tooShortStrings, { type: ERROR_TYPES.RANGE });
-		});
-
-		it('does not return errors for strings with at least minlength length', () => {
-			const schema = string().minlength(10);
-			const validStrings = ['kalata shte hodi na fitnes', 'petya e iskreno i nepodkupno parche', 'tedi lyje, mami i obicha da tancuva'];
-
-			shouldNotReturnErrors(schema, validStrings);
-		});
-	});
-
-	describe('.maxlength(): ', () => {
-		it('return serrors for strings with more than allowed length', () => {
-			const schema = string().maxlength(8);
-			const tooLongStrings = [
-				'iskam si shala, inache shte te obesya',
-				'6al 6al 6al 6al',
-				'4ao 4ao 4ao 4ao s tvoya 6al 6al 6al 6al 6al',
-				'here iz a test',
-				'gosho tosho pesho shosho rosho'
-			];
-
-			shouldReturnErrors(schema, tooLongStrings, { type: ERROR_TYPES.RANGE });
-		});
-
-		it('does not return errors for strings with less than or equal to allowed length', () => {
-			const schema = string().maxlength(5);
-			const validStrings = ['', '1', 'gg', 'ooo', 'four', 'gosho'];
-
-			shouldNotReturnErrors(schema, validStrings);
-		});
-	});
-
-	describe('.pattern(): ', () => {
-		it('returns errors for strings that do not match the provided regexp', () => {
-			const schema = string().pattern(/^[a-z]{5,10}$/i);
-			const invalidStrings = ['abc', 'gg', 'kot', 'tedi pish-e i krad-e i lyj-e i mam-i i zaplashv-a i gled-a lo6o', 'testtesttest'];
-
-			shouldReturnErrors(schema, invalidStrings, { type: ERROR_TYPES.ARGUMENT });
-		});
-
-		it('does not return errors for strings that match the provided regexp', () => {
-			const schema = string().pattern(/^[a-z]{5,10}$/i);
-			const validStrings = ['Goshko', 'TEODORA', 'petya', 'chieftain', 'viktor', 'cykuchev'];
-
-			shouldNotReturnErrors(schema, validStrings);
-		});
-	});
+test('StringSchema.type should return string', assert => {
+	assert.is(string().type, 'string');
 });
 
-describe('StringSchema method combinations', () => {
-	it('All methods should enable chaining', () => {
-		const schema = string()
-			.required()
-			.minlength(10)
-			.maxlength(20)
-			.pattern(/^[a-z]{5}$/i)
-			.predicate(x => x !== 'test');
+test('StringSchema.validateType(): should return true for primitive strings and string objects', assert => {
+	const primitives = ['1', '', 'sdfsdf', '324jn'];
+	const stringObjects = primitives.map(str => new String(str));
+	const schema = string();
 
-		expect(schema.validate).to.be.a('function');
-	});
+	const allAreStrings = primitives.concat(stringObjects).every(str => schema.validateType(str));
 
-	it('.minlength(), .maxlength(), .required() should return errors together with invalid strings', () => {
-		const schema = string()
-			.required()
-			.minlength(7)
-			.maxlength(14)
-			.predicate(value => value.startsWith('cyki'));
+	assert.true(allAreStrings);
+});
 
-		const invalidValues = ['tedi', 'gosho', new String('spica'), 'konsko pecheno sys shal', new String('konsko pecheno bez shal'), 'horsehorsehorsehorse'];
+test('.validate() returns errors with invalid types when .optional() has NOT been called', assert => {
 
-		const validationErrors = invalidValues
-			.forEach(val => {
-				const errorsArray = schema.validate(val, ROOT).errors;
-				expect(errorsArray.filter(err => (err.type === ERROR_TYPES.RANGE) && (err.path === ROOT)).length).to.equal(1);
-				expect(errorsArray.filter(err => (err.type === ERROR_TYPES.PREDICATE) && (err.path === ROOT)).length).to.equal(1);
-			});
+	const schema = string();
+	const values = [true, {}, 10, [], null, undefined];
 
-	});
+	shouldReturnErrors(assert, schema, values, { type: ERROR_TYPES.TYPE });
+});
 
-	it('methods should return type error when validating value of incorrect type', () => {
-		const schema = string()
-			.minlength(10)
-			.maxlength(20)
-			.pattern(/^[0-9]+$/i)
-			.predicate(v => v)
-			.required();
+test('.validate() does NOT return errors with invalid types when .optional() has been called', assert => {
+	const schema = string().optional();
+	const invalidTypeValues = [true, {}, 10, null, [], undefined];
 
-		const root = 'arrayValue';
-		const notStrings = [null, undefined, { prop: 'somevalue' }, ['lol'], 10, new Number(3), () => null, /testregexp/g];
+	shouldNotReturnErrors(assert, schema, invalidTypeValues);
+});
 
-		notStrings
-			.map(v => schema.validate(v, root).errors)
-			.forEach(errorsArray => {
-				expect(errorsArray.length).to.equal(1);
+test('.validate() does NOT return errors with valid strings when .optional() has NOT been called', assert => {
+	const schema = string();
+	const stringValues = ['', 'gosho', new String('10'), new String(10)];
 
-				const [err] = errorsArray;
+	shouldNotReturnErrors(assert, schema, stringValues);
+});
 
-				expect(err.path).to.equal(root);
-				expect(err.type).to.equal(ERROR_TYPES.TYPE);
+test('.minlength().validate() returns range error for too short string', assert => {
+	const schema = string().minlength(5);
+	const tooShortStrings = ['a', '', 'b', 'ivan', 'pe'];
 
-				return err;
-			});
-	});
+	shouldReturnErrors(assert, schema, tooShortStrings, { type: ERROR_TYPES.RANGE });
+});
 
-	it('methods should not return errors when .required() has not been called', () => {
-		const schema = string()
-			.minlength(10)
-			.maxlength(20)
-			.pattern(/^[0-9]+$/i)
-			.predicate(v => v);
+test('.minlength().validate() does not return errors for strings with at least minlength length', assert => {
+	const schema = string().minlength(10);
+	const validStrings = ['kalata shte hodi na fitnes', 'petya e iskreno i nepodkupno parche', 'tedi lyje, mami i obicha da tancuva'];
 
-		const notStrings = [null, undefined, false, {}, [], String];
+	shouldNotReturnErrors(assert, schema, validStrings);
+});
 
-		shouldNotReturnErrors(schema, notStrings);
-	});
+test('.maxlength().validate() return serrors for strings with more than allowed length', assert => {
+	const schema = string().maxlength(8);
+	const tooLongStrings = [
+		'iskam si shala, inache shte te obesya',
+		'6al 6al 6al 6al',
+		'4ao 4ao 4ao 4ao s tvoya 6al 6al 6al 6al 6al',
+		'here iz a test',
+		'gosho tosho pesho shosho rosho'
+	];
 
-	it('methods should not return errors for valid strings', () => {
-		const schema = string()
-			.required()
-			.minlength(2)
-			.maxlength(6)
-			.pattern(/^[0-9]+$/i)
-			.predicate(v => v[0] === '0');
+	shouldReturnErrors(assert, schema, tooLongStrings, { type: ERROR_TYPES.RANGE });
+});
 
-		const validValues = ['012', '00', '001122', new String('01283')];
+test('.maxlength().validate() does not return errors for strings with less than or equal to allowed length', assert => {
+	const schema = string().maxlength(5);
+	const validStrings = ['', '1', 'gg', 'ooo', 'four', 'gosho'];
 
-		shouldNotReturnErrors(schema, validValues);
-	});
+	shouldNotReturnErrors(assert, schema, validStrings);
+});
+
+test('.pattern().validate() returns errors for strings that do not match the provided regexp', assert => {
+	const schema = string().pattern(/^[a-z]{5,10}$/i);
+	const invalidStrings = ['abc', 'gg', 'kot', 'tedi pish-e i krad-e i lyj-e i mam-i i zaplashv-a i gled-a lo6o', 'testtesttest'];
+
+	shouldReturnErrors(assert, schema, invalidStrings, { type: ERROR_TYPES.ARGUMENT });
+});
+
+test('.pattern().validate() does not return errors for strings that match the provided regexp', assert => {
+	const schema = string().pattern(/^[a-z]{5,10}$/i);
+	const validStrings = ['Goshko', 'TEODORA', 'petya', 'chieftain', 'viktor', 'cykuchev'];
+
+	shouldNotReturnErrors(assert, schema, validStrings);
+});
+
+test('All methods should enable chaining', assert => {
+	const schema = string()
+		.optional()
+		.minlength(10)
+		.maxlength(20)
+		.pattern(/^[a-z]{5}$/i)
+		.predicate(x => x !== 'test');
+
+	assert.is(typeof schema.validate, 'function');
+});
+
+test('.minlength(), .maxlength(), .optional() should return errors together with invalid strings', assert => {
+	const schema = string()
+		.minlength(7)
+		.maxlength(14)
+		.predicate(value => value.startsWith('cyki'));
+
+	const invalidValues = ['tedi', 'gosho', new String('spica'), 'konsko pecheno sys shal', new String('konsko pecheno bez shal'), 'horsehorsehorsehorse'];
+
+	const validationErrors = invalidValues
+		.forEach(val => {
+			const errorsArray = schema.validate(val, ROOT).errors;
+			assert.is(errorsArray.filter(err => (err.type === ERROR_TYPES.RANGE) && (err.path === ROOT)).length, 1);
+			assert.is(errorsArray.filter(err => (err.type === ERROR_TYPES.PREDICATE) && (err.path === ROOT)).length, 1);
+		});
+});
+
+test('methods should return type error when validating value of incorrect type', assert => {
+	const schema = string()
+		.minlength(10)
+		.maxlength(20)
+		.pattern(/^[0-9]+$/i)
+		.predicate(v => v);
+
+	const root = 'arrayValue';
+	const notStrings = [null, undefined, { prop: 'somevalue' }, ['lol'], 10, new Number(3), () => null, /testregexp/g];
+
+	notStrings
+		.map(v => schema.validate(v, root).errors)
+		.forEach(errorsArray => {
+			assert.is(errorsArray.length, 1);
+
+			const [err] = errorsArray;
+
+			assert.is(err.path, root);
+			assert.is(err.type, ERROR_TYPES.TYPE);
+
+			return err;
+		});
+});
+
+test('methods should not return errors when .optional() has been called', assert => {
+	const schema = string()
+		.minlength(10)
+		.maxlength(20)
+		.pattern(/^[0-9]+$/i)
+		.predicate(v => v)
+		.optional();
+
+	const notStrings = [null, undefined, false, {}, [], String];
+
+	shouldNotReturnErrors(assert, schema, notStrings);
+});
+
+test('methods should not return errors for valid strings', assert => {
+	const schema = string()
+		.minlength(2)
+		.maxlength(6)
+		.pattern(/^[0-9]+$/i)
+		.predicate(v => v[0] === '0');
+
+	const validValues = ['012', '00', '001122', new String('01283')];
+
+	shouldNotReturnErrors(assert, schema, validValues);
 });
