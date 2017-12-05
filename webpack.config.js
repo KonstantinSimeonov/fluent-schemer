@@ -3,17 +3,20 @@ const webpack = require('webpack');
 
 const BUILD_DIR = path.resolve(__dirname, 'dist');
 
-const es6Config = {
+const baseConfig = {
 	devtool: 'source-map',
 	entry: path.resolve(__dirname, 'index.ts'),
+	resolve: {
+		extensions: ['.ts', '.js']
+	}
+};
+
+const es6Config = Object.assign({}, baseConfig, {
 	output: {
 		filename: 'index.js',
 		path: BUILD_DIR,
-		library: 'FluentSchemer',
+		library: 'fluent-schemer',
 		libraryTarget: 'umd'
-	},
-	resolve: {
-		extensions: ['.ts', '.js']
 	},
 	module: {
 		rules: [
@@ -22,21 +25,19 @@ const es6Config = {
 				use: 'ts-loader'
 			}
 		]
-	}
-};
+	},
+	plugins: [
+		new webpack.WatchIgnorePlugin([BUILD_DIR])		
+	]
+});
 
-const es5MinConfig = {
-	devtool: 'source-map',
-	entry: path.resolve(__dirname, 'index.ts'),
+const es5MinConfig = Object.assign({}, baseConfig, {
 	output: {
 		filename: 'index.es5.min.js',
 		path: BUILD_DIR,
-		library: 'FluentSchemer',
+		library: 'fluent-schemer',
 		libraryTarget: 'umd',
 		sourceMapFilename: 'index.es5.min.js.map'
-	},
-	resolve: {
-		extensions: ['.ts', '.js']
 	},
 	module: {
 		rules: [
@@ -53,8 +54,9 @@ const es5MinConfig = {
 		new webpack.DefinePlugin({
 			'process.env.NODE_ENV': 'production'
 		}),
-		new webpack.optimize.UglifyJsPlugin()
+		new webpack.optimize.UglifyJsPlugin(),
+		new webpack.WatchIgnorePlugin([BUILD_DIR])
 	]
-};
+});
 
 module.exports = [es5MinConfig, es6Config];
