@@ -1,12 +1,12 @@
 {
-    "compilerOptions": {
-        "alwaysStrict": true,
+	"compilerOptions": {
+		"alwaysStrict": true,
 		"declaration": true,
-        "target": "es6",
-        "module": "commonjs",
-        "noImplicitAny": true,
-        "noUnusedLocals": true,
-        "strict": true,
+		"target": "es6",
+		"module": "commonjs",
+		"noImplicitAny": true,
+		"noUnusedLocals": true,
+		"strict": true,
 		"pretty": true
-    }
+	}
 }
