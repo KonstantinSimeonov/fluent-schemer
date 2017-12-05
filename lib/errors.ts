@@ -12,9 +12,20 @@ export class ValidationError {
 
 export const ERROR_TYPES = Object.freeze({
 	ARGUMENT: 'argument',
+	COMPOSITE: 'composite',
 	PREDICATE: 'predicate',
 	RANGE: 'range',
 	TYPE: 'type',
 });
 
+export class CompositeError extends ValidationError {
+	public errors: ValidationError[];
+
+	constructor(path: string, errors: ValidationError[]) {
+		super(ERROR_TYPES.COMPOSITE, 'More than one error occurred for the provided path', path);
+		this.errors = errors;
+	}
+}
+
 export const createError = (type: string, message: string, path: string) => new ValidationError(type, message, path);
+export const createCompositeError = (path: string, errors: ValidationError[]) => new CompositeError(path, errors);

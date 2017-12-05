@@ -18,6 +18,8 @@ declare module 'fluent-schemer' {
 		path: string;
 	};
 
+	declare export type ICompositeValidationError = IValidationError & { errors: IValidationError };
+
 	declare export type IErrorFeedback = {
 		errors: IValidationError[];
 		errorsCount: number;
@@ -83,6 +85,8 @@ declare module 'fluent-schemer' {
 		type: 'object';
 		allowArrays(): this;
 		allowFunctions(): this;
+		keys(keysSchema: StringSchema): this;
+		values(valuesSchema: BaseSchema): this;
 		predicate(predicateFn: (value: Object) => boolean): this;
 	}
 

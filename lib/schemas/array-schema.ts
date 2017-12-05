@@ -127,10 +127,9 @@ export default class ArraySchema extends BaseSchema {
 		}
 
 		for (let i = 0, len = value.length; i < len; i += 1) {
-			const { errors: subErrors, errorsCount } = this._state.subschema.validate(value[i], path + '[' + i + ']', errors);
+			const { errors: subErrors, errorsCount } = this._state.subschema.validate(value[i], path + '[' + i + ']');
 
 			if (errorsCount > 0) {
-
 				if (Array.isArray(subErrors)) {
 					errors.push(...subErrors);
 				} else {

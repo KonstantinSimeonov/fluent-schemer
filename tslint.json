@@ -20,6 +20,7 @@
 		"new-parens": false,
 		"arrow-parens": [false, "ban-single-arg-parens"],
 		"interface-over-type-literal": [false],
+		"max-classes-per-file": false,
 		"variable-name": [
 			"allow-leading-underscore"
 		],

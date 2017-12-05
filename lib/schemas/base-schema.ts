@@ -132,16 +132,22 @@ export default abstract class BaseSchema {
 	public validate(value: any, path = '', currentErrors?: IValidationError[]): IErrorFeedback {
 		if (!this.validateType(value)) {
 			if (this._required) {
-				return {
+				const typeError = {
 					errors: [createError(ERROR_TYPES.TYPE, `Expected type ${this.type} but got ${typeof value}`, path)],
 					errorsCount: 1,
 				};
+
+				if (currentErrors) {
+					currentErrors.push(typeError.errors[0]);
+				}
+
+				return typeError;
 			}
 
 			return { errorsCount: 0, errors: [] };
 		}
 
-		return this.validateValueWithCorrectType(value, path);
+		return this.validateValueWithCorrectType(value, path, currentErrors);
 	}
 
 	/**
@@ -169,7 +175,7 @@ export default abstract class BaseSchema {
 	 * @param {?[]} errors - Options error array to push possible validation errors to.
 	 */
 	protected validateValueWithCorrectType(value: any, path: string, currentErrors?: IValidationError[]): IErrorFeedback {
-		const errors = [];
+		const errors = currentErrors || [];
 
 		for (let i = 0, len = this.validationFunctions.length; i < len; i += 1) {
 			const err = this.validationFunctions[i](value, path);

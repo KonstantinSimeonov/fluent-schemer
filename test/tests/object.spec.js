@@ -200,3 +200,70 @@ test('Nesting should not return errors when the nested schema is optional', asse
 
 	shouldNotReturnErrors(assert, schema, [{}, null]);
 });
+
+test('object().keys() throws when argument is not a string schema', assert => {
+	assert.throws(() => object().keys({}), TypeError);
+	assert.throws(() => object.keys(number().min(0)), TypeError);
+});
+
+test('object.keys() returns no errors when object keys match provided schema', assert => {
+	const alphabetMapSchema = object().keys(string().pattern(/^[a-z]$/));
+	const letterOccurrences = {
+		h: 4,
+		o: 10,
+		r: 1,
+		s: 7,
+		e: 9
+	};
+
+	const { errorsCount, errors } = alphabetMapSchema.validate(letterOccurrences);
+
+	assert.is(errorsCount, 0);
+});
+
+test('object.keys() returns errors when object keys do not match provided schema', assert => {
+	const idontcare = object().keys(string().maxlength(5));
+
+	const somethingMap = {
+		ivan: true,
+		penka: false,
+		dmitriy: true,
+		kostya: false
+	};
+
+	const { errorsCount, errors } = idontcare.validate(somethingMap);
+	assert.is(errorsCount, 2);
+});
+
+test('object().values() throws when argument is not a string schema', assert => {
+	assert.throws(() => object().values({}), TypeError);
+});
+
+test('object.values() returns no errors when object values match provided schema', assert => {
+	const alphabetMapSchema = object().values(number().integer());
+	const letterOccurrences = {
+		h: 4,
+		o: 10,
+		r: 1,
+		s: 7,
+		e: 9
+	};
+
+	const { errorsCount, errors } = alphabetMapSchema.validate(letterOccurrences);
+
+	assert.is(errorsCount, 0);
+});
+
+test('object.values() returns errors when object values do not match provided schema', assert => {
+	const idontcare = object().values(number().integer());
+
+	const somethingMap = {
+		penka: false,
+		ivan: 1.5,
+		dmitriy: 'pesho',
+		kostya: 5
+	};
+
+	const { errorsCount, errors } = idontcare.validate(somethingMap);
+	assert.is(errorsCount, 3);
+});
