@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## 05.15.2017 - flow libdefs, `.keys().values()` methods for object, generic typescript goodness
+
 ## 04.15.2017 - `.required()` api method on BaseSchema is deprecated, using `ava` as test runner.
 - _Notes_:
 	- all tests rewritten with `ava`
