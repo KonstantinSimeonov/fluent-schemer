@@ -82,7 +82,7 @@ type TDateSchemaState = {
 	ranges: { [key: string]: number };
 };
 
-export default class DateSchema extends BaseSchema {
+export default class DateSchema extends BaseSchema<Date> {
 	protected validationFunctions: Array<((value: Date, path: string) => IValidationError)>;
 	private _state: TDateSchemaState;
 

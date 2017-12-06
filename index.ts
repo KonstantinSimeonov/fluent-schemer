@@ -82,7 +82,7 @@ export const date = () => new DateSchema;
  * // untyped array
  * array().minlength(5)
  */
-export const array = (subschema?: BaseSchema) => new ArraySchema(subschema);
+export const array = <TValidated>(subschema?: BaseSchema<TValidated>) => new ArraySchema(subschema);
 
 /**
  * Creates an instance of EnumerationSchema by a collection of whitelisted values.
@@ -114,7 +114,7 @@ export const enumeration = (...values: any[]) => new EnumerationSchema(...values
  *     age: number().min(0).integer().required()
  * }).required();
  */
-export const object = (subschema: { [id: string]: BaseSchema }) => new ObjectSchema(subschema);
+export const object = <TValues = any>(subschema: { [id: string]: BaseSchema<TValues> }) => new ObjectSchema(subschema);
 
 /**
  * Creates an instance of UnionSchema.
@@ -130,6 +130,6 @@ export const object = (subschema: { [id: string]: BaseSchema }) => new ObjectSch
  * canDoMathsWith.validate('5'); // fine
  * canDoMathsWith.validate('42asd'); // error
  */
-export const union = (...subschemas: BaseSchema[]) => new UnionSchema(...subschemas);
+export const union = (...subschemas: Array<BaseSchema<any>>) => new UnionSchema(...subschemas);
 
 export * from './lib/errors';

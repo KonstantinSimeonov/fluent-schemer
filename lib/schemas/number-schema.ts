@@ -14,7 +14,7 @@ const typeName = 'number';
  * @class NumberSchema
  * @extends {BaseSchema}
  */
-export default class NumberSchema extends BaseSchema {
+export default class NumberSchema extends BaseSchema<number> {
 	private _precision: number;
 	private _minvalue: number;
 	private _maxvalue: number;
@@ -147,7 +147,7 @@ export default class NumberSchema extends BaseSchema {
 		}
 
 		if (is.Undefined(this._minvalue)) {
-			this.pushValidationFn((value, path) => {
+			this.pushValidationFn((value: number, path: string) => {
 				if (value < this._minvalue) {
 					return createError(
 						ERROR_TYPES.RANGE,
@@ -208,7 +208,7 @@ export default class NumberSchema extends BaseSchema {
 	 * number().integer().validate(5); // fine
 	 */
 	public integer() {
-		this.pushValidationFn((value, path) => {
+		this.pushValidationFn((value: number, path: string) => {
 			if (!Number.isInteger(value + 0)) {
 				return createError(
 					ERROR_TYPES.ARGUMENT,

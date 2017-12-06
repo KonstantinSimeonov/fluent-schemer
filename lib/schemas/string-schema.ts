@@ -19,7 +19,7 @@ type TStringSchemaState = {
  * @class StringSchema
  * @extends {BaseSchema}
  */
-export default class StringSchema extends BaseSchema {
+export default class StringSchema extends BaseSchema<string> {
 	private _state: TStringSchemaState;
 
 	/**

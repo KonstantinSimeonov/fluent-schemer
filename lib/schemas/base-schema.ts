@@ -11,9 +11,9 @@ export const name = 'base';
  * instantiated directly.
  * @exports
  */
-export default abstract class BaseSchema {
+export default abstract class BaseSchema<TValidated> {
 
-	protected validationFunctions: Array<(value: any, path: string) => IValidationError | undefined>;
+	protected validationFunctions: Array<(value: TValidated, path: string) => IValidationError | undefined>;
 	private _required: boolean;
 
 	/**
@@ -39,7 +39,7 @@ export default abstract class BaseSchema {
 	 * string().validateType('356'); // true
 	 * array(bool()).validateType([true, true, false, 0]); // false
 	 */
-	public abstract validateType(value: any): boolean;
+	public abstract validateType(value: any): value is TValidated;
 
 	/**
 	 * Return a string representation of the schemas's type.
@@ -81,7 +81,7 @@ export default abstract class BaseSchema {
 	 * // predicate for odd numbers
 	 * number().predicate(n => n % 2 !== 0);
 	 */
-	public predicate(predicateFn: (value: any) => boolean) {
+	public predicate(predicateFn: (value: TValidated) => boolean) {
 		if (!is.Function(predicateFn)) {
 			throw new TypeError(`Expected function as predicate but got value of type ${typeof predicateFn}`);
 		}
@@ -170,11 +170,15 @@ export default abstract class BaseSchema {
 	 * Virtual method that synchronously validates whether a value,
 	 * which is known to be of a type matching the current schema's type,
 	 * satisfies the validation rules in the schema. Can be overridden in child classes.
-	 * @param {any} value - The value of matching type to validate.
+	 * @param {TValidated} value - The value of matching type to validate.
 	 * @param {string} path - The key of the value to validate.
 	 * @param {?[]} errors - Options error array to push possible validation errors to.
 	 */
-	protected validateValueWithCorrectType(value: any, path: string, currentErrors?: IValidationError[]): IErrorFeedback {
+	protected validateValueWithCorrectType(
+		value: TValidated,
+		path: string,
+		currentErrors?: IValidationError[],
+	): IErrorFeedback {
 		const errors = currentErrors || [];
 
 		for (let i = 0, len = this.validationFunctions.length; i < len; i += 1) {

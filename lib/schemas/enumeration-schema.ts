@@ -16,7 +16,7 @@ type TEnumerationSchemaState = {
  * @class EnumerationSchema
  * @extends {BaseSchema}
  */
-export default class EnumerationSchema extends BaseSchema {
+export default class EnumerationSchema extends BaseSchema<any> {
 	private _state: TEnumerationSchemaState;
 
 	/**
@@ -72,7 +72,7 @@ export default class EnumerationSchema extends BaseSchema {
 	 * @returns {boolean}
 	 * @memberof EnumerationSchema
 	 */
-	public validateType(): boolean {
+	public validateType(value: any): value is any {
 		return true;
 	}
 }

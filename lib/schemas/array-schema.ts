@@ -5,15 +5,6 @@ import BaseSchema from './base-schema';
 
 export const name = 'array';
 
-type TArraySchemaState = {
-	typestring?: string;
-	subschema?: BaseSchema;
-	minlength: number;
-	maxlength: number;
-	hasMinLength?: boolean;
-	hasMaxLength?: boolean;
-};
-
 /**
  * Provides array validations for min/max array length, distinct elements.
  * Elements can also be validated with a subschema.
@@ -21,8 +12,15 @@ type TArraySchemaState = {
  * @class ArraySchema
  * @extends {BaseSchema}
  */
-export default class ArraySchema extends BaseSchema {
-	private _state: TArraySchemaState;
+export default class ArraySchema<TInner> extends BaseSchema<TInner[]> {
+	private _state: {
+		typestring?: string;
+		subschema?: BaseSchema<TInner>;
+		minlength: number;
+		maxlength: number;
+		hasMinLength?: boolean;
+		hasMaxLength?: boolean;
+	};
 
 	/**
 	 * Creates an instance of ArraySchema.
@@ -37,7 +35,7 @@ export default class ArraySchema extends BaseSchema {
 	 * // untyped array
 	 * array().minlength(5)
 	 */
-	public constructor(subschema?: BaseSchema) {
+	public constructor(subschema?: BaseSchema<TInner>) {
 		super();
 		if (!is.NullOrUndefined(subschema)) {
 			this._state = { subschema, minlength: 0, maxlength: Infinity };
@@ -54,7 +52,7 @@ export default class ArraySchema extends BaseSchema {
 		return this._state.typestring;
 	}
 
-	public validateType(value: any): value is any[] {
+	public validateType(value: any): value is TInner[] {
 		return is.Array(value)
 			&& (is.NullOrUndefined(this._state.subschema) || value.every((x: any) => this.validateElementsType(x)));
 	}
@@ -86,7 +84,7 @@ export default class ArraySchema extends BaseSchema {
 	}
 
 	public distinct() {
-		this.pushValidationFn((value, path) => {
+		this.pushValidationFn((value: TInner[], path: string) => {
 			if (value.length !== new Set(value).size) {
 				return createError(ERROR_TYPES.ARGUMENT, `Expected values in ${value} to be distinct`, path);
 			}
@@ -95,7 +93,7 @@ export default class ArraySchema extends BaseSchema {
 		return this;
 	}
 
-	protected validateValueWithCorrectType(value: any, path: string): IErrorFeedback {
+	protected validateValueWithCorrectType(value: TInner[], path: string): IErrorFeedback {
 		const { errors } = super.validateValueWithCorrectType(value, path);
 
 		if (this._state.hasMinLength && (value.length < this._state.minlength)) {
@@ -143,7 +141,7 @@ export default class ArraySchema extends BaseSchema {
 		return { errors, errorsCount: errors.length };
 	}
 
-	private validateElementsType(value: any): boolean {
+	private validateElementsType(value: any): value is TInner {
 		if (!this._state.subschema) {
 			return true;
 		}

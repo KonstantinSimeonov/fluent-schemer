@@ -12,7 +12,7 @@ const typeName = 'bool';
  * @class BoolSchema
  * @extends {BaseSchema}
  */
-export default class BoolSchema extends BaseSchema {
+export default class BoolSchema extends BaseSchema<boolean> {
 
 	/**
 	 * Returns 'bool'.

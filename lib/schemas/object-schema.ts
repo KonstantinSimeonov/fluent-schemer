@@ -8,14 +8,6 @@ export const name = 'object';
 
 const typeName = 'object';
 
-type TObjectSchemaState = {
-	subschema: { [id: string]: BaseSchema };
-	allowFunctions: boolean;
-	allowArrays: boolean;
-	keysSchema?: StringSchema;
-	valuesSchema?: BaseSchema;
-};
-
 /**
  * Provides validation for objects. Can be used to
  * create validation schemas for arbitarily deeply nested
@@ -25,8 +17,14 @@ type TObjectSchemaState = {
  * @class ObjectSchema
  * @extends {BaseSchema}
  */
-export default class ObjectSchema extends BaseSchema {
-	private _state: TObjectSchemaState;
+export default class ObjectSchema<TValues = any> extends BaseSchema<object> {
+	private _state: {
+		subschema: { [id: string]: BaseSchema<TValues> };
+		allowFunctions: boolean;
+		allowArrays: boolean;
+		keysSchema?: StringSchema;
+		valuesSchema?: BaseSchema<TValues>;
+	};
 
 	/**
 	 * Creates an instance of ObjectSchema.
@@ -42,7 +40,7 @@ export default class ObjectSchema extends BaseSchema {
 	 *     age: number().min(0).integer().required()
 	 * }).required();
 	 */
-	public constructor(subschema: { [id: string]: BaseSchema }) {
+	public constructor(subschema: { [id: string]: BaseSchema<TValues> }) {
 		super();
 		this._state = {
 			allowArrays: false,
@@ -79,7 +77,7 @@ export default class ObjectSchema extends BaseSchema {
 	 * object().validateType(new String('5')); // error
 	 * object().validateType(new Number(5)); // error
 	 */
-	public validateType(value: any) {
+	public validateType(value: any): value is object {
 		const valueIsArray = is.Array(value);
 		const valueIsFunction = is.Function(value);
 
@@ -128,7 +126,7 @@ export default class ObjectSchema extends BaseSchema {
 		return this;
 	}
 
-	public values(valuesSchema: BaseSchema) {
+	public values(valuesSchema: BaseSchema<TValues>) {
 		if (!(valuesSchema instanceof BaseSchema)) {
 			throw new TypeError('Schema for object values must be a schema instance');
 		}

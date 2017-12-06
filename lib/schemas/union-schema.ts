@@ -3,11 +3,6 @@ import BaseSchema from './base-schema';
 
 export const name = 'union';
 
-type TUnionSchemaState = {
-	subschemas: BaseSchema[];
-	typestring?: string;
-};
-
 /**
  * Provides validation for union types.
  *
@@ -15,8 +10,11 @@ type TUnionSchemaState = {
  * @class UnionSchema
  * @extends {BaseSchema}
  */
-export default class UnionSchema extends BaseSchema {
-	private _state: TUnionSchemaState;
+export default class UnionSchema extends BaseSchema<any> {
+	private _state: {
+		subschemas: Array<BaseSchema<any>>;
+		typestring?: string;
+	};
 
 	/**
 	 * Creates an instance of UnionSchema.
@@ -33,7 +31,7 @@ export default class UnionSchema extends BaseSchema {
 	 * canDoMathsWith.validate('5'); // fine
 	 * canDoMathsWith.validate('42asd'); // error
 	 */
-	public constructor(...subschemas: BaseSchema[]) {
+	public constructor(...subschemas: Array<BaseSchema<any>>) {
 		super();
 
 		this._state = { subschemas };
@@ -65,7 +63,7 @@ export default class UnionSchema extends BaseSchema {
 	 * canDoMathsWith.validate('5'); // fine
 	 * canDoMathsWith.validate({}); // error
 	 */
-	public validateType(value: any) {
+	public validateType(value: any): value is any {
 		return this._state.subschemas.findIndex(schema => schema.validateType(value)) !== -1;
 	}
 
