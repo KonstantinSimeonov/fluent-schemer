@@ -25,15 +25,15 @@ const { errorCounts, errors } = librarySchema.validate(someLibraryRecord);
 ```
 
 ## Incoming:
-- **flow typedefs**
 - **serialization/deserialization from/to JSON**
-- **convenient way to specify validations to be run on all keys/values/entries of an object**
+- **flow libdefs** on flow-typed
 
 Aims to provide declarative, expressive and elegant approach to validation, while providing an intuitive, easy-to-use api.
 
 ## It's cool, because
 - it **fully embraces ES2015** features such as classes, fat arrow functions, mixins, destructuring statements, modules
 - has **typescript type definitions** - v2.0 comes with typings for enhanced development experience
+- has **flow libdefs**, which will soon be available on flow-typed
 - **easy to use and pick up**, write a little code for a lot of common validation logic
 - has a **fluent, readable and declarative** api
 - **umd compliant** - use in node/browser, with commonjs, umd, script tags, harmony modules, whatever
