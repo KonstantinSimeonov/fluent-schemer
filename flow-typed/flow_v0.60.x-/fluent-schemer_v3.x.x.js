@@ -25,8 +25,8 @@ declare module 'fluent-schemer' {
 		errorsCount: number;
 	};
 	
-	declare export class BaseSchema {
-		validationFunctions(value: any, path: string): IValidationError[];
+	declare export class BaseSchema<TValidated> {
+		validationFunctions(value: TValidated, path: string): IValidationError[];
 		validateType(value: any): boolean;
 		optional(): this;
 		not(...values: any[]): this;
@@ -35,19 +35,20 @@ declare module 'fluent-schemer' {
 		validateValueWithCorrectType(value: any, path: string, currentErrors?: IValidationError[]): IErrorFeedback;
 	}
 
-	declare export class BoolSchema extends BaseSchema {
+	declare export class BoolSchema extends BaseSchema<boolean> {
 		type: 'bool';
 	}
 
-	declare export class ArraySchema extends BaseSchema {
+	declare export class ArraySchema<TInner> extends BaseSchema<TInner[]> {
 		type: string;
 		minlength(length: number): this;
 		maxlength(length: number): this;
 		withLength(length: number): this;
 		distinct(): this;
+		predicate(predicateFn: (value: TInner[]) => boolean): this;
 	}
 
-	declare export class DateSchema extends BaseSchema {
+	declare export class DateSchema extends BaseSchema<Date> {
 		type: 'date';
 		predicate(predicateFn: (value: Date) => boolean): this;
 		before(dateString: string): this;
@@ -56,6 +57,7 @@ declare module 'fluent-schemer' {
 		after(dateString: string): this;
 		after(date: Date): this;
 		after(year: number, month?: number, day?: number, hours?: number, minutes?: number, seconds?: number, milliseconds?: number): this;
+		predicate(predicateFn: (value: Date) => boolean): this;
 		dateBetween(start: number, end: number): this;
 		monthBetween(start: number, end: number): this;
 		hourBetween(start: number, end: number): this;
@@ -64,13 +66,13 @@ declare module 'fluent-schemer' {
 		secondsBetween(start: number, end: number): this;
 	}
 
-	declare export class EnumerationSchema extends BaseSchema {
+	declare export class EnumerationSchema extends BaseSchema<any> {
 		type: 'enumeration';
 		validateType(value: any): boolean;
 		predicate(predicateFn: (value: any) => boolean): this;
 	}
 
-	declare export class NumberSchema extends BaseSchema {
+	declare export class NumberSchema extends BaseSchema<number> {
 		type: 'number';
 		precision(allowedDiff: number): this;
 		allowNaN(): this;
@@ -81,16 +83,16 @@ declare module 'fluent-schemer' {
 		predicate(predicateFn: (value: number) => boolean): this;
 	}
 
-	declare export class ObjectSchema extends BaseSchema {
+	declare export class ObjectSchema<TValues> extends BaseSchema<Object> {
 		type: 'object';
 		allowArrays(): this;
 		allowFunctions(): this;
 		keys(keysSchema: StringSchema): this;
-		values(valuesSchema: BaseSchema): this;
+		values(valuesSchema: BaseSchema<TValues>): this;
 		predicate(predicateFn: (value: Object) => boolean): this;
 	}
 
-	declare export class StringSchema extends BaseSchema {
+	declare export class StringSchema extends BaseSchema<string> {
 		type: 'string';
 		minlength(length: number): this;
 		maxlength(length: number): this;
@@ -98,18 +100,18 @@ declare module 'fluent-schemer' {
 		predicate(predicateFn: (value: string) => boolean): this;
 	}
 
-	declare export class UnionSchema extends BaseSchema {
+	declare export class UnionSchema extends BaseSchema<boolean> {
 		type: string;
-		predicate(predicateFn: (value: any) => boolean): this;
+		predicate(predicateFn: (value: boolean) => boolean): this;
 	}
 
 	declare export function enumeration(...args: any[]): EnumerationSchema;
 	declare export function enumeration(enumMap: Object): EnumerationSchema;
-	declare export function union(...subschemas: BaseSchema[]): UnionSchema;
+	declare export function union(...subschemas: BaseSchema<any>[]): UnionSchema;
 	declare export function string(): StringSchema;
 	declare export function number(): NumberSchema;
-	declare export function object(subschemasMap: ObjectMap<BaseSchema>): ObjectSchema;
+	declare export function object<TValues>(subschemasMap: ObjectMap<BaseSchema<TValues>>): ObjectSchema<TValues>;
 	declare export function bool(): BoolSchema;
-	declare export function array(subschema?: BaseSchema): ArraySchema;
+	declare export function array<TInner>(subschema?: BaseSchema<TInner>): ArraySchema<TInner>;
 	declare export function date(): DateSchema;
 }
