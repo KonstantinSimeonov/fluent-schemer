@@ -2,3 +2,12 @@ node_modules
 coverage
 .nyc_output
 npm-debug.log
+.vscode
+jsconfig.json
+typings.json
+typings
+dist
+*.d.ts
+*.map
+index.js
+index.es.min.js

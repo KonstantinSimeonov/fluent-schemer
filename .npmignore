@@ -1,0 +1,17 @@
+.gitignore
+typings
+node_modules
+.nyc_output
+coverage
+.travis.yml
+typings.json
+./test
+.travis.yml
+./lib
+tsconfig.json
+webpack.config.js
+tslint.json
+git-hooks/
+init-hooks.sh
+flow-demo.js
+.babelrc

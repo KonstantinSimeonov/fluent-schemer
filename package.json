@@ -1,30 +1,44 @@
 {
-  "name": "fluent-validator",
-  "version": "0.10.0",
-  "repository": "https://github.com/KonstantinSimeonov/fluent-validator",
-  "description": "Small schema validation library that aims to provide declarative, expressive and elegant approach to validation, while providing an intuitive, easy-to-use api",
-  "main": "./fluent-validator/index.js",
-  "keywords": [
-    "validation",
-    "validate",
-    "schema",
-    "fluent",
-    "declarative",
-    "es2015"
-  ],
-  "directories": {
-    "test": "tests"
-  },
-  "scripts": {
-    "test": "nyc --reporter=html --reporter=text mocha",
-    "coverage": "nyc report --reporter=text-lcov | coveralls"
-  },
-  "author": "Konstantin Simeonov<kon.simeonov@protonmail.com>",
-  "license": "MIT",
-  "devDependencies": {
-    "chai": "^3.5.0",
-    "coveralls": "^2.11.15",
-    "mocha": "^3.2.0",
-    "nyc": "^10.1.2"
-  }
+	"name": "fluent-schemer",
+	"version": "2.1.2",
+	"repository": "https://github.com/KonstantinSimeonov/fluent-schemer",
+	"description": "Small umd compliant schema validation library that aims to provide declarative, expressive and elegant approach to validation, while providing an intuitive, easy-to-use api.",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"keywords": [
+		"validation",
+		"validate",
+		"schema",
+		"fluent",
+		"declarative",
+		"es2015",
+		"schemer"
+	],
+	"scripts": {
+		"flow": "flow",
+		"tslint": "tslint",
+		"lint": "yarn tslint ./index.ts ./lib/**/*.ts",
+		"test": "nyc ava",
+		"coverage": "nyc report --reporter=text-lcov | coveralls",
+		"build": "webpack --progress --colors --profile",
+		"watch": "webpack --watch --progress --colors --profile"
+	},
+	"author": "Konstantin Simeonov<kon.simeonov@protonmail.com>",
+	"license": "MIT",
+	"devDependencies": {
+		"ava": "^0.24.0",
+		"babel-core": "^6.26.0",
+		"babel-loader": "^7.1.2",
+		"babel-preset-es2015": "^6.24.1",
+		"babel-register": "^6.26.0",
+		"coveralls": "^3.0.0",
+		"flow-bin": "^0.60.1",
+		"nyc": "^11.3.0",
+		"ts-loader": "^3.2.0",
+		"tsc": "^1.20150623.0",
+		"tslint": "^5.6.0",
+		"typescript": "^2.6.2",
+		"webpack": "^3.10.0"
+	},
+	"dependencies": {}
 }

@@ -1,0 +1,28 @@
+{
+	"env": {
+		"node": true,
+		"browser": true,
+		"es6": true
+	},
+	"globals": {
+		"describe": true,
+		"it": true
+	},
+	"extends": "tslint:recommended",
+	"rules": {
+		"indent": [
+			true
+		],
+		"quotemark": [
+			true,
+			"single"
+		],
+		"new-parens": false,
+		"arrow-parens": [false, "ban-single-arg-parens"],
+		"interface-over-type-literal": [false],
+		"variable-name": [
+			"allow-leading-underscore"
+		],
+		"use-isnan": true
+	}
+}
