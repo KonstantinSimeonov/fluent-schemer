@@ -5,7 +5,7 @@ export interface IValidationError {
 }
 
 export interface IErrorFeedback<TValidated> {
+	corrected: TValidated;
 	errors: IValidationError[];
 	errorsCount: number;
-	corrected: TValidated;
 }

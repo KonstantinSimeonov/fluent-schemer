@@ -144,9 +144,9 @@ export default abstract class BaseSchema<TValidated> {
 		if (!this.validateType(value)) {
 			if (this._required) {
 				const typeError = {
+					corrected: this._defaultExpr ? this._defaultExpr() : value,
 					errors: [createError(ERROR_TYPES.TYPE, `Expected type ${this.type} but got ${typeof value}`, path)],
 					errorsCount: 1,
-					corrected: this._defaultExpr ? this._defaultExpr() : value
 				};
 
 				if (currentErrors) {
@@ -201,6 +201,10 @@ export default abstract class BaseSchema<TValidated> {
 			}
 		}
 
-		return { errors, errorsCount: errors.length, corrected: errors.length && this._defaultExpr ? this._defaultExpr() : value };
+		return {
+			corrected: errors.length && this._defaultExpr ? this._defaultExpr() : value,
+			errors,
+			errorsCount: errors.length,
+		};
 	}
 }
