@@ -14,6 +14,7 @@ export const name = 'base';
 export default abstract class BaseSchema<TValidated> {
 
 	protected validationFunctions: Array<(value: TValidated, path: string) => IValidationError | undefined>;
+	protected _defaultExpr: () => TValidated;
 	private _required: boolean;
 
 	/**
@@ -118,6 +119,16 @@ export default abstract class BaseSchema<TValidated> {
 		return this;
 	}
 
+	public default(defaultValue: TValidated) {
+		return this.defaultExpression(() => defaultValue);
+	}
+
+	public defaultExpression(expr: () => TValidated) {
+		this._defaultExpr = expr;
+
+		return this;
+	}
+
 	/**
 	 * Validate whether the provided value matches the type and the set of rules specified
 	 * by the current schema instance. For non-require'd schemas, failure of type validations will
@@ -129,12 +140,13 @@ export default abstract class BaseSchema<TValidated> {
 	 * @returns {IErrorFeedback}
 	 * @memberof BaseSchema
 	 */
-	public validate(value: any, path = '', currentErrors?: IValidationError[]): IErrorFeedback {
+	public validate(value: any, path = '', currentErrors?: IValidationError[]): IErrorFeedback<TValidated> {
 		if (!this.validateType(value)) {
 			if (this._required) {
 				const typeError = {
 					errors: [createError(ERROR_TYPES.TYPE, `Expected type ${this.type} but got ${typeof value}`, path)],
 					errorsCount: 1,
+					corrected: this._defaultExpr ? this._defaultExpr() : value
 				};
 
 				if (currentErrors) {
@@ -144,7 +156,7 @@ export default abstract class BaseSchema<TValidated> {
 				return typeError;
 			}
 
-			return { errorsCount: 0, errors: [] };
+			return { errorsCount: 0, errors: [], corrected: this._defaultExpr ? this._defaultExpr() : value };
 		}
 
 		return this.validateValueWithCorrectType(value, path, currentErrors);
@@ -178,7 +190,7 @@ export default abstract class BaseSchema<TValidated> {
 		value: TValidated,
 		path: string,
 		currentErrors?: IValidationError[],
-	): IErrorFeedback {
+	): IErrorFeedback<TValidated> {
 		const errors = currentErrors || [];
 
 		for (let i = 0, len = this.validationFunctions.length; i < len; i += 1) {
@@ -189,6 +201,6 @@ export default abstract class BaseSchema<TValidated> {
 			}
 		}
 
-		return { errors, errorsCount: errors.length };
+		return { errors, errorsCount: errors.length, corrected: errors.length && this._defaultExpr ? this._defaultExpr() : value };
 	}
 }

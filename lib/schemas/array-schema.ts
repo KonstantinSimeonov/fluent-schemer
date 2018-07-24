@@ -93,8 +93,9 @@ export default class ArraySchema<TInner> extends BaseSchema<TInner[]> {
 		return this;
 	}
 
-	protected validateValueWithCorrectType(value: TInner[], path: string): IErrorFeedback {
+	protected validateValueWithCorrectType(value: TInner[], path: string): IErrorFeedback<TInner[]> {
 		const { errors } = super.validateValueWithCorrectType(value, path);
+		const corrected = this._defaultExpr ? this._defaultExpr() : value;
 
 		if (this._state.hasMinLength && (value.length < this._state.minlength)) {
 			const minLengthError = createError(
@@ -105,7 +106,7 @@ export default class ArraySchema<TInner> extends BaseSchema<TInner[]> {
 
 			errors.push(minLengthError);
 
-			return { errors, errorsCount: errors.length };
+			return { errors, errorsCount: errors.length, corrected };
 		}
 
 		if (this._state.hasMaxLength && (value.length > this._state.maxlength)) {
@@ -117,11 +118,11 @@ export default class ArraySchema<TInner> extends BaseSchema<TInner[]> {
 
 			errors.push(maxLengthError);
 
-			return { errors, errorsCount: errors.length };
+			return { errors, errorsCount: errors.length, corrected };
 		}
 
 		if (!this._state.subschema) {
-			return { errors, errorsCount: errors.length };
+			return { errors, errorsCount: errors.length, corrected };
 		}
 
 		for (let i = 0, len = value.length; i < len; i += 1) {
@@ -134,11 +135,11 @@ export default class ArraySchema<TInner> extends BaseSchema<TInner[]> {
 					errors.push(subErrors);
 				}
 
-				return { errors, errorsCount: errors.length };
+				return { errors, errorsCount: errors.length, corrected };
 			}
 		}
 
-		return { errors, errorsCount: errors.length };
+		return { errors, errorsCount: errors.length, corrected };
 	}
 
 	private validateElementsType(value: any): value is TInner {

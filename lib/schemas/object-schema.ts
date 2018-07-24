@@ -138,6 +138,7 @@ export default class ObjectSchema<TValues = any> extends BaseSchema<object> {
 
 	protected validateValueWithCorrectType(value: any, path?: string) {
 		const errorsMap = Object.create(null);
+		const corrected = this._defaultExpr ? this._defaultExpr() : value;
 
 		let currentErrorsCount = 0;
 
@@ -178,6 +179,6 @@ export default class ObjectSchema<TValues = any> extends BaseSchema<object> {
 		}
 		/* tslint:enable forin */
 
-		return { errors: errorsMap, errorsCount: currentErrorsCount };
+		return { errors: errorsMap, errorsCount: currentErrorsCount, corrected };
 	}
 }

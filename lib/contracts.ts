@@ -4,7 +4,8 @@ export interface IValidationError {
 	path: string;
 }
 
-export interface IErrorFeedback {
+export interface IErrorFeedback<TValidated> {
 	errors: IValidationError[];
 	errorsCount: number;
+	corrected: TValidated;
 }
