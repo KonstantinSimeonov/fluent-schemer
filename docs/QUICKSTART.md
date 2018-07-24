@@ -51,4 +51,4 @@ const ageSchema = number().min(0).integer().required();
 console.log(ageSchema.validate(-1.5));
 ```
 
-## Start declaring and validating - [docs & examples]('./schemas')
+## Start declaring and validating - [docs & examples](./schemas)
