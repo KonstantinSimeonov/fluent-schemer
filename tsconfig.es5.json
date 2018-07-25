@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"alwaysStrict": true,
+		"declaration": true,
+		"target": "es5",
+		"lib": ["es2015", "es2016", "es2017"],
+		"module": "commonjs",
+		"noImplicitAny": true,
+		"noUnusedLocals": true,
+		"strict": true,
+		"pretty": true
+	}
+}

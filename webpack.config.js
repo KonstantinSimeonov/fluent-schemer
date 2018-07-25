@@ -27,7 +27,7 @@ const es6Config = Object.assign({}, baseConfig, {
 		]
 	},
 	plugins: [
-		new webpack.WatchIgnorePlugin([BUILD_DIR])		
+		new webpack.WatchIgnorePlugin([BUILD_DIR])
 	]
 });
 
@@ -43,10 +43,10 @@ const es5MinConfig = Object.assign({}, baseConfig, {
 		rules: [
 			{
 				test: /\.ts$/,
-				use: [
-					'babel-loader',
-					'ts-loader'
-				]
+				loader: 'ts-loader',
+				options: {
+					configFile: 'tsconfig.es5.json'
+				}
 			}
 		]
 	},
