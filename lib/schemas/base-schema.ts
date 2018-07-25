@@ -1,6 +1,7 @@
 import { IErrorFeedback, IValidationError } from '../contracts';
 import { createError, ERROR_TYPES } from '../errors';
 import * as is from '../is';
+import { id } from '../utils';
 
 export const name = 'base';
 
@@ -12,9 +13,8 @@ export const name = 'base';
  * @exports
  */
 export default abstract class BaseSchema<TValidated> {
-
 	protected validationFunctions: Array<(value: TValidated, path: string) => IValidationError | undefined>;
-	protected _defaultExpr: () => TValidated;
+	protected _defaultExpr: (value: TValidated) => TValidated;
 	private _required: boolean;
 
 	/**
@@ -24,6 +24,7 @@ export default abstract class BaseSchema<TValidated> {
 	public constructor() {
 		this._required = true;
 		this.validationFunctions = [];
+		this._defaultExpr = id;
 	}
 
 	/**
@@ -120,10 +121,10 @@ export default abstract class BaseSchema<TValidated> {
 	}
 
 	public default(defaultValue: TValidated) {
-		return this.defaultExpression(() => defaultValue);
+		return this.defaultExpression(_ => defaultValue);
 	}
 
-	public defaultExpression(expr: () => TValidated) {
+	public defaultExpression(expr: (value: TValidated) => TValidated) {
 		this._defaultExpr = expr;
 
 		return this;
@@ -144,7 +145,7 @@ export default abstract class BaseSchema<TValidated> {
 		if (!this.validateType(value)) {
 			if (this._required) {
 				const typeError = {
-					corrected: this._defaultExpr ? this._defaultExpr() : value,
+					corrected: this._defaultExpr(value),
 					errors: [createError(ERROR_TYPES.TYPE, `Expected type ${this.type} but got ${typeof value}`, path)],
 					errorsCount: 1,
 				};
@@ -156,7 +157,7 @@ export default abstract class BaseSchema<TValidated> {
 				return typeError;
 			}
 
-			return { errorsCount: 0, errors: [], corrected: this._defaultExpr ? this._defaultExpr() : value };
+			return { errorsCount: 0, errors: [], corrected: value };
 		}
 
 		return this.validateValueWithCorrectType(value, path, currentErrors);
@@ -202,7 +203,7 @@ export default abstract class BaseSchema<TValidated> {
 		}
 
 		return {
-			corrected: errors.length && this._defaultExpr ? this._defaultExpr() : value,
+			corrected: errors.length ? this._defaultExpr(value) : value,
 			errors,
 			errorsCount: errors.length,
 		};

@@ -70,18 +70,12 @@ export default class UnionSchema extends BaseSchema<any> {
 	protected validateValueWithCorrectType(value: any, path?: string) {
 		const errors: IValidationError[] = [];
 		const unionErrors: IValidationError[] = [];
-		const corrected = this._defaultExpr ? this._defaultExpr() : value;
 
 		for (const schema of this._state.subschemas) {
-
-			if (!schema.validateType(value)) {
-				continue;
-			}
-
 			const { errors: schemaErrors, errorsCount } = schema.validate(value, path);
 
 			if (!errorsCount) {
-				return { errors: [], errorsCount: 0, corrected };
+				return { errors: [], errorsCount: 0, corrected: value };
 			}
 
 			if (Array.isArray(schemaErrors)) {
@@ -93,6 +87,10 @@ export default class UnionSchema extends BaseSchema<any> {
 
 		errors.push(...unionErrors);
 
-		return { errors, errorsCount: errors.length, corrected };
+		return {
+			corrected: errors.length ? this._defaultExpr(value) : value,
+			errors,
+			errorsCount: errors.length,
+		};
 	}
 }
