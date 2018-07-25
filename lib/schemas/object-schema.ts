@@ -3,6 +3,7 @@ import { createCompositeError } from '../errors';
 import * as is from '../is';
 import BaseSchema from './base-schema';
 import StringSchema from './string-schema';
+import valid from './valid-schema';
 
 export const name = 'object';
 
@@ -22,8 +23,8 @@ export default class ObjectSchema<TValues = any> extends BaseSchema<object> {
 		subschema: { [id: string]: BaseSchema<TValues> };
 		allowFunctions: boolean;
 		allowArrays: boolean;
-		keysSchema?: StringSchema;
-		valuesSchema?: BaseSchema<TValues>;
+		keysSchema: BaseSchema<string>;
+		valuesSchema: BaseSchema<TValues>;
 	};
 
 	/**
@@ -45,7 +46,9 @@ export default class ObjectSchema<TValues = any> extends BaseSchema<object> {
 		this._state = {
 			allowArrays: false,
 			allowFunctions: false,
+			keysSchema: valid,
 			subschema: subschema || {},
+			valuesSchema: valid,
 		};
 	}
 
@@ -152,26 +155,23 @@ export default class ObjectSchema<TValues = any> extends BaseSchema<object> {
 			for (const key in value) {
 				const errorsForPath: IValidationError[] = [];
 
-				if (keysSchema) {
-					keysSchema.validate(key, key, errorsForPath);
+				keysSchema.validate(key, key, errorsForPath);
+				valuesSchema.validate(value[key], key, errorsForPath);
+
+				if (!errorsForPath.length) {
+					continue;
 				}
 
-				if (valuesSchema) {
-					valuesSchema.validate(value[key], key, errorsForPath);
+				if (errorsMap[key]) {
+					errorsForPath.push(errorsMap[key]);
 				}
 
-				if (errorsForPath.length) {
-					if (errorsMap[key]) {
-						errorsForPath.push(errorsMap[key]);
-					}
-
-					if (errorsForPath.length === 1) {
-						errorsMap[key] = errorsForPath.pop();
-						currentErrorsCount += 1;
-					} else {
-						currentErrorsCount += errorsForPath.length - 1;
-						errorsMap[key] = createCompositeError(path + '.' + key, errorsForPath);
-					}
+				if (errorsForPath.length === 1) {
+					errorsMap[key] = errorsForPath.pop();
+					currentErrorsCount += 1;
+				} else {
+					currentErrorsCount += errorsForPath.length - 1;
+					errorsMap[key] = createCompositeError(path + '.' + key, errorsForPath);
 				}
 			}
 		}
