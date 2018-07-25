@@ -1,5 +1,5 @@
 import { IValidationError } from '../contracts';
-import { createCompositeError } from '../errors';
+import { createCompositeError, createError, ERROR_TYPES } from '../errors';
 import * as is from '../is';
 import BaseSchema from './base-schema';
 import StringSchema from './string-schema';
@@ -138,28 +138,62 @@ export default class ObjectSchema<TValues = any> extends BaseSchema<object> {
 
 		return this;
 	}
+	public validate(value: any, path = '', currentErrors?: IValidationError[]) {
+		if (!this.validateType(value)) {
+			if (this._required) {
+				const typeError = {
+					corrected: this.validateValueWithCorrectType({}, path).corrected,
+					errors: [createError(ERROR_TYPES.TYPE, `Expected type ${this.type} but got ${typeof value}`, path)],
+					errorsCount: 1,
+				};
+
+				if (currentErrors) {
+					currentErrors.push(typeError.errors[0]);
+				}
+
+				return typeError;
+			}
+
+			return { errorsCount: 0, errors: [], corrected: value };
+		}
+
+		return this.validateValueWithCorrectType(value, path);
+	}
 
 	protected validateValueWithCorrectType(value: any, path?: string) {
 		const errorsMap = Object.create(null);
+		const correctedObj: any = {};
 		let currentErrorsCount = 0;
 
 		/* tslint:disable forin */
 		for (const key in this._state.subschema) {
-			const { errors, errorsCount } = this._state.subschema[key].validate(value[key], path ? path + '.' + key : key);
+			const {
+				errors,
+				errorsCount,
+				corrected,
+			} = this._state.subschema[key].validate(value[key], path ? path + '.' + key : key);
 			currentErrorsCount += errorsCount;
 			errorsMap[key] = errors;
+			correctedObj[key] = corrected;
 		}
+
+		const correctedKeys: string[] = [];
 
 		if (this._state.valuesSchema || this._state.keysSchema) {
 			const { valuesSchema, keysSchema } = this._state;
 			for (const key in value) {
 				const errorsForPath: IValidationError[] = [];
 
-				keysSchema.validate(key, key, errorsForPath);
-				valuesSchema.validate(value[key], key, errorsForPath);
+				const correctedKey = keysSchema.validate(key, key, errorsForPath).corrected;
+				const correctedValue = valuesSchema.validate(value[key], key, errorsForPath).corrected;
 
 				if (!errorsForPath.length) {
 					continue;
+				}
+
+				correctedObj[correctedKey] = correctedValue;
+				if (correctedKey !== key) {
+					correctedKeys.push(key);
 				}
 
 				if (errorsMap[key]) {
@@ -177,8 +211,11 @@ export default class ObjectSchema<TValues = any> extends BaseSchema<object> {
 		}
 		/* tslint:enable forin */
 
+		const corrected = { ...value, ...correctedObj };
+		correctedKeys.forEach(key => delete corrected[key]);
+
 		return {
-			corrected: currentErrorsCount ? this._defaultExpr(value) : value,
+			corrected,
 			errors: errorsMap,
 			errorsCount: currentErrorsCount,
 		};

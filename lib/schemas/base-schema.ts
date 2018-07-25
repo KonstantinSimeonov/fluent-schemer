@@ -15,7 +15,7 @@ export const name = 'base';
 export default abstract class BaseSchema<TValidated> {
 	protected validationFunctions: Array<(value: TValidated, path: string) => IValidationError | undefined>;
 	protected _defaultExpr: (value: TValidated) => TValidated;
-	private _required: boolean;
+	protected _required: boolean;
 
 	/**
 	 * Creates an instance of BaseSchema.
