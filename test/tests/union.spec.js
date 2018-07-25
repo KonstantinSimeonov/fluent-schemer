@@ -53,6 +53,17 @@ test('.validate() returns errors when the values satisfies the conditions of no 
 	const shortStrings = ['js', '', new String('1')];
 	const floats = [1.5, -0.5, new Number(2.5)];
 
-	shouldReturnErrors(assert, schema, shortStrings, { type: ERROR_TYPES.RANGE });
-	shouldReturnErrors(assert, schema, floats, { type: ERROR_TYPES.ARGUMENT });
+	shortStrings.concat(floats)
+		.map(v => schema.validate(v))
+		.forEach(({ errors, errorsCount }) => {
+			assert.is(errorsCount, 2);
+
+			assert.not(
+				errors.find(e => e.type === ERROR_TYPES.TYPE), undefined
+			);
+
+			assert.not(
+				errors.find(e => [ERROR_TYPES.ARGUMENT, ERROR_TYPES.RANGE].includes(e.type)), undefined
+			);
+		});
 });
