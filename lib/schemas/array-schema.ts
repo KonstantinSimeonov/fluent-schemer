@@ -37,11 +37,7 @@ export default class ArraySchema<TInner> extends BaseSchema<TInner[]> {
 	 */
 	public constructor(subschema?: BaseSchema<TInner>) {
 		super();
-		if (!is.NullOrUndefined(subschema)) {
-			this._state = { subschema, minlength: 0, maxlength: Infinity };
-		} else {
-			this._state = { minlength: 0, maxlength: Infinity };
-		}
+		this._state = { subschema, minlength: 0, maxlength: Infinity };
 	}
 
 	public get type() {
@@ -63,7 +59,22 @@ export default class ArraySchema<TInner> extends BaseSchema<TInner[]> {
 		}
 
 		this._state.minlength = length;
+
+		if (this._state.hasMinLength) {
+			return this;
+		}
+
 		this._state.hasMinLength = true;
+
+		this.validationFunctions.push((value: TInner[], path: string) => {
+			if (this._state.minlength > value.length) {
+				return	createError(
+					ERROR_TYPES.RANGE,
+					`Expected an ${this.type} with length at least ${this._state.minlength} but got length ${value.length}`,
+					path,
+				);
+			}
+		});
 
 		return this;
 	}
@@ -74,7 +85,21 @@ export default class ArraySchema<TInner> extends BaseSchema<TInner[]> {
 		}
 
 		this._state.maxlength = length;
+		if (this._state.hasMaxLength) {
+			return this;
+		}
+
 		this._state.hasMaxLength = true;
+
+		this.validationFunctions.push((value: TInner[], path: string) => {
+			if (this._state.maxlength < value.length) {
+				return	createError(
+					ERROR_TYPES.RANGE,
+					`Expected an ${this.type} with length at most ${this._state.minlength} but got length ${value.length}`,
+					path,
+				);
+			}
+		});
 
 		return this;
 	}
@@ -101,46 +126,24 @@ export default class ArraySchema<TInner> extends BaseSchema<TInner[]> {
 			errorsCount: errors.length,
 		});
 
-		if (this._state.hasMinLength && (value.length < this._state.minlength)) {
-			const minLengthError = createError(
-				ERROR_TYPES.RANGE,
-				`Expected an ${this.type} with length at least ${this._state.minlength} but got length ${value.length}`,
-				path,
-			);
-
-			errors.push(minLengthError);
-
-			return feedback();
-		}
-
-		if (this._state.hasMaxLength && (value.length > this._state.maxlength)) {
-			const maxLengthError = createError(
-				ERROR_TYPES.RANGE,
-				`Expected an ${this.type} with length at most ${this._state.maxlength} but got length ${value.length}`,
-				path,
-			);
-
-			errors.push(maxLengthError);
-
-			return feedback();
-		}
-
-		if (!this._state.subschema) {
+		if (!this._state.subschema || errors.length) {
 			return feedback();
 		}
 
 		for (let i = 0, len = value.length; i < len; i += 1) {
 			const { errors: subErrors, errorsCount } = this._state.subschema.validate(value[i], path + '[' + i + ']');
 
-			if (errorsCount > 0) {
-				if (Array.isArray(subErrors)) {
-					errors.push(...subErrors);
-				} else {
-					errors.push(subErrors);
-				}
-
-				return feedback();
+			if (errorsCount === 0) {
+				continue;
 			}
+
+			if (Array.isArray(subErrors)) {
+				errors.push(...subErrors);
+			} else {
+				errors.push(subErrors);
+			}
+
+			return feedback();
 		}
 
 		return feedback();
