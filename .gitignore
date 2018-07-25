@@ -11,3 +11,4 @@ dist
 *.map
 index.js
 index.es.min.js
+.*.swp
