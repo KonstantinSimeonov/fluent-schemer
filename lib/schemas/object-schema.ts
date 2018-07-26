@@ -170,11 +170,11 @@ export default class ObjectSchema<TValues = any> extends BaseSchema<object> {
 			const {
 				errors,
 				errorsCount,
-				corrected,
+				corrected: correctedValue,
 			} = this._state.subschema[key].validate(value[key], path ? path + '.' + key : key);
 			currentErrorsCount += errorsCount;
 			errorsMap[key] = errors;
-			correctedObj[key] = corrected;
+			correctedObj[key] = correctedValue;
 		}
 
 		const correctedKeys: string[] = [];
