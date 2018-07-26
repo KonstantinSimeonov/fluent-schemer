@@ -28,14 +28,15 @@ const { errorCounts, errors } = librarySchema.validate(someLibraryRecord);
 - **default values**, something like
 
 ```ts
-const { corrected: pageSize } = number().min(10).max(100).integer().validate(-5).default(10);
+const { corrected: pageSize } = number().min(10).max(100).integer().default(10).validate(-5);
 console.log(corrected); // 10
 
-const input = 'kasljfksfjadsklfsdasd';
 const { corrected: username } = string()
 	.minlength(2)
 	.maxlength(10)
-	.defaultExpression(() => ('_________' + input).slice(0, 10));
+	.defaultExpression(value => ('_________' + value).slice(0, 10))
+	.validate('1');
+console.log(username); // _________1
 ```
 
 - **serialization/deserialization from/to JSON**
