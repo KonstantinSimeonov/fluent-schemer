@@ -1,5 +1,5 @@
 import test from 'ava';
-import { string, bool, number, object, ERROR_TYPES } from '../../';
+import { string, bool, number, object, enumeration, ERROR_TYPES } from '../../';
 import { shouldNotReturnErrors } from '../helpers';
 
 test('ObjectSchema.type should return "object"', assert => {
@@ -196,9 +196,9 @@ test('Nesting should return error and not crash when the nested object is not pr
 test('Nesting should not return errors when the nested schema is optional', assert => {
 	const schema = object({
 		options: object({ opts: string() }).optional()
-	}).optional();
+	});
 
-	shouldNotReturnErrors(assert, schema, [{}, null]);
+	shouldNotReturnErrors(assert, schema, [{}]);
 });
 
 test('object().keys() throws when argument is not a string schema', assert => {
@@ -206,20 +206,15 @@ test('object().keys() throws when argument is not a string schema', assert => {
 	assert.throws(() => object.keys(number().min(0)), TypeError);
 });
 
-test('object.keys() returns no errors when object keys match provided schema', assert => {
-	const alphabetMapSchema = object().keys(string().pattern(/^[a-z]$/));
-	const letterOccurrences = {
-		h: 4,
-		o: 10,
-		r: 1,
-		s: 7,
-		e: 9
-	};
-
-	const { errorsCount, errors } = alphabetMapSchema.validate(letterOccurrences);
-
-	assert.is(errorsCount, 0);
-});
+[
+	[string().pattern(/^[a-z]$/), { h: 4, o: 10, r: 1, s: 7, e: 9 }],
+	[enumeration('gosho', 'pesho'), { gosho: 1, pesho: [] }]
+].forEach(
+	([keySchema, input]) => test(`object.keys() returns no errors when object keys matches ${keySchema.type} schema`, assert => {
+		const { errorsCount } = object().keys(keySchema).validate(input);
+		assert.is(errorsCount, 0);
+	})
+);
 
 test('object.keys() returns errors when object keys do not match provided schema', assert => {
 	const idontcare = object().keys(string().maxlength(5));
