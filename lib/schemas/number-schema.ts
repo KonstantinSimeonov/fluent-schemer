@@ -208,17 +208,15 @@ export default class NumberSchema extends BaseSchema<number> {
 	 * number().integer().validate(5); // fine
 	 */
 	public integer() {
-		this.pushValidationFn((value: number, path: string) => {
-			if (!Number.isInteger(value + 0)) {
-				return createError(
+		return this.pushValidationFn((value: number, path: string) =>
+			Number.isInteger(value + 0)
+				? undefined
+				:  createError(
 					ERROR_TYPES.ARGUMENT,
 					`Expected integer number but got ${value}`,
 					path,
-				);
-			}
-		});
-
-		return this;
+				),
+		);
 	}
 
 	protected areEqual(firstValue: number, secondValue: number) {

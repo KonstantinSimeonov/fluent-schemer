@@ -5,10 +5,6 @@ export const name = 'enumeration';
 
 const typeName = 'enumeration';
 
-type TEnumerationSchemaState = {
-	allowedValues: Set<any>;
-};
-
 /**
  * Provides validation whether a specific value belongs to a set of whitelisted values.
  *
@@ -17,8 +13,6 @@ type TEnumerationSchemaState = {
  * @extends {BaseSchema}
  */
 export default class EnumerationSchema extends BaseSchema<any> {
-	private _state: TEnumerationSchemaState;
-
 	/**
 	 * Creates an instance of EnumerationSchema by a collection of whitelisted values.
 	 * Whitelisted values will be kept in a set, which would prevent automatic garbage collection.
@@ -39,20 +33,17 @@ export default class EnumerationSchema extends BaseSchema<any> {
 		super();
 
 		const isMapEnum = args.length === 1 && typeof args[0] === 'object';
+		const allowedValues = new Set(isMapEnum ? Object.values(args[0]) : args);
 
-		this._state = {
-			allowedValues: new Set(isMapEnum ? Object.keys(args[0]).map(key => args[0][key]) : args),
-		};
-
-		this.pushValidationFn((value, path) => {
-			if (!this._state.allowedValues.has(value)) {
-				return createError(
+		this.pushValidationFn((value, path) =>
+			allowedValues.has(value)
+				? undefined
+				: createError(
 					ERROR_TYPES.ARGUMENT,
-					`Expected one of ${this._state.allowedValues} but got ${value}`,
+					`Expected one of ${allowedValues} but got ${value}`,
 					path,
-				);
-			}
-		});
+				),
+		);
 	}
 
 	/**

@@ -70,7 +70,7 @@ export default class StringSchema extends BaseSchema<string> {
 
 		this._state.minlength = length;
 
-		this.pushValidationFn((value: string, path: string) => {
+		return this.pushValidationFn((value: string, path: string) => {
 			if (!is.Undefined(this._state.minlength) && this._state.minlength > value.length) {
 				return createError(
 					ERROR_TYPES.RANGE,
@@ -79,8 +79,6 @@ export default class StringSchema extends BaseSchema<string> {
 				);
 			}
 		});
-
-		return this;
 	}
 
 	/**
@@ -102,7 +100,7 @@ export default class StringSchema extends BaseSchema<string> {
 
 		this._state.maxlength = length;
 
-		this.pushValidationFn((value: string, path: string) => {
+		return this.pushValidationFn((value: string, path: string) => {
 			if (!is.Undefined(this._state.maxlength) && this._state.maxlength < value.length) {
 				return createError(
 					ERROR_TYPES.RANGE,
@@ -111,8 +109,6 @@ export default class StringSchema extends BaseSchema<string> {
 				);
 			}
 		});
-
-		return this;
 	}
 
 	/**
@@ -136,7 +132,7 @@ export default class StringSchema extends BaseSchema<string> {
 
 		this._state.pattern = regexp;
 
-		this.pushValidationFn((value: string, path: string) => {
+		return this.pushValidationFn((value: string, path: string) => {
 			if (!is.Undefined(this._state.pattern) && !this._state.pattern.test(value)) {
 				return createError(
 					ERROR_TYPES.ARGUMENT,
@@ -145,7 +141,5 @@ export default class StringSchema extends BaseSchema<string> {
 				);
 			}
 		});
-
-		return this;
 	}
 }

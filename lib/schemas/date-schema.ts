@@ -5,19 +5,17 @@ import BaseSchema from './base-schema';
 
 export const name = 'date';
 
-function validatePositiveInteger(bound: any): boolean {
-	return Number.isInteger(bound) && (0 <= bound);
-}
-
 const typeName = 'date';
 
-function isInRange(start: number, end: number, value: number) {
-	if (start < end) {
-		return (start <= value) && (value <= end);
-	} else {
-		return (value <= end) || (start <= value);
-	}
-}
+const validatePositiveInteger = (bound: any): bound is number => Number.isInteger(bound) && (0 <= bound);
+
+const isInRange = (
+	start: number,
+	end: number,
+	value: number,
+) => start < end
+	? start <= value && value <= end
+	: value <= end || start <= value;
 
 /**
  * This function is here because typescript is stupid and doesn't understand
@@ -41,12 +39,12 @@ function getDateComponent(componentName: keyof Date, dateInstance: Date): number
 	}
 }
 
-function betweenValidation(
+const betweenValidation = (
 	start: number,
 	end: number,
 	ranges: { [key: string]: number },
 	dateGetFnKey: keyof Date,
-) {
+) => {
 	const dateComponentName = dateGetFnKey.replace(/get/, '');
 	if (!is.Undefined(ranges['_start' + dateComponentName] && ranges['_end' + dateComponentName])) {
 		throw new Error(`Cannot set start and end for ${dateComponentName} twice on a single DateSchema instance`);
@@ -66,15 +64,15 @@ function betweenValidation(
 		const rend = ranges['_end' + dateComponentName];
 		const valueNumber = getDateComponent(dateGetFnKey, value);
 
-		if (!isInRange(rstart, rend, valueNumber)) {
-			return createError(
+		return isInRange(rstart, rend, valueNumber)
+			? undefined
+			: createError(
 				ERROR_TYPES.RANGE,
 				`Expected ${dateComponentName} to be in range ${start}:${end} but got ${value}`,
 				path,
 			);
-		}
 	};
-}
+};
 
 type TDateSchemaState = {
 	_before?: Date;
@@ -170,50 +168,38 @@ export default class DateSchema extends BaseSchema<Date> {
 	 * If start > end, value will be validated against the ranges [0, start] and [end, 31]
 	 */
 	public dateBetween(start: number, end: number) {
-		this.pushValidationFn(
+		return this.pushValidationFn(
 			betweenValidation(start, end, this._state.ranges, 'getDate'),
 		);
-
-		return this;
 	}
 
 	public monthBetween(start: number, end: number) {
-		this.pushValidationFn(
+		return this.pushValidationFn(
 			betweenValidation(start, end, this._state.ranges, 'getMonth'),
 		);
-
-		return this;
 	}
 
 	public hourBetween(start: number, end: number) {
-		this.pushValidationFn(
+		return this.pushValidationFn(
 			betweenValidation(start, end, this._state.ranges, 'getHours'),
 		);
-
-		return this;
 	}
 
 	public weekdayBetween(start: number, end: number) {
-		this.pushValidationFn(
+		return this.pushValidationFn(
 			betweenValidation(start, end, this._state.ranges, 'getDay'),
 		);
-
-		return this;
 	}
 
 	public minutesBetween(start: number, end: number) {
-		this.pushValidationFn(
+		return this.pushValidationFn(
 			betweenValidation(start, end, this._state.ranges, 'getMinutes'),
 		);
-
-		return this;
 	}
 
 	public secondsBetween(start: number, end: number) {
-		this.pushValidationFn(
+		return this.pushValidationFn(
 			betweenValidation(start, end, this._state.ranges, 'getSeconds'),
 		);
-
-		return this;
 	}
 }
