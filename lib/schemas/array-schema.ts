@@ -108,14 +108,13 @@ export default class ArraySchema<TInner> extends BaseSchema<TInner[]> {
 		return this.minlength(length).maxlength(length);
 	}
 
-	public distinct() {
-		this.pushValidationFn((value: TInner[], path: string) => {
-			if (value.length !== new Set(value).size) {
+	public distinct<Q>(qualify?: (inner: TInner) => Q) {
+		return this.pushValidationFn((value: TInner[], path: string) => {
+			const { size } = new Set(qualify ? value.map(qualify) : value as any);
+			if (value.length !== size) {
 				return createError(ERROR_TYPES.ARGUMENT, `Expected values in ${value} to be distinct`, path);
 			}
 		});
-
-		return this;
 	}
 
 	protected validateValueWithCorrectType(value: TInner[], path: string): IErrorFeedback<TInner[]> {
