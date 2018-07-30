@@ -2,6 +2,7 @@ import { IValidationError } from '../contracts';
 import { createCompositeError, createError, ERROR_TYPES } from '../errors';
 import * as is from '../is';
 import BaseSchema from './base-schema';
+import EnumerationSchema from './enumeration-schema';
 import StringSchema from './string-schema';
 import valid from './valid-schema';
 
@@ -19,6 +20,7 @@ const typeName = 'object';
  * @extends {BaseSchema}
  */
 export default class ObjectSchema<TValues = any> extends BaseSchema<object> {
+	private static _allowedSchemas = [StringSchema, EnumerationSchema];
 	private _state: {
 		subschema: { [id: string]: BaseSchema<TValues> };
 		allowFunctions: boolean;
@@ -120,8 +122,11 @@ export default class ObjectSchema<TValues = any> extends BaseSchema<object> {
 	}
 
 	public keys(keysSchema: StringSchema) {
-		if (!(keysSchema instanceof StringSchema)) {
-			throw new TypeError('Schema for object keys must be a StringSchema');
+		const { _allowedSchemas } = ObjectSchema;
+		if (_allowedSchemas.every(Proto => !(keysSchema instanceof Proto))) {
+			throw new TypeError(
+				`Schema for object keys must be a ${_allowedSchemas.map(Proto => Proto.name).join(' or ')}`,
+			);
 		}
 
 		this._state.keysSchema = keysSchema;
@@ -131,30 +136,27 @@ export default class ObjectSchema<TValues = any> extends BaseSchema<object> {
 
 	public values(valuesSchema: BaseSchema<TValues>) {
 		if (!(valuesSchema instanceof BaseSchema)) {
-			throw new TypeError('Schema for object values must be a schema instance');
+			throw new TypeError(
+				`Schema for object values must be a ${ObjectSchema._allowedSchemas.map(x => x.name).join('or')}`,
+			);
 		}
 
 		this._state.valuesSchema = valuesSchema;
 
 		return this;
 	}
-	public validate(value: any, path = '', currentErrors?: IValidationError[]) {
+
+	public validate(value: any, path = '', errors: IValidationError[] = []) {
 		if (!this.validateType(value)) {
 			if (this._required) {
-				const typeError = {
-					corrected: this.validateValueWithCorrectType({}, path).corrected,
-					errors: [createError(ERROR_TYPES.TYPE, `Expected type ${this.type} but got ${typeof value}`, path)],
-					errorsCount: 1,
-				};
-
-				if (currentErrors) {
-					currentErrors.push(typeError.errors[0]);
-				}
-
-				return typeError;
+				errors.push(createError(ERROR_TYPES.TYPE, `Expected type ${this.type} but got ${typeof value}`, path));
 			}
 
-			return { errorsCount: 0, errors: [], corrected: value };
+			return {
+				corrected: errors.length ? this.validateValueWithCorrectType({}, '') : value,
+				errors,
+				errorsCount: errors.length,
+			};
 		}
 
 		return this.validateValueWithCorrectType(value, path);
