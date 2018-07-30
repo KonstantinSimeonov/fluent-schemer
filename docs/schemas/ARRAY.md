@@ -9,7 +9,21 @@ Below are examples of validation schemas for array<string>, array<array<int>> an
 | minlength(number)                       | set a minimum array length                    |
 | maxlength(number)                       | set a maximum array length                    |
 | withLength(number)                      | array should have an exact length             |
-| district()                              | values in the array should be unique          |
+| district(qualify?)                      | values in the array should be unique with respect to the qualify function          |
+
+## Require an array of user records, distinct by username:
+```ts
+const users = array(
+	object({ username: string() })
+).distinct(record => record.username);
+
+users.validate([{ username: 'pesho', age: 3 }, { username: 'gosho', isCool: true }); // ok
+users.validate([
+	{ username: 'pesho', age: 3 },
+	{ username: 'gosho', isCool: true },
+	{ username: 'pesho', salary: 666 }
+]); // returns error because values returned by qualifier are not unique
+```
 
 ## Validate an array of names:
 
@@ -45,7 +59,6 @@ if(errors.errorsCount > 0) {
 ## Integer matrix validation:
 
 ```js
-const { array, number } = require('fluent-schemer');
 const matrixSchema = array(
 	array(number().integer())
 ).required();
