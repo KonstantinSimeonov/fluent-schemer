@@ -125,13 +125,14 @@ export default class ArraySchema<TInner> extends BaseSchema<TInner[]> {
 			errors,
 			errorsCount: errors.length,
 		});
+		const { subschema } = this._state;
 
-		if (!this._state.subschema || errors.length) {
+		if (!subschema || errors.length) {
 			return feedback();
 		}
 
 		for (let i = 0, len = value.length; i < len; i += 1) {
-			const { errors: subErrors, errorsCount } = this._state.subschema.validate(value[i], path + '[' + i + ']');
+			const { errors: subErrors, errorsCount } = subschema.validate(value[i], `${path}[${i}]`);
 
 			if (errorsCount === 0) {
 				continue;

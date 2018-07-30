@@ -88,13 +88,9 @@ export default abstract class BaseSchema<TValidated> {
 			throw new TypeError(`Expected function as predicate but got value of type ${typeof predicateFn}`);
 		}
 
-		this.pushValidationFn((value, path) => {
-			if (!predicateFn(value)) {
-				return createError(ERROR_TYPES.PREDICATE, 'Value failed predicate', path);
-			}
-		});
-
-		return this;
+		return this.pushValidationFn(
+			(value, path) => predicateFn(value) ? undefined : createError(ERROR_TYPES.PREDICATE, 'Value failed predicate', path),
+		);
 	}
 
 	/**
@@ -109,15 +105,13 @@ export default abstract class BaseSchema<TValidated> {
 	 * string().not('ts', 'c#', 'java').validate('ts');
 	 */
 	public not(...values: any[]) {
-		this.pushValidationFn((value, path) => {
+		return this.pushValidationFn((value, path) => {
 			const index = values.findIndex(element => this.areEqual(value, element));
 
 			if (index !== -1) {
 				return createError(ERROR_TYPES.ARGUMENT, `Expected value to not equal ${values[index]} but it did`, path);
 			}
 		});
-
-		return this;
 	}
 
 	public default(defaultValue: TValidated) {
@@ -141,26 +135,20 @@ export default abstract class BaseSchema<TValidated> {
 	 * @returns {IErrorFeedback}
 	 * @memberof BaseSchema
 	 */
-	public validate(value: any, path = '', currentErrors?: IValidationError[]): IErrorFeedback<TValidated> {
+	public validate(value: any, path = '', errors: IValidationError[] = []): IErrorFeedback<TValidated> {
 		if (!this.validateType(value)) {
 			if (this._required) {
-				const typeError = {
-					corrected: this._defaultExpr(value),
-					errors: [createError(ERROR_TYPES.TYPE, `Expected type ${this.type} but got ${typeof value}`, path)],
-					errorsCount: 1,
-				};
-
-				if (currentErrors) {
-					currentErrors.push(typeError.errors[0]);
-				}
-
-				return typeError;
+				errors.push(createError(ERROR_TYPES.TYPE, `Expected type ${this.type} but got ${typeof value}`, path));
 			}
 
-			return { errorsCount: 0, errors: [], corrected: value };
+			return {
+				corrected: errors.length ? this._defaultExpr(value) : value,
+				errors,
+				errorsCount: errors.length,
+			};
 		}
 
-		return this.validateValueWithCorrectType(value, path, currentErrors);
+		return this.validateValueWithCorrectType(value, path, errors);
 	}
 
 	/**
@@ -169,6 +157,8 @@ export default abstract class BaseSchema<TValidated> {
 	 */
 	protected pushValidationFn(validationFn: (value: any, path: string) => IValidationError | undefined) {
 		this.validationFunctions.push(validationFn);
+
+		return this;
 	}
 
 	/**
@@ -190,12 +180,10 @@ export default abstract class BaseSchema<TValidated> {
 	protected validateValueWithCorrectType(
 		value: TValidated,
 		path: string,
-		currentErrors?: IValidationError[],
+		errors: IValidationError[] = [],
 	): IErrorFeedback<TValidated> {
-		const errors = currentErrors || [];
-
-		for (let i = 0, len = this.validationFunctions.length; i < len; i += 1) {
-			const err = this.validationFunctions[i](value, path);
+		for (const validate of this.validationFunctions) {
+			const err = validate(value, path);
 
 			if (err) {
 				errors.push(err);
