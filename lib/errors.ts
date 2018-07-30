@@ -22,7 +22,7 @@ export class CompositeError extends ValidationError {
 	public errors: ValidationError[];
 
 	constructor(path: string, errors: ValidationError[]) {
-		super(ERROR_TYPES.COMPOSITE, 'More than one error occurred for the provided path', path);
+		super(ERROR_TYPES.COMPOSITE, 'More than one error could have occurred for the provided path', path);
 		this.errors = errors;
 	}
 }

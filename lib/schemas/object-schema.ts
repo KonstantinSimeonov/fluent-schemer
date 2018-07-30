@@ -178,36 +178,28 @@ export default class ObjectSchema<TValues = any> extends BaseSchema<object> {
 		}
 
 		const correctedKeys: string[] = [];
+		const { valuesSchema, keysSchema } = this._state;
+		for (const key in value) {
+			const errorsForPath: IValidationError[] = [];
 
-		if (this._state.valuesSchema || this._state.keysSchema) {
-			const { valuesSchema, keysSchema } = this._state;
-			for (const key in value) {
-				const errorsForPath: IValidationError[] = [];
+			const correctedKey = keysSchema.validate(key, key, errorsForPath).corrected;
+			const correctedValue = valuesSchema.validate(value[key], key, errorsForPath).corrected;
 
-				const correctedKey = keysSchema.validate(key, key, errorsForPath).corrected;
-				const correctedValue = valuesSchema.validate(value[key], key, errorsForPath).corrected;
-
-				if (!errorsForPath.length) {
-					continue;
-				}
-
-				correctedObj[correctedKey] = correctedValue;
-				if (correctedKey !== key) {
-					correctedKeys.push(key);
-				}
-
-				if (errorsMap[key]) {
-					errorsForPath.push(errorsMap[key]);
-				}
-
-				if (errorsForPath.length === 1) {
-					errorsMap[key] = errorsForPath.pop();
-					currentErrorsCount += 1;
-				} else {
-					currentErrorsCount += errorsForPath.length - 1;
-					errorsMap[key] = createCompositeError(path + '.' + key, errorsForPath);
-				}
+			if (!errorsForPath.length) {
+				continue;
 			}
+
+			correctedObj[correctedKey] = correctedValue;
+			if (correctedKey !== key) {
+				correctedKeys.push(key);
+			}
+
+			currentErrorsCount += errorsForPath.length;
+			if (errorsMap[key]) {
+				errorsForPath.push(errorsMap[key]);
+			}
+
+			errorsMap[key] = createCompositeError(`${path}.${key}`, errorsForPath);
 		}
 		/* tslint:enable forin */
 
