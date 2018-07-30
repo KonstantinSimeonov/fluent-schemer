@@ -2,7 +2,7 @@
 	"name": "fluent-schemer",
 	"version": "2.1.2",
 	"repository": "https://github.com/KonstantinSimeonov/fluent-schemer",
-	"description": "Small umd compliant schema validation library that aims to provide declarative, expressive and elegant approach to validation, while providing an intuitive, easy-to-use api.",
+	"description": "Small and intuitive umd validation library that provides an elegant way to express validation logic.",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"keywords": [
@@ -19,7 +19,8 @@
 		"tslint": "tslint",
 		"lint": "yarn tslint ./index.ts ./lib/**/*.ts",
 		"test": "nyc ava",
-		"coverage": "nyc report --reporter=text-lcov | coveralls",
+		"coverage": "nyc report --reporter=html",
+		"coveralls": "nyc report --reporter=text-lcov | coveralls",
 		"build": "webpack --progress --colors --profile",
 		"watch": "webpack --watch --progress --colors --profile"
 	},

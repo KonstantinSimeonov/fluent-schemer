@@ -3,4 +3,4 @@ node_js:
   - "8.11.3"
 install: yarn
 script: yarn && yarn lint && yarn build && yarn test
-after_success: yarn run coverage
+after_success: yarn run coveralls
