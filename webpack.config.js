@@ -5,18 +5,22 @@ const BUILD_DIR = path.resolve(__dirname, 'dist');
 
 const baseConfig = {
 	devtool: 'source-map',
+	output: {
+		path: BUILD_DIR,
+		library: 'fluent-schemer',
+		libraryTarget: 'umd',
+	},
 	entry: path.resolve(__dirname, 'index.ts'),
 	resolve: {
 		extensions: ['.ts', '.js']
-	}
+	},
 };
 
-const es6Config = Object.assign({}, baseConfig, {
+const es6Config = {
+	...baseConfig,
 	output: {
-		filename: 'index.js',
-		path: BUILD_DIR,
-		library: 'fluent-schemer',
-		libraryTarget: 'umd'
+		...baseConfig.output,
+		filename: 'index.js'
 	},
 	module: {
 		rules: [
@@ -29,14 +33,13 @@ const es6Config = Object.assign({}, baseConfig, {
 	plugins: [
 		new webpack.WatchIgnorePlugin([BUILD_DIR])
 	]
-});
+};
 
-const es5MinConfig = Object.assign({}, baseConfig, {
+const es5MinConfig = {
+	...baseConfig,
 	output: {
+		...baseConfig.output,
 		filename: 'index.es5.min.js',
-		path: BUILD_DIR,
-		library: 'fluent-schemer',
-		libraryTarget: 'umd',
 		sourceMapFilename: 'index.es5.min.js.map'
 	},
 	module: {
@@ -57,6 +60,6 @@ const es5MinConfig = Object.assign({}, baseConfig, {
 		new webpack.optimize.UglifyJsPlugin(),
 		new webpack.WatchIgnorePlugin([BUILD_DIR])
 	]
-});
+};
 
 module.exports = [es5MinConfig, es6Config];
