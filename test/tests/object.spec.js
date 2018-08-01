@@ -216,19 +216,28 @@ test('object().keys() throws when argument is not a string schema', assert => {
 	})
 );
 
-test('object.keys() returns errors when object keys do not match provided schema', assert => {
-	const idontcare = object().keys(string().maxlength(5));
-
-	const somethingMap = {
-		ivan: true,
-		penka: false,
-		dmitriy: true,
-		kostya: false
-	};
-
-	const { errorsCount, errors } = idontcare.validate(somethingMap);
-	assert.is(errorsCount, 2);
-});
+[
+	[
+		string().maxlength(5),
+		{
+			ivan: true,
+			penka: false,
+			dmitriy: true,
+			kostya: false
+		},
+		2
+	],
+	[
+		enumeration('a', 'b', 'c'),
+		{ a: 1, b: 2, x: 3, c: 4, z: 3 },
+		2
+	]
+].forEach(
+	([keySchema, erroneousInput, expectedErrorsCount]) => test(`object.keys() returns errors when object keys do not match the ${keySchema.type} schema`, assert => {
+		const { errorsCount } = object().keys(keySchema).validate(erroneousInput);
+		assert.is(errorsCount, expectedErrorsCount);
+	})
+);
 
 test('object().values() throws when argument is not a string schema', assert => {
 	assert.throws(() => object().values({}), TypeError);
