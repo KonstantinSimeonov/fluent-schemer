@@ -1,7 +1,5 @@
 # fluent-schemer
 
-<a href='https://david-dm.org/KonstantinSimeonov/fluent-schemer'><img src='https://img.shields.io/david/KonstantinSimeonov/fluent-schemer.svg'></a>
-[![devDependencies Status](https://david-dm.org/KonstantinSimeonov/fluent-schemer/dev-status.svg)](https://david-dm.org/KonstantinSimeonov/fluent-schemer?type=dev)
 <a href='https://travis-ci.org/KonstantinSimeonov/fluent-schemer'><img src='https://travis-ci.org/KonstantinSimeonov/fluent-schemer.svg?branch=master' alt='Coverage Status' /></a> <a href='https://coveralls.io/github/KonstantinSimeonov/fluent-schemer'><img src='https://coveralls.io/repos/github/KonstantinSimeonov/fluent-schemer/badge.svg' alt='Coverage Status' /></a>
 
 ```js
@@ -39,9 +37,6 @@ const { corrected: username } = string()
 console.log(username); // _________1
 ```
 
-- **serialization/deserialization from/to JSON**
-- **flow libdefs** on flow-typed
-
 Aims to provide declarative, expressive and elegant approach to validation, while providing an intuitive, easy-to-use api.
 
 ## It's cool, because
@@ -55,13 +50,8 @@ Aims to provide declarative, expressive and elegant approach to validation, whil
 - helps developers **get rid of imperative code, long if-else's** and writing boring validations all over again
 - **promotes code reuse** - easily share code between modules, between clients, servers and across projects
 - easy to extends with custom schemas
-- **statically type checked** with typescript, checked for correctness with a bunch of **unit tests**
+- **statically type checked** with latest typescript, checked for correctness with a bunch of **unit tests**
 - **throws errors when rubbish arguments are provided** to schema methods, instead of failing silently
-
-## It will be cool, because
-- every script, that is part of the validator, will eventually be thoroughly unit tested
-- documentation with detailed examples for many combinations and use cases incoming!
-- async validation for large arrays/objects is planned
 
 ### Running the tests
 
