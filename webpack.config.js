@@ -4,11 +4,13 @@ const webpack = require('webpack');
 const BUILD_DIR = path.resolve(__dirname, 'dist');
 
 const baseConfig = {
+	mode: 'production',
 	devtool: 'source-map',
 	output: {
 		path: BUILD_DIR,
-		library: 'fluent-schemer',
+		library: 'fluentSchemer',
 		libraryTarget: 'umd',
+		globalObject: `typeof window !== 'undefined' ? window : (typeof self !== 'undefined' ? self : this)`
 	},
 	entry: path.resolve(__dirname, 'index.ts'),
 	resolve: {
@@ -54,10 +56,6 @@ const es5MinConfig = {
 		]
 	},
 	plugins: [
-		new webpack.DefinePlugin({
-			'process.env.NODE_ENV': 'production'
-		}),
-		new webpack.optimize.UglifyJsPlugin(),
 		new webpack.WatchIgnorePlugin([BUILD_DIR])
 	]
 };
