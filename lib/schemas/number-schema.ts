@@ -16,10 +16,12 @@ const typeName = 'number';
  */
 export default class NumberSchema extends BaseSchema<number> {
 	private _precision: number;
+	// @ts-ignore
 	private _minvalue: number;
+	// @ts-ignore
 	private _maxvalue: number;
-	private _nanAllowed: boolean;
-	private _infinityAllowed: boolean;
+	private _nanAllowed: boolean = false;
+	private _infinityAllowed: boolean = false;
 
 	/**
 	 * Creates an instance of NumberSchema.

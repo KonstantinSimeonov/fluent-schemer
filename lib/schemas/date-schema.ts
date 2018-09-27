@@ -81,7 +81,7 @@ type TDateSchemaState = {
 };
 
 export default class DateSchema extends BaseSchema<Date> {
-	protected validationFunctions: Array<((value: Date, path: string) => IValidationError)>;
+	protected validationFunctions: Array<((value: Date, path: string) => IValidationError)> = [];
 	private _state: TDateSchemaState;
 
 	constructor() {
@@ -113,6 +113,7 @@ export default class DateSchema extends BaseSchema<Date> {
 			throw new Error('Cannot set before date twice for a date schema instance');
 		}
 
+		// @ts-ignore
 		const beforeDate = new Date(...dateConstructorArgs);
 
 		if (!this.validateType(beforeDate)) {
@@ -143,6 +144,7 @@ export default class DateSchema extends BaseSchema<Date> {
 			throw new Error('Cannot set after date twice for a date schema instance');
 		}
 
+		// @ts-ignore
 		const afterDate = new Date(...dateConstructorArgs);
 
 		if (!this.validateType(afterDate)) {
